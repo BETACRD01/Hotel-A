@@ -1,3 +1,5 @@
+"""Limpia referencias a imagenes que ya no existen en el storage configurado."""
+
 import os
 
 from django.core.files.storage import default_storage
@@ -7,9 +9,13 @@ from gestion_hotel.models import Cabanas, Cine
 
 
 class Command(BaseCommand):
+    """Revisa registros con imagen y borra solo la referencia cuando falta el archivo."""
+
     help = "Limpia los campos de imagen de cabañas y funciones de cine cuando el archivo físico no existe."
 
     def handle(self, *args, **options):
+        """Revisa imagenes referenciadas y limpia las que apuntan a archivos ausentes."""
+
         total_revisado = 0
         imagenes_inexistentes = 0
         registros_corregidos = 0

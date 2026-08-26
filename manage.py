@@ -1,11 +1,11 @@
 #!/usr/bin/env python
-"""Django's command-line utility for administrative tasks."""
+"""Entrada de comandos Django para ejecutar servidor, migraciones, tests y comandos propios."""
 import os
 import sys
 
 
 def main():
-    """Run administrative tasks."""
+    """Carga settings del proyecto y delega la ejecucion al CLI de Django."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'arahuana_resort.settings')
     try:
         from django.core.management import execute_from_command_line

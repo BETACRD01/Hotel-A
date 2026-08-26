@@ -1,8 +1,12 @@
+"""Vistas del catalogo publico que tambien crean reservas por tipo de servicio."""
+
 from .common import *
 from .common import _config_fondo
 from .payments import obtener_metodo_pago_formulario, redirigir_segun_metodo_pago
 
 def habitaciones_view(request):
+    """Muestra habitaciones disponibles y procesa reservas de hospedaje."""
+
     cancelar_reservas_vencidas()
 
     habitaciones = Habitaciones.objects.filter(
@@ -119,6 +123,8 @@ def habitaciones_view(request):
 # ============================================================
 
 def cabanas_view(request):
+    """Muestra cabanas disponibles y procesa reservas de hospedaje."""
+
     cancelar_reservas_vencidas()
 
     cabanas = Cabanas.objects.filter(
@@ -235,6 +241,8 @@ def cabanas_view(request):
 # ============================================================
 
 def cine_view(request):
+    """Muestra funciones de cine y procesa reservas de asientos."""
+
     cancelar_reservas_vencidas()
 
     funciones = Cine.objects.filter(activo=True).order_by("fecha_proyeccion", "hora_proyeccion")
@@ -301,6 +309,8 @@ def cine_view(request):
 # ============================================================
 
 def resort_dia_view(request):
+    """Muestra paquetes de resort por dia y procesa reservas de visita."""
+
     cancelar_reservas_vencidas()
 
     areas_resort = ResortDia.objects.filter(activo=True).order_by("nombre")

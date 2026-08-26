@@ -1,3 +1,5 @@
+"""Modelos de dominio del hotel: clientes, inventario, reservas, pagos y contenido publico."""
+
 import re
 
 from django.core.exceptions import ValidationError
@@ -39,6 +41,8 @@ ROLES_USUARIO = [
 
 
 class Cliente(models.Model):
+    """Persona registrada en el sistema con datos de contacto, acceso y rol operativo."""
+
     id_cliente = models.AutoField(primary_key=True)
     tipo_documento = models.CharField(
         max_length=20,
@@ -102,33 +106,49 @@ class Cliente(models.Model):
 
     @property
     def id_usuario(self):
+        """Alias de compatibilidad usado como identificador de usuario en vistas antiguas."""
+
         return self.id_cliente
 
     @property
     def cedula_ruc(self):
+        """Alias de compatibilidad para el numero de documento."""
+
         return self.numero_documento
 
     @property
     def nombre(self):
+        """Alias de compatibilidad para nombres."""
+
         return self.nombres
 
     @property
     def apellido(self):
+        """Alias de compatibilidad para apellidos."""
+
         return self.apellidos
 
     @property
     def telefono(self):
+        """Alias de compatibilidad para telefono celular."""
+
         return self.telefono_celular
 
     @property
     def email(self):
+        """Alias de compatibilidad para correo electronico."""
+
         return self.correo_electronico
 
     @property
     def is_active(self):
+        """Expone el estado activo con el nombre usado por flujos similares a Django auth."""
+
         return self.activo
 
     def clean(self):
+        """Valida reglas del cliente antes de guardar desde formularios o admin."""
+
         super().clean()
 
         if self.rol != 'cliente':
@@ -143,6 +163,8 @@ class Cliente(models.Model):
             validate_password_strength(self.password)
 
     def save(self, *args, **kwargs):
+        """Mantiene direccion derivada y valida el cliente antes de persistir."""
+
         if not self.direccion:
             partes_direccion = [self.ciudad.strip(), self.pais_origen.strip()]
             self.direccion = ', '.join([parte for parte in partes_direccion if parte]) or ''
@@ -154,12 +176,18 @@ class Cliente(models.Model):
         return super().save(*args, **kwargs)
 
     def is_cliente(self):
+        """Indica si el registro puede usar flujos de cliente."""
+
         return self.rol == 'cliente'
 
     def is_admin(self):
+        """Indica si el registro representa un rol administrativo legacy."""
+
         return self.rol == 'admin'
 
     def is_gerente(self):
+        """Indica si el registro puede usar el panel gerencial."""
+
         return self.rol == 'gerente'
 
     def __str__(self):
@@ -179,6 +207,8 @@ ESTADO_HABITACION_CHOICES = [
 
 
 class Habitaciones(models.Model):
+    """Unidad de hospedaje tipo habitacion, con capacidad, precios y estado de disponibilidad."""
+
     id_habitacion = models.AutoField(primary_key=True)
     numero_habitacion = models.CharField(max_length=10, unique=True, verbose_name='Numero de habitacion')
     tipo_habitacion = models.CharField(max_length=50, verbose_name='Tipo de habitacion')
@@ -252,6 +282,8 @@ class Habitaciones(models.Model):
     activo = models.BooleanField(default=True, verbose_name='Activo')
 
     def obtener_precio_programa(self, programa, tipo_ocupacion):
+        """Devuelve la tarifa de habitacion segun programa y tipo de ocupacion."""
+
         precios = {
             '2D1N': {
                 'Total': self.precio_2d1n_total,
@@ -279,6 +311,8 @@ class Habitaciones(models.Model):
 
     @property
     def precio_desde_hospedaje(self):
+        """Precio minimo usado por tarjetas publicas de hospedaje."""
+
         precios = [
             self.precio_2d1n_total,
             self.precio_2d1n_secundaria,
@@ -300,6 +334,8 @@ class Habitaciones(models.Model):
 
 
 class Cabanas(models.Model):
+    """Unidad de hospedaje tipo cabana, con tarifas por programa y ocupacion."""
+
     id_cabana = models.AutoField(primary_key=True)
     numero_cabana = models.CharField(max_length=50, unique=True, verbose_name='Número de cabaña')
     capacidad = models.IntegerField(validators=[MinValueValidator(1)], verbose_name='Capacidad')
@@ -368,6 +404,8 @@ class Cabanas(models.Model):
     activo = models.BooleanField(default=True, verbose_name='Activo')
 
     def obtener_precio_programa(self, programa, tipo_ocupacion):
+        """Devuelve la tarifa de cabana segun programa y tipo de ocupacion."""
+
         precios = {
             '2D1N': {
                 'Total': self.precio_2d1n_total,
@@ -395,6 +433,8 @@ class Cabanas(models.Model):
 
     @property
     def precio_desde_hospedaje(self):
+        """Precio minimo usado por tarjetas publicas de cabanas."""
+
         precios = [
             self.precio_2d1n_total,
             self.precio_2d1n_secundaria,
@@ -416,6 +456,8 @@ class Cabanas(models.Model):
 
 
 class Cine(models.Model):
+    """Funcion de cine disponible para que los clientes reserven asientos."""
+
     id_funcion = models.AutoField(primary_key=True)
     titulo_pelicula = models.CharField(max_length=150, verbose_name='Titulo de la pelicula')
     fecha_proyeccion = models.DateField(verbose_name='Fecha de proyeccion')
@@ -459,6 +501,8 @@ class Cine(models.Model):
 
 
 class ResortDia(models.Model):
+    """Paquete de uso diario del resort, separado del hospedaje nocturno."""
+
     TIPO_AREA_CHOICES = [
         ('piscina', 'Piscina'),
         ('habitacion_dia', 'Habitacion del Dia'),
@@ -538,6 +582,8 @@ ESTADO_RESERVA_CHOICES = [
 
 
 class Reservas(models.Model):
+    """Reserva principal que agrupa cliente, fechas, estado, importes y detalles reservados."""
+
     id_reserva = models.AutoField(primary_key=True)
     id_cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, verbose_name='Cliente')
     fecha_registro = models.DateTimeField(auto_now_add=True, verbose_name='Fecha de registro')
@@ -610,6 +656,8 @@ class Reservas(models.Model):
     )
 
     def calcular_valores_pago(self):
+        """Calcula subtotal, anticipo minimo, saldo pendiente y limite de pago."""
+
         total_decimal = Decimal(str(self.total or '0')).quantize(
             Decimal('0.01'),
             rounding=ROUND_HALF_UP
@@ -641,6 +689,8 @@ class Reservas(models.Model):
         self.fecha_limite_pago = limite
 
     def generar_codigo_reserva(self):
+        """Genera un codigo incremental legible para nuevas reservas."""
+
         ultimo = Reservas.objects.order_by('-id_reserva').first()
         if ultimo and ultimo.codigo_reserva:
             coincidencia = re.search(r"(\d+)$", ultimo.codigo_reserva)
@@ -651,6 +701,8 @@ class Reservas(models.Model):
         return f"RES-{siguiente_numero:04d}"
 
     def save(self, *args, **kwargs):
+        """Recalcula valores y asegura codigo de reserva antes de persistir."""
+
         self.calcular_valores_pago()
         if not self.codigo_reserva:
             self.codigo_reserva = self.generar_codigo_reserva()
@@ -658,6 +710,8 @@ class Reservas(models.Model):
 
     @property
     def id_usuario(self):
+        """Alias de compatibilidad para obtener el cliente asociado a la reserva."""
+
         return self.id_cliente
 
     def __str__(self):
@@ -673,6 +727,8 @@ class Reservas(models.Model):
 # ==========================================
 
 class DetalleHabitaciones(models.Model):
+    """Linea de reserva que conecta una reserva con una habitacion especifica."""
+
     id_detalle_hab = models.AutoField(primary_key=True)
     id_reserva = models.ForeignKey(Reservas, on_delete=models.CASCADE, verbose_name='Reserva')
     id_habitacion = models.ForeignKey(Habitaciones, on_delete=models.CASCADE, verbose_name='Habitación')
@@ -710,6 +766,8 @@ class DetalleHabitaciones(models.Model):
 
 
 class DetalleCabanas(models.Model):
+    """Linea de reserva que conecta una reserva con una cabana especifica."""
+
     id_detalle_cab = models.AutoField(primary_key=True)
     id_reserva = models.ForeignKey(Reservas, on_delete=models.CASCADE, verbose_name='Reserva')
     id_cabana = models.ForeignKey(Cabanas, on_delete=models.CASCADE, verbose_name='Cabaña')
@@ -747,6 +805,8 @@ class DetalleCabanas(models.Model):
 
 
 class DetalleCine(models.Model):
+    """Linea de reserva para entradas de cine y productos adicionales."""
+
     id_detalle_cine = models.AutoField(primary_key=True)
     id_reserva = models.ForeignKey(Reservas, on_delete=models.CASCADE, verbose_name='Reserva')
     id_funcion = models.ForeignKey(Cine, on_delete=models.CASCADE, verbose_name='Función')
@@ -772,6 +832,8 @@ class DetalleCine(models.Model):
 
 
 class DetalleResort(models.Model):
+    """Linea de reserva para paquetes de resort por dia."""
+
     id_detalle_resort = models.AutoField(primary_key=True)
     id_reserva = models.ForeignKey(Reservas, on_delete=models.CASCADE, verbose_name='Reserva')
     id_resort_dia = models.ForeignKey(ResortDia, on_delete=models.CASCADE, verbose_name='Resort Día')
@@ -800,6 +862,8 @@ class DetalleResort(models.Model):
 
 
 class PagoReserva(models.Model):
+    """Registro de pago asociado a una reserva, incluyendo comprobantes y revision interna."""
+
     METODOS_PAGO = [
         ('Transferencia', 'Transferencia bancaria'),
         ('Recepcion', 'Pago en recepcion'),
@@ -937,6 +1001,8 @@ class PagoReserva(models.Model):
 
 
 class ConfiguracionInicio(models.Model):
+    """Contenido editable del sitio publico: textos, imagenes de fondo y secciones de portada."""
+
     """
     Configuración de imágenes de la página de inicio.
     Solo debe existir un registro (id=1).

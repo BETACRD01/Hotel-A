@@ -1,6 +1,10 @@
+"""Vistas de consulta y cancelacion de reservas del cliente."""
+
 from .common import *
 
 def mis_reservas_view(request):
+    """Lista las reservas activas del cliente y resume las que quedaron ocultas por cancelacion."""
+
     cancelar_reservas_vencidas()
 
     cliente_id = request.session.get("cliente_id")

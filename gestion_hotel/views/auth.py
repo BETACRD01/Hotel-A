@@ -1,3 +1,5 @@
+"""Vistas de autenticacion publica: login, registro, recuperacion y logout."""
+
 from .common import *
 
 def login_view(request):

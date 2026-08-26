@@ -1,9 +1,13 @@
+"""Crea el grupo operativo de administracion con permisos Django limitados."""
+
 from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group, Permission
 
 
 class Command(BaseCommand):
+    """Sincroniza grupo, permisos y usuario administrador operativo."""
+
     help = 'Crea o actualiza el grupo Administrador Operativo con permisos operativos limitados y asigna al usuario administrador.'
 
     GROUP_NAME = 'Administrador Operativo'
@@ -21,6 +25,8 @@ class Command(BaseCommand):
     ]
 
     def handle(self, *args, **options):
+        """Crea o actualiza grupo, permisos y usuario operativo no superusuario."""
+
         user_model = get_user_model()
         group, created = Group.objects.get_or_create(name=self.GROUP_NAME)
         if created:

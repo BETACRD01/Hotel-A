@@ -1,3 +1,5 @@
+"""Registra funciones iniciales de cine para pruebas o carga base local."""
+
 from datetime import date, timedelta, time
 from decimal import Decimal
 
@@ -7,9 +9,13 @@ from gestion_hotel.models import Cine
 
 
 class Command(BaseCommand):
+    """Crea o actualiza funciones de cine semilla por titulo."""
+
     help = "Registra funciones iniciales de cine del Hotel Arahuana"
 
     def handle(self, *args, **kwargs):
+        """Crea o actualiza funciones semilla con fechas relativas al dia actual."""
+
         funciones = [
             {
                 "titulo_pelicula": "Cine Bajo Las Estrellas: El Libro de la Selva",

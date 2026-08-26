@@ -1,3 +1,5 @@
+"""Vistas publicas generales que no crean reservas."""
+
 from .common import *
 from .payments import obtener_metodo_pago_formulario, redirigir_segun_metodo_pago
 

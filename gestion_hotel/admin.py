@@ -1,3 +1,5 @@
+"""Configuracion del panel Django Admin para inventario, clientes, reservas, pagos y portada."""
+
 from django import forms
 from django.contrib import admin
 from django.contrib.auth.hashers import make_password
@@ -25,6 +27,8 @@ from .models import (
 
 
 class RoleBasedAdminMixin:
+    """Centraliza permisos para que superusuarios conserven acceso total en el admin."""
+
     def has_module_permission(self, request):
         if request.user.is_superuser:
             return True
@@ -53,6 +57,8 @@ class RoleBasedAdminMixin:
 
 
 class EstadoHabitacionFilter(admin.SimpleListFilter):
+    """Filtro reutilizable para revisar inventario por estado operativo."""
+
     title = 'Estado'
     parameter_name = 'estado'
 
@@ -133,6 +139,8 @@ class DetalleResortInlineReserva(admin.TabularInline):
 
 @admin.register(Cabanas)
 class CabanasAdmin(RoleBasedAdminMixin, admin.ModelAdmin):
+    """Admin de cabanas con acciones de disponibilidad y tarifas por programa."""
+
     inlines = [DetalleCabanasInlineInventory]
 
     list_display = (
@@ -203,6 +211,8 @@ class CabanasAdmin(RoleBasedAdminMixin, admin.ModelAdmin):
 
 
 class ClienteFormAdmin(ClienteAdminForm):
+    """Adaptador del formulario de clientes para usarlo dentro de Django Admin."""
+
     class Meta(ClienteAdminForm.Meta):
         model = Cliente
         fields = '__all__'
@@ -214,6 +224,8 @@ class ClienteFormAdmin(ClienteAdminForm):
 
 @admin.register(Cliente)
 class ClienteAdmin(RoleBasedAdminMixin, admin.ModelAdmin):
+    """Admin de clientes, limitado a cuentas de rol cliente dentro de esta app."""
+
     form = ClienteFormAdmin
     list_display = (
         'numero_documento',
@@ -315,6 +327,8 @@ class ClienteAdmin(RoleBasedAdminMixin, admin.ModelAdmin):
 
 @admin.register(Habitaciones)
 class HabitacionesAdmin(RoleBasedAdminMixin, admin.ModelAdmin):
+    """Admin de habitaciones con inventario, ocupacion y precios visibles."""
+
     inlines = [DetalleHabitacionesInlineInventory]
 
     list_display = (
@@ -385,6 +399,8 @@ class HabitacionesAdmin(RoleBasedAdminMixin, admin.ModelAdmin):
 
 @admin.register(Cine)
 class CineAdmin(RoleBasedAdminMixin, admin.ModelAdmin):
+    """Admin de funciones de cine disponibles para reserva."""
+
     inlines = [DetalleCineInlineInventory]
     list_display = ('id_funcion', 'titulo_pelicula', 'fecha_proyeccion', 'hora_proyeccion', 'precio_entrada', 'capacidad_sala', 'estado', 'activo', 'imagen_preview')
     list_filter = ('estado', 'activo', 'fecha_proyeccion')
@@ -410,6 +426,8 @@ class CineAdmin(RoleBasedAdminMixin, admin.ModelAdmin):
 
 @admin.register(ResortDia)
 class ResortDiaAdmin(RoleBasedAdminMixin, admin.ModelAdmin):
+    """Admin de paquetes de resort por dia."""
+
     inlines = [DetalleResortInlineInventory]
     list_display = ('id_resort_dia', 'nombre', 'tipo_area', 'estado', 'capacidad_maxima', 'requiere_reserva', 'costo_adicional', 'activo', 'imagen_preview')
     list_filter = ('tipo_area', 'estado', 'activo', 'requiere_reserva')
@@ -503,6 +521,8 @@ class DetalleResortAdmin(RoleBasedAdminMixin, admin.ModelAdmin):
 
 @admin.register(Reservas)
 class ReservasAdmin(RoleBasedAdminMixin, admin.ModelAdmin):
+    """Admin de reservas con sus detalles y estados de pago/reserva."""
+
     inlines = [
         DetalleHabitacionesInlineReserva,
         DetalleCabanasInlineReserva,
@@ -533,6 +553,8 @@ class ReservasAdmin(RoleBasedAdminMixin, admin.ModelAdmin):
 
 @admin.action(description="Aprobar pagos seleccionados")
 def aprobar_pagos(modeladmin, request, queryset):
+    """Accion masiva que marca pagos en revision como aprobados y sincroniza la reserva."""
+
     for pago in queryset:
         pago.estado = "Pagado"
         pago.save()
@@ -549,6 +571,8 @@ def aprobar_pagos(modeladmin, request, queryset):
 
 @admin.action(description="Rechazar pagos seleccionados")
 def rechazar_pagos(modeladmin, request, queryset):
+    """Accion masiva que rechaza pagos seleccionados sin eliminar el historial."""
+
     for pago in queryset:
         pago.estado = "Rechazado"
         pago.save()
@@ -560,6 +584,8 @@ def rechazar_pagos(modeladmin, request, queryset):
 
 @admin.register(PagoReserva)
 class PagoReservaAdmin(admin.ModelAdmin):
+    """Admin de comprobantes, revisiones y trazabilidad de pagos de reservas."""
+
     list_display = (
         "reserva",
         "metodo_pago",
@@ -647,6 +673,8 @@ class PagoReservaAdmin(admin.ModelAdmin):
 
 @admin.register(ConfiguracionInicio)
 class ConfiguracionInicioAdmin(admin.ModelAdmin):
+    """Admin del contenido editable usado por las paginas publicas."""
+
     list_display = ('id',)
     readonly_fields = (
         'imagen_sobre_nosotros_preview',

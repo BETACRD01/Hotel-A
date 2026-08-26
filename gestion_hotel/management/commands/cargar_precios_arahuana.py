@@ -1,3 +1,5 @@
+"""Carga tarifas base de habitaciones y cabanas segun reglas comerciales actuales."""
+
 from decimal import Decimal
 
 from django.core.management.base import BaseCommand
@@ -6,6 +8,8 @@ from gestion_hotel.models import Habitaciones, Cabanas
 
 
 def d(valor):
+    """Normaliza importes de configuracion a Decimal con dos posiciones."""
+
     return Decimal(str(valor)).quantize(Decimal("0.01"))
 
 
@@ -62,6 +66,8 @@ PRECIOS_CABANAS = {
 
 
 def aplicar_precios(objeto, precios):
+    """Aplica el bloque de precios a una habitacion o cabana y guarda el registro."""
+
     objeto.tipo_ocupacion_secundaria = precios["tipo_ocupacion_secundaria"]
 
     objeto.precio_2d1n_total = precios["precio_2d1n_total"]
@@ -79,9 +85,13 @@ def aplicar_precios(objeto, precios):
 
 
 class Command(BaseCommand):
+    """Actualiza tarifas de inventario existente sin crear habitaciones ni cabanas nuevas."""
+
     help = "Carga los precios oficiales de Arahuana directamente en Habitaciones y Cabañas."
 
     def handle(self, *args, **options):
+        """Recorre inventario existente, clasifica cada registro y actualiza tarifas."""
+
         habitaciones_actualizadas = 0
         cabanas_actualizadas = 0
 

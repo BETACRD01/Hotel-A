@@ -1,3 +1,5 @@
+"""Formularios de clientes para registro, login y administracion interna."""
+
 import re
 
 from django import forms
@@ -15,6 +17,8 @@ from .validators import (
 
 
 class ClienteRegistroForm(forms.Form):
+    """Valida y crea cuentas de cliente desde el formulario publico de registro."""
+
     tipo_documento = forms.ChoiceField(
         choices=[
             ('Cédula', 'Cédula'),
@@ -67,12 +71,16 @@ class ClienteRegistroForm(forms.Form):
     )
 
     def clean_pais_origen(self):
+        """Valida pais opcional usando solo letras cuando el cliente lo informa."""
+
         pais = self.cleaned_data.get('pais_origen', '').strip()
         if pais:
             validate_letters_only(pais)
         return pais
 
     def clean_ciudad(self):
+        """Valida ciudad opcional usando solo letras cuando el cliente la informa."""
+
         ciudad = self.cleaned_data.get('ciudad', '').strip()
         if ciudad:
             validate_letters_only(ciudad)
@@ -102,6 +110,8 @@ class ClienteRegistroForm(forms.Form):
     )
 
     def clean_numero_documento(self):
+        """Normaliza el documento y evita duplicados antes de crear la cuenta."""
+
         numero_documento = self.cleaned_data['numero_documento'].strip()
         tipo_documento = self.cleaned_data.get('tipo_documento')
 
@@ -117,17 +127,23 @@ class ClienteRegistroForm(forms.Form):
         return numero_documento
 
     def clean_correo_electronico(self):
+        """Normaliza correo y bloquea registros duplicados."""
+
         correo_electronico = self.cleaned_data['correo_electronico'].strip().lower()
         if Cliente.objects.filter(correo_electronico__iexact=correo_electronico).exists():
             raise forms.ValidationError('El correo electrónico ya se encuentra registrado.')
         return correo_electronico
 
     def clean_telefono_celular(self):
+        """Valida el telefono antes de persistirlo."""
+
         telefono_celular = self.cleaned_data['telefono_celular'].strip()
         validate_phone(telefono_celular)
         return telefono_celular
 
     def clean(self):
+        """Valida reglas que dependen de varios campos, como confirmacion de password."""
+
         cleaned_data = super().clean()
         password = cleaned_data.get('password')
         confirm_password = cleaned_data.get('confirm_password')
@@ -141,11 +157,15 @@ class ClienteRegistroForm(forms.Form):
         return cleaned_data
 
     def clean_password(self):
+        """Aplica reglas de fortaleza a la contrasena nueva."""
+
         password = self.cleaned_data['password']
         validate_password_strength(password)
         return password
 
     def save(self, commit=True):
+        """Construye y guarda el cliente con password hasheada."""
+
         datos = self.cleaned_data
         direccion_parts = [
             datos.get('ciudad', '').strip(),
@@ -173,7 +193,11 @@ class ClienteRegistroForm(forms.Form):
 
 
 class PasswordToggleWidget(forms.PasswordInput):
+    """Widget de contrasena que carga los assets necesarios para mostrar/ocultar el valor."""
+
     def render(self, name, value, attrs=None, renderer=None):
+        """Renderiza el input de password junto al boton visual de alternar visibilidad."""
+
         final_attrs = self.build_attrs(self.attrs, attrs)
         final_attrs.setdefault('class', '')
         final_attrs['class'] = f"{final_attrs['class']} password-toggle-input".strip()
@@ -194,6 +218,8 @@ class PasswordToggleWidget(forms.PasswordInput):
 
 
 class ClienteAdminForm(forms.ModelForm):
+    """Formulario del admin para editar clientes sin permitir roles administrativos aqui."""
+
     password = forms.CharField(required=False, widget=PasswordToggleWidget(attrs={'autocomplete': 'new-password'}), label='Contraseña')
 
     class Meta:
@@ -210,12 +236,16 @@ class ClienteAdminForm(forms.ModelForm):
         }
 
     def clean_password(self):
+        """Valida una contrasena nueva cuando se edita desde admin."""
+
         password = self.cleaned_data.get('password')
         if password:
             validate_password_strength(password)
         return password
 
     def clean_rol(self):
+        """Impide crear administradores o gerentes desde el modelo Cliente."""
+
         rol = self.cleaned_data.get('rol')
         # Gestion_Hotel -> Cliente model must only contain clientes
         if rol and rol not in {'cliente'}:
@@ -225,6 +255,8 @@ class ClienteAdminForm(forms.ModelForm):
         return 'cliente'
 
     def save(self, commit=True):
+        """Guarda el cliente y actualiza hash de password solo si se ingreso uno nuevo."""
+
         usuario = super().save(commit=False)
         password = self.cleaned_data.get('password')
         if password:
@@ -235,6 +267,8 @@ class ClienteAdminForm(forms.ModelForm):
 
 
 class ClienteLoginForm(forms.Form):
+    """Valida las credenciales capturadas por el login publico del hotel."""
+
     correo_electronico = forms.EmailField(
         widget=forms.EmailInput(
             attrs={

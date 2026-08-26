@@ -1,3 +1,5 @@
+"""Vistas del area privada del cliente."""
+
 from .common import *
 
 def panel_cliente_view(request):

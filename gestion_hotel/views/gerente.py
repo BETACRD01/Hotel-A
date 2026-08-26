@@ -1,6 +1,10 @@
+"""Vistas del panel gerencial y formularios CRUD internos."""
+
 from .common import *
 
 def requiere_gerente(request):
+    """Valida acceso de gerente propio o usuario staff/superusuario autenticado."""
+
     usuario = obtener_usuario_sesion(request)
     if usuario is not None:
         if usuario.rol != 'gerente':
@@ -22,6 +26,8 @@ def requiere_gerente(request):
 
 
 class GerenteStyledForm(forms.ModelForm):
+    """Base de formularios del gerente que aplica clases CSS y widgets de fecha/hora."""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
@@ -37,6 +43,8 @@ class GerenteStyledForm(forms.ModelForm):
 
 
 class GerenteClienteForm(GerenteStyledForm):
+    """Formulario gerencial para crear o editar clientes sin exponer roles internos."""
+
     password = forms.CharField(
         label="Contrasena",
         required=False,
@@ -191,6 +199,8 @@ GERENTE_FORM_CONFIG = {
 
 
 def gerente_form_modelo_view(request, modulo, pk=None):
+    """Crea o edita registros del modulo configurado manteniendo un flujo CRUD comun."""
+
     usuario = requiere_gerente(request)
     if not usuario:
         return redirect("gestion:login")
@@ -246,6 +256,8 @@ def _ultimo_dia_mes(anio, mes):
 
 
 def dashboard_gerente_view(request):
+    """Muestra indicadores operativos, ingresos y actividad reciente para gerencia."""
+
     usuario = requiere_gerente(request)
     if not usuario:
         return redirect("gestion:login")
@@ -507,6 +519,8 @@ def dashboard_gerente_view(request):
 
 
 def gerente_reservas_view(request):
+    """Lista reservas para seguimiento operativo desde el panel gerencial."""
+
     usuario = requiere_gerente(request)
     if not usuario:
         return redirect("gestion:login")
@@ -527,6 +541,8 @@ def gerente_reservas_view(request):
 
 
 def gerente_habitaciones_view(request):
+    """Lista habitaciones para administracion rapida desde gerencia."""
+
     usuario = requiere_gerente(request)
     if not usuario:
         return redirect("gestion:login")
@@ -542,6 +558,8 @@ def gerente_habitaciones_view(request):
 
 
 def gerente_cabanas_view(request):
+    """Lista cabanas para administracion rapida desde gerencia."""
+
     usuario = requiere_gerente(request)
     if not usuario:
         return redirect("gestion:login")
@@ -557,6 +575,8 @@ def gerente_cabanas_view(request):
 
 
 def gerente_clientes_view(request):
+    """Lista clientes registrados para consulta y mantenimiento gerencial."""
+
     usuario = requiere_gerente(request)
     if not usuario:
         return redirect("gestion:login")
@@ -571,6 +591,8 @@ def gerente_clientes_view(request):
 
 
 def gerente_resort_view(request):
+    """Lista paquetes de resort dia administrables por gerencia."""
+
     usuario = requiere_gerente(request)
     if not usuario:
         return redirect("gestion:login")
@@ -585,6 +607,8 @@ def gerente_resort_view(request):
 
 
 def gerente_cine_view(request):
+    """Lista funciones de cine administrables por gerencia."""
+
     usuario = requiere_gerente(request)
     if not usuario:
         return redirect("gestion:login")
@@ -614,6 +638,8 @@ def gerente_cine_view(request):
 
 
 def gerente_sobre_nosotros_view(request):
+    """Permite revisar y editar contenido publico institucional."""
+
     usuario = requiere_gerente(request)
     if not usuario:
         return redirect("gestion:login")
@@ -628,6 +654,8 @@ def gerente_sobre_nosotros_view(request):
 
 
 def gerente_informes_view(request):
+    """Muestra informacion consolidada para informes gerenciales."""
+
     usuario = requiere_gerente(request)
     if not usuario:
         return redirect("gestion:login")
@@ -660,6 +688,8 @@ def gerente_informes_view(request):
 
 
 def gerente_ocupacion_view(request):
+    """Muestra ocupacion de inventario y reservas para control operativo."""
+
     usuario = requiere_gerente(request)
     if not usuario:
         return redirect("gestion:login")
@@ -689,6 +719,8 @@ def gerente_ocupacion_view(request):
 
 
 def gerente_personal_view(request):
+    """Pagina reservada para gestion de personal cuando el modulo crezca."""
+
     usuario = requiere_gerente(request)
     if not usuario:
         return redirect("gestion:login")
@@ -705,6 +737,8 @@ def gerente_personal_view(request):
 
 
 def gerente_comentarios_view(request):
+    """Pagina reservada para revision de comentarios o feedback de clientes."""
+
     usuario = requiere_gerente(request)
     if not usuario:
         return redirect("gestion:login")
@@ -723,6 +757,8 @@ def gerente_comentarios_view(request):
 
 
 def gerente_tarifas_view(request):
+    """Concentra acceso gerencial a precios y tarifas de servicios."""
+
     usuario = requiere_gerente(request)
     if not usuario:
         return redirect("gestion:login")

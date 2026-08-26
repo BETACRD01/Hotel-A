@@ -1,7 +1,7 @@
 """
-WSGI config for arahuana_resort project.
+Configuracion WSGI del proyecto Arahuana Resort.
 
-It exposes the WSGI callable as a module-level variable named ``application``.
+Expone ``application`` para servidores compatibles con WSGI.
 
 For more information on this file, see
 https://docs.djangoproject.com/en/6.0/howto/deployment/wsgi/

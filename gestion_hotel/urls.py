@@ -1,3 +1,5 @@
+"""Rutas de la app gestion_hotel para paginas publicas, cliente, pagos y gerente."""
+
 from django.urls import path
 from . import views
 

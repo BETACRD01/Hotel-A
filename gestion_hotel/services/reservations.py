@@ -1,3 +1,5 @@
+"""Servicios de negocio para calculos y mantenimiento de reservas."""
+
 from datetime import timedelta
 from decimal import Decimal, ROUND_HALF_UP
 
@@ -7,10 +9,14 @@ from gestion_hotel.models import Reservas
 
 
 def convertir_decimal(valor):
+    """Convierte importes a Decimal con dos decimales para evitar errores de redondeo."""
+
     return Decimal(str(valor or "0")).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
 
 
 def obtener_noches_por_programa(programa):
+    """Traduce el codigo de programa de hospedaje a cantidad de noches."""
+
     programas = {
         "2D1N": 1,
         "3D2N": 2,
@@ -20,6 +26,8 @@ def obtener_noches_por_programa(programa):
 
 
 def obtener_precio_tarifa(tarifa, tipo_ocupacion):
+    """Obtiene el precio correcto para ocupacion total o secundaria desde una tarifa."""
+
     if not tarifa:
         return Decimal("0.00")
 
@@ -30,6 +38,8 @@ def obtener_precio_tarifa(tarifa, tipo_ocupacion):
 
 
 def normalizar_tipo_ocupacion(tarifa, tipo_ocupacion):
+    """Devuelve la etiqueta de ocupacion que debe guardarse en el detalle de reserva."""
+
     if tipo_ocupacion == "Total":
         return "Total"
 
@@ -37,6 +47,8 @@ def normalizar_tipo_ocupacion(tarifa, tipo_ocupacion):
 
 
 def obtener_tipo_ocupacion_final(servicio, tipo_ocupacion):
+    """Resuelve la ocupacion final usando la configuracion del servicio reservado."""
+
     if tipo_ocupacion == "Total":
         return "Total"
 
@@ -44,6 +56,8 @@ def obtener_tipo_ocupacion_final(servicio, tipo_ocupacion):
 
 
 def calcular_valores_reserva(reserva):
+    """Recalcula subtotales, anticipo y saldo despues de crear o modificar detalles."""
+
     reserva.refresh_from_db()
     reserva.calcular_valores_pago()
     reserva.save()

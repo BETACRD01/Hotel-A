@@ -1,3 +1,5 @@
+"""Validadores reutilizables para datos personales, documentos, telefono y seguridad de password."""
+
 import re
 
 from django.core.exceptions import ValidationError
@@ -8,6 +10,8 @@ ALPHA_NUMERIC_PATTERN = re.compile(r"^[A-Za-z0-9]+$")
 
 
 def validate_letters_only(value):
+    """Acepta nombres con letras, espacios, tildes y enie, rechazando valores demasiado cortos."""
+
     if not value or not NAME_PATTERN.fullmatch(value.strip()):
         raise ValidationError("Solo se permiten letras, espacios, tildes y ñ.")
     if len(value.strip()) < 2:
@@ -46,6 +50,8 @@ def _calcular_digito_mod11(documento, coeficientes):
 
 
 def validar_documento_ecuador(tipo_documento, value):
+    """Normaliza y valida cedula, RUC o pasaporte; retorna un dict usado por formularios y vistas."""
+
     documento = (value or "").strip()
     tipo = (tipo_documento or "").strip()
 
@@ -193,6 +199,8 @@ def validar_documento_ecuador(tipo_documento, value):
 
 
 def validate_cedula_ruc(value):
+    """Validador Django que acepta documentos ecuatorianos o pasaporte en un solo campo."""
+
     documento = validar_documento_ecuador("Cédula", value)
     if documento["valido"]:
         return
@@ -211,6 +219,8 @@ def validate_cedula_ruc(value):
 
 
 def validate_phone(value):
+    """Valida telefonos numericos nacionales o internacionales con longitud razonable."""
+
     value = (value or "").strip()
     if not re.fullmatch(r"\+?\d{10,15}", value):
         raise ValidationError("Ingrese un número de teléfono válido.")
@@ -219,6 +229,8 @@ def validate_phone(value):
 
 
 def validate_password_strength(value):
+    """Exige una contrasena minima para cuentas de clientes y usuarios gestionados."""
+
     value = value or ""
     weak_passwords = {
         '12345678',
@@ -255,5 +267,7 @@ def validate_password_strength(value):
 
 
 def validate_email_format(value):
+    """Comprueba una estructura basica de correo antes de guardar o autenticar."""
+
     if not value or "@" not in value or "." not in value.split('@')[-1]:
         raise ValidationError("El correo electrónico debe tener un formato válido.")

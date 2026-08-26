@@ -1,3 +1,5 @@
+"""Registra servicios iniciales de resort dia para pruebas o carga base local."""
+
 from datetime import time
 from decimal import Decimal
 
@@ -7,9 +9,13 @@ from gestion_hotel.models import ResortDia
 
 
 class Command(BaseCommand):
+    """Crea o actualiza paquetes de resort dia semilla por nombre."""
+
     help = 'Registra servicios iniciales de Resort del día para el Eco-Resort Arahuana.'
 
     def handle(self, *args, **kwargs):
+        """Crea o actualiza servicios semilla de resort por nombre."""
+
         servicios = [
             {
                 'nombre': 'Piscina Principal',

@@ -1,3 +1,5 @@
+"""Imports y helpers compartidos por las vistas de cliente, catalogo, pagos y gerente."""
+
 from datetime import date, datetime, timedelta
 from types import SimpleNamespace
 import random
@@ -89,6 +91,8 @@ def obtener_usuario_sesion(request):
 
 
 def sincronizar_acceso_admin_gerente(request, gerente, password):
+    """Crea o actualiza el usuario auth que permite al gerente entrar al admin Django."""
+
     user_model = get_user_model()
     username = gerente.correo_electronico or f"gerente_{gerente.id_cliente}"
     auth_user, _ = user_model.objects.get_or_create(username=username)
@@ -119,6 +123,8 @@ def _config_fondo(campo):
 
 
 def normalizar_combo_cabana(valor, cabana=None):
+    """Convierte la seleccion de cabana del formulario en un texto consistente para guardar."""
+
     if cabana is not None:
         return f"CabaÃ±a {cabana.numero_cabana}"
 
@@ -209,6 +215,8 @@ def generar_codigo_reserva():
 
 
 def requiere_rol(request, roles, mensaje="No tienes permisos para realizar esta acciÃ³n."):
+    """Devuelve el usuario de sesion solo si su rol pertenece a los roles permitidos."""
+
     usuario = obtener_usuario_sesion(request)
     if usuario is None:
         return None
@@ -219,6 +227,8 @@ def requiere_rol(request, roles, mensaje="No tienes permisos para realizar esta 
 
 
 def puede_cancelar_reserva(usuario, reserva):
+    """Determina si el usuario puede cancelar una reserva segun rol, dueno y estado."""
+
     if usuario.rol in {"admin", "gerente"}:
         return True
     return usuario.id_cliente == reserva.id_cliente_id and reserva.estado_reserva in {"Pendiente", "Confirmada"}
@@ -226,6 +236,8 @@ def puede_cancelar_reserva(usuario, reserva):
 
 
 def convertir_fecha_formulario(valor, nombre_campo="fecha"):
+    """Convierte fechas HTML yyyy-mm-dd en objetos date y produce errores claros."""
+
     try:
         return datetime.strptime(valor, "%Y-%m-%d").date()
     except (TypeError, ValueError):

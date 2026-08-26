@@ -1,3 +1,5 @@
+"""Vistas y helpers para elegir metodo de pago y registrar transferencias."""
+
 from decimal import Decimal, ROUND_HALF_UP
 
 from .common import *
@@ -9,6 +11,8 @@ METODOS_PAGO_DISPONIBLES = {
 
 
 def obtener_metodo_pago_formulario(request):
+    """Lee el metodo de pago enviado por POST y lo limita a opciones soportadas."""
+
     metodo_pago = (request.POST.get("metodo_pago") or "").strip()
     if metodo_pago not in METODOS_PAGO_DISPONIBLES:
         return "Sin seleccionar"
@@ -16,6 +20,8 @@ def obtener_metodo_pago_formulario(request):
 
 
 def redirigir_segun_metodo_pago(reserva, metodo_pago):
+    """Envia al flujo correcto despues de crear una reserva segun el metodo elegido."""
+
     if metodo_pago == "Transferencia":
         return redirect("gestion:pago_transferencia", id_reserva=reserva.id_reserva)
     return redirect("gestion:mis_reservas")
@@ -26,6 +32,8 @@ def redirigir_segun_metodo_pago(reserva, metodo_pago):
 # ============================================================
 
 def obtener_reserva_del_cliente(id_reserva, cliente_id):
+    """Obtiene una reserva garantizando que pertenezca al cliente autenticado."""
+
     return get_object_or_404(
         Reservas,
         id_reserva=id_reserva,
@@ -34,6 +42,8 @@ def obtener_reserva_del_cliente(id_reserva, cliente_id):
 
 
 def obtener_monto_anticipo(reserva):
+    """Calcula el valor que el cliente debe registrar como anticipo de pago."""
+
     monto = reserva.anticipo_minimo or reserva.total or Decimal("0.00")
     return Decimal(str(monto)).quantize(
         Decimal("0.01"),
@@ -42,6 +52,8 @@ def obtener_monto_anticipo(reserva):
 
 
 def datos_bancarios_contexto():
+    """Construye los datos bancarios mostrados en la pantalla de transferencia."""
+
     return [
         {
             "nombre": settings.BANCO_1_NOMBRE,
@@ -55,6 +67,8 @@ def datos_bancarios_contexto():
 
 
 def crear_pago_base(reserva, metodo_pago, estado="Pendiente"):
+    """Crea el registro inicial de pago con montos sincronizados desde la reserva."""
+
     monto_anticipo = obtener_monto_anticipo(reserva)
 
     pago = PagoReserva.objects.create(
@@ -70,6 +84,8 @@ def crear_pago_base(reserva, metodo_pago, estado="Pendiente"):
 
 
 def seleccionar_pago_view(request, id_reserva):
+    """Muestra las opciones de pago disponibles para una reserva del cliente."""
+
     cancelar_reservas_vencidas()
 
     cliente_id = request.session.get("cliente_id")
@@ -93,6 +109,8 @@ def seleccionar_pago_view(request, id_reserva):
 
 
 def pago_transferencia_view(request, id_reserva):
+    """Registra los datos y el comprobante de una transferencia bancaria."""
+
     cancelar_reservas_vencidas()
 
     cliente_id = request.session.get("cliente_id")

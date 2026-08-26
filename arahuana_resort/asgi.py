@@ -1,7 +1,7 @@
 """
-ASGI config for arahuana_resort project.
+Configuracion ASGI del proyecto Arahuana Resort.
 
-It exposes the ASGI callable as a module-level variable named ``application``.
+Expone ``application`` para servidores compatibles con ASGI.
 
 For more information on this file, see
 https://docs.djangoproject.com/en/6.0/howto/deployment/asgi/
