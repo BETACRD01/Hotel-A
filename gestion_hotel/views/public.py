@@ -15,7 +15,7 @@ def index(request):
 
     return render(
         request,
-        "index.html",
+        "public/index.html",
         {
             "usuario": usuario,
             "imagen_habitaciones": (config.imagen_habitaciones if config and config.imagen_habitaciones else primera_imagen(Habitaciones)),
@@ -111,7 +111,7 @@ def sobre_nosotros_view(request):
         )),
     }
 
-    return render(request, "sobre_nosotros.html", contexto)
+    return render(request, "public/sobre_nosotros.html", contexto)
 
 
 # ============================================================

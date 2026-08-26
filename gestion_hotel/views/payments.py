@@ -89,7 +89,7 @@ def seleccionar_pago_view(request, id_reserva):
         "monto_anticipo": obtener_monto_anticipo(reserva),
     }
 
-    return render(request, "seleccionar_pago.html", contexto)
+    return render(request, "payments/seleccionar_pago.html", contexto)
 
 
 def pago_transferencia_view(request, id_reserva):
@@ -163,7 +163,7 @@ def pago_transferencia_view(request, id_reserva):
         "bancos": datos_bancarios_contexto(),
     }
 
-    return render(request, "pago_transferencia.html", contexto)
+    return render(request, "payments/pago_transferencia.html", contexto)
 
 
 # ============================================================

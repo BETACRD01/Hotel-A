@@ -19,7 +19,7 @@ def login_view(request):
             for field, errors in form.errors.items():
                 for error in errors:
                     messages.error(request, error)
-            return render(request, "login.html", {"form": form, "next": next_url})
+            return render(request, "auth/login.html", {"form": form, "next": next_url})
 
         correo_electronico = form.cleaned_data["correo_electronico"]
         password = form.cleaned_data["password"]
@@ -34,7 +34,7 @@ def login_view(request):
                 request,
                 "Correo o contraseÃ±a incorrectos o la cuenta estÃ¡ inactiva."
             )
-            return render(request, "login.html", {"form": form, "next": next_url})
+            return render(request, "auth/login.html", {"form": form, "next": next_url})
 
         password_correcta = False
 
@@ -53,7 +53,7 @@ def login_view(request):
                 request,
                 "Correo o contraseÃ±a incorrectos."
             )
-            return render(request, "login.html", {"form": form, "next": next_url})
+            return render(request, "auth/login.html", {"form": form, "next": next_url})
 
         nombre_formateado = f"{usuario.nombres} {usuario.apellidos}".strip().title()
 
@@ -72,7 +72,7 @@ def login_view(request):
                 request,
                 "Este acceso es solo para clientes. Ingrese desde el Panel de GestiÃ³n."
             )
-            return render(request, "login.html", {"form": form, "next": next_url})
+            return render(request, "auth/login.html", {"form": form, "next": next_url})
 
         request.session["cliente_id"] = usuario.id_cliente
         request.session["cliente_nombre"] = nombre_formateado
@@ -96,7 +96,7 @@ def login_view(request):
 
         return redirect("gestion:dashboard")
 
-    return render(request, "login.html", {"form": form, "next": next_url})
+    return render(request, "auth/login.html", {"form": form, "next": next_url})
 
 
 def registro_view(request):
@@ -163,9 +163,9 @@ def registro_view(request):
         for field, errors in form.errors.items():
             for error in errors:
                 messages.error(request, error)
-        return render(request, "registro.html", {"form": form})
+        return render(request, "auth/registro.html", {"form": form})
 
-    return render(request, "registro.html", {"form": ClienteRegistroForm()})
+    return render(request, "auth/registro.html", {"form": ClienteRegistroForm()})
 
 
 def recuperar_password(request):
@@ -233,9 +233,9 @@ Hotel Arahuana Eco-Resort & Spa
             request,
             "Si el correo estÃ¡ registrado, recibirÃ¡s un cÃ³digo de recuperaciÃ³n."
         )
-        return render(request, "recuperar_password.html")
+        return render(request, "auth/recuperar_password.html")
 
-    return render(request, "recuperar_password.html")
+    return render(request, "auth/recuperar_password.html")
 
 
 def verificar_codigo(request):
@@ -256,7 +256,7 @@ def verificar_codigo(request):
 
         messages.error(request, "CÃ³digo incorrecto. IntÃ©ntalo nuevamente.")
 
-    return render(request, "verificar_codigo.html")
+    return render(request, "auth/verificar_codigo.html")
 
 
 def nueva_password(request):
@@ -276,11 +276,11 @@ def nueva_password(request):
 
         if password != confirm_password:
             messages.error(request, "Las contraseÃ±as no coinciden.")
-            return render(request, "nueva_password.html")
+            return render(request, "auth/nueva_password.html")
 
         if len(password) < 8:
             messages.error(request, "La contraseÃ±a debe tener al menos 8 caracteres.")
-            return render(request, "nueva_password.html")
+            return render(request, "auth/nueva_password.html")
 
         usuario = Cliente.objects.filter(
             id_cliente=cliente_id,
@@ -309,7 +309,7 @@ def nueva_password(request):
         )
         return redirect("gestion:login")
 
-    return render(request, "nueva_password.html")
+    return render(request, "auth/nueva_password.html")
 
 def logout_view(request):
     """

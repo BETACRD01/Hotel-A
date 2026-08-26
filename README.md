@@ -40,7 +40,14 @@ gestion_hotel/
     reservations.py    Mis reservas y cancelacion de reservas
     payments.py        Seleccion y registro de pagos
     gerente.py         Panel gerencial y formularios de gestion
-  templates/           Templates publicos y gerenciales
+  templates/
+    base.html          Layout publico base
+    auth/              Login, registro y recuperacion de contrasena
+    client/            Panel del cliente, dashboard y mis reservas
+    payments/          Seleccion de pago y comprobantes de transferencia
+    public/            Inicio, catalogos y paginas publicas
+    gerente/           Layout y pantallas del panel gerencial
+    admin/             Overrides puntuales del admin Django
   static/
     css/               Estilos publicos, gerente y admin
     js/                Comportamiento global de UI

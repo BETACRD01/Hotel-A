@@ -34,7 +34,7 @@ def mis_reservas_view(request):
         "proxima_reserva_pago": reservas_pago_pendiente.order_by("fecha_limite_pago").first(),
     }
 
-    return render(request, "mis_reservas.html", contexto)
+    return render(request, "client/mis_reservas.html", contexto)
 
 
 def cancelar_reserva_view(request, id_reserva):

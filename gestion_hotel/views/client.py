@@ -80,7 +80,7 @@ def panel_cliente_view(request):
 
     return render(
         request,
-        "panel_cliente.html",
+        "client/panel_cliente.html",
         contexto
     )
 
@@ -132,7 +132,7 @@ def dashboard_view(request):
 
     return render(
         request,
-        "dashboard.html",
+        "client/dashboard.html",
         contexto
     )
 

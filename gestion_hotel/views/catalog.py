@@ -111,7 +111,7 @@ def habitaciones_view(request):
         "fondo_habitaciones": _config_fondo("fondo_habitaciones"),
     }
 
-    return render(request, "habitaciones.html", contexto)
+    return render(request, "public/habitaciones.html", contexto)
 
 
 # ============================================================
@@ -227,7 +227,7 @@ def cabanas_view(request):
         "fondo_cabanas": _config_fondo("fondo_cabanas"),
     }
 
-    return render(request, "cabanas.html", contexto)
+    return render(request, "public/cabanas.html", contexto)
 
 
 # ============================================================
@@ -293,7 +293,7 @@ def cine_view(request):
         "fondo_cine": _config_fondo("fondo_cine"),
     }
 
-    return render(request, "cine.html", contexto)
+    return render(request, "public/cine.html", contexto)
 
 
 # ============================================================
@@ -375,7 +375,7 @@ def resort_dia_view(request):
         "fondo_resort": _config_fondo("fondo_resort"),
     }
 
-    return render(request, "resort_dia.html", contexto)
+    return render(request, "public/resort_dia.html", contexto)
 
 
 # ============================================================
