@@ -1,0 +1,52 @@
+{% extends 'gerente/base_gerente.html' %}
+
+{% block title %}Habitaciones | Panel Gerencial{% endblock %}
+{% block breadcrumb %}Gerencia / Habitaciones{% endblock %}
+
+{% block content %}
+<div class="page-header-gerente">
+    <h1>Gestión de Habitaciones</h1>
+    <p>Estado actual de todas las habitaciones del resort.</p>
+    <div style="margin-top:12px;">
+        <a href="{% url 'gestion:gerente_modelo_nuevo' 'habitaciones' %}" class="badge badge-success" style="text-decoration:none;">Nueva habitacion</a>
+        <a href="{% url 'gestion:gerente_habitaciones' %}" class="badge badge-info" style="text-decoration:none;">Administrar habitaciones</a>
+    </div>
+</div>
+
+<div class="gerente-card">
+    <div class="gerente-card-body no-padding">
+        <table class="gerente-table">
+            <thead>
+                <tr>
+                    <th>Número</th>
+                    <th>Tipo</th>
+                    <th>Capacidad</th>
+                    <th>Precio/Noche</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for h in habitaciones %}
+                <tr>
+                    <td><strong>{{ h.numero_habitacion }}</strong></td>
+                    <td>{{ h.tipo_habitacion }}</td>
+                    <td>{{ h.capacidad }} persona(s)</td>
+                    <td>${{ h.precio_noche }}</td>
+                    <td><span class="estado-badge estado-{{ h.estado|lower }}">{{ h.estado }}</span></td>
+                    <td><a href="{% url 'gestion:gerente_modelo_editar' 'habitaciones' h.id_habitacion %}" class="badge badge-info" style="text-decoration:none;">Editar</a></td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="empty-state">
+                        <i class="fa-solid fa-bed"></i>
+                        <h3>No hay habitaciones</h3>
+                        <p>No se encontraron habitaciones registradas.</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

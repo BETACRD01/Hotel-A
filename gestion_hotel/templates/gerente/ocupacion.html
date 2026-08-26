@@ -1,0 +1,89 @@
+{% extends 'gerente/base_gerente.html' %}
+
+{% block title %}Analisis de Ocupacion | Panel Gerencial{% endblock %}
+{% block breadcrumb %}Gerencia / Analisis de Ocupacion{% endblock %}
+
+{% block content %}
+<div class="page-header-gerente">
+    <h1>Analisis de Ocupacion</h1>
+    <p>Estado actual de la ocupacion de habitaciones y cabanas.</p>
+</div>
+
+<div class="grid-2 gerente-section">
+    <div class="gerente-card">
+        <div class="gerente-card-header">
+            <h3><i class="fa-solid fa-bed" style="margin-right:8px; color:var(--gerente-primary);"></i>Habitaciones</h3>
+        </div>
+        <div class="gerente-card-body">
+            <div class="kpi-grid" style="grid-template-columns: repeat(2, 1fr);">
+                <div class="kpi-card">
+                    <div class="kpi-icon blue"><i class="fa-solid fa-bed"></i></div>
+                    <div class="kpi-info">
+                        <h3>Total</h3>
+                        <div class="kpi-value">{{ total_habitaciones }}</div>
+                    </div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-icon red"><i class="fa-solid fa-bed"></i></div>
+                    <div class="kpi-info">
+                        <h3>Ocupadas</h3>
+                        <div class="kpi-value">{{ habitaciones_ocupadas }}</div>
+                    </div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-icon green"><i class="fa-solid fa-check"></i></div>
+                    <div class="kpi-info">
+                        <h3>Disponibles</h3>
+                        <div class="kpi-value">{{ habitaciones_disponibles }}</div>
+                    </div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-icon gold"><i class="fa-solid fa-wrench"></i></div>
+                    <div class="kpi-info">
+                        <h3>Mantenimiento</h3>
+                        <div class="kpi-value">{{ habitaciones_mantenimiento }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="gerente-card">
+        <div class="gerente-card-header">
+            <h3><i class="fa-solid fa-house-chimney" style="margin-right:8px; color:var(--gerente-primary);"></i>Cabanas</h3>
+        </div>
+        <div class="gerente-card-body">
+            <div class="kpi-grid" style="grid-template-columns: repeat(2, 1fr);">
+                <div class="kpi-card">
+                    <div class="kpi-icon blue"><i class="fa-solid fa-house"></i></div>
+                    <div class="kpi-info">
+                        <h3>Total</h3>
+                        <div class="kpi-value">{{ total_cabanas }}</div>
+                    </div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-icon red"><i class="fa-solid fa-house"></i></div>
+                    <div class="kpi-info">
+                        <h3>Ocupadas</h3>
+                        <div class="kpi-value">{{ cabanas_ocupadas }}</div>
+                    </div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-icon green"><i class="fa-solid fa-check"></i></div>
+                    <div class="kpi-info">
+                        <h3>Disponibles</h3>
+                        <div class="kpi-value">{{ cabanas_disponibles }}</div>
+                    </div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-icon gold"><i class="fa-solid fa-wrench"></i></div>
+                    <div class="kpi-info">
+                        <h3>Mantenimiento</h3>
+                        <div class="kpi-value">{{ cabanas_mantenimiento }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

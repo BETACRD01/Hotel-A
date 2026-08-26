@@ -1,0 +1,340 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Arahuana Eco-Resort & Spa{% endblock %}</title>
+
+    <link rel="stylesheet" href="{% static 'css/estilos.css' %}?v=52">
+    <link rel="stylesheet" href="{% static 'css/resort_premium.css' %}?v=21">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body class="{% block body_class %}{% endblock %}">
+
+    <header class="navbar-publica">
+        <div class="contenedor navbar-contenido">
+
+            <a href="{% url 'gestion:inicio' %}" class="marca">
+                <img src="{% static 'img/logo.jpg' %}" alt="Logo Arahuana">
+                <div class="marca-texto">
+                    <strong>ARAHUANA</strong>
+                    <small>Eco-Resort & Spa</small>
+                </div>
+            </a>
+
+            <button type="button" class="boton-menu" id="botonMenu" aria-label="Abrir menú">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+
+            <nav class="menu-publico navbar-menu" id="menuPublico">
+
+                <a href="{% url 'gestion:inicio' %}" class="nav-link {% if request.resolver_match.url_name == 'inicio' %}active{% endif %}">
+                    Inicio
+                </a>
+
+                <a href="{% url 'gestion:sobre_nosotros' %}" class="nav-link {% if request.resolver_match.url_name == 'sobre_nosotros' %}active{% endif %}">
+                    Sobre nosotros
+                </a>
+
+                <a href="{% url 'gestion:habitaciones' %}" class="nav-link {% if request.resolver_match.url_name == 'habitaciones' %}active{% endif %}">
+                    Habitaciones
+                </a>
+
+                <a href="{% url 'gestion:cabanas' %}" class="nav-link {% if request.resolver_match.url_name == 'cabanas' %}active{% endif %}">
+                    Cabañas
+                </a>
+
+                <a href="{% url 'gestion:cine' %}" class="nav-link {% if request.resolver_match.url_name == 'cine' %}active{% endif %}">
+                    Cine
+                </a>
+
+                <a href="{% url 'gestion:resort' %}" class="nav-link {% if request.resolver_match.url_name == 'resort' or request.resolver_match.url_name == 'resort_dia' %}active{% endif %}">
+                    Resort del día
+                </a>
+
+                <div class="navbar-right-actions">
+                    <a href="{% url 'gestion:habitaciones' %}" class="btn-reservar-ahora">
+                        <i class="fa-regular fa-calendar"></i>
+                        Reservar ahora
+                    </a>
+
+                    {% if request.session.cliente_id or request.session.usuario_id %}
+                        <div class="user-menu">
+                        <button type="button" class="user-menu-toggle" aria-haspopup="true" aria-expanded="false">
+                            <span class="user-avatar">
+                                <i class="fa-solid fa-user"></i>
+                            </span>
+
+                            <span class="user-name">
+                                {{ request.session.cliente_nombre|default:"Huésped"|title }}
+                            </span>
+
+                            <i class="fa-solid fa-chevron-down chevron-icon"></i>
+                        </button>
+
+                                <div class="user-dropdown" aria-label="Menú de usuario">
+                            <div class="user-dropdown-header">
+                                <strong>{{ request.session.cliente_nombre|default:"Huésped Arahuana"|title }}</strong>
+                                <span>Cuenta de cliente</span>
+                            </div>
+
+                            <a href="{% url 'gestion:panel_cliente' %}" class="user-dropdown-link">
+                                <i class="fa-solid fa-user"></i>
+                                Mi perfil
+                            </a>
+
+                            <a href="{% url 'gestion:mis_reservas' %}" class="user-dropdown-link">
+                                <i class="fa-solid fa-calendar-check"></i>
+                                Mis reservas
+                            </a>
+
+                            <button type="button" class="user-dropdown-link profile-config-btn" id="openProfileConfig">
+                                <i class="fa-solid fa-gear"></i>
+                                Configuración de perfil
+                            </button>
+
+                            <a href="{% url 'gestion:logout' %}" class="user-dropdown-link logout-dropdown-link">
+                                <i class="fa-solid fa-right-from-bracket"></i>
+                                Cerrar sesión
+                            </a>
+                        </div>
+                    </div>
+                {% else %}
+                    <a href="{% url 'gestion:login' %}" class="boton-login">
+                        <i class="fa-solid fa-right-to-bracket"></i>
+                        Iniciar sesión
+                    </a>
+                    <a href="{% url 'gestion:registro' %}" class="boton-registro">
+                        <i class="fa-solid fa-user-plus"></i>
+                        Registrarse
+                    </a>
+                {% endif %}
+                </div>
+
+            </nav>
+        </div>
+    </header>
+
+    {% if messages %}
+        <div class="toast-messages-container" id="toastContainer">
+            {% for message in messages %}
+                <div class="toast-mensaje toast-{{ message.tags|default:'info' }}">
+                    <div class="toast-content">
+                        {% if 'success' in message.tags %}
+                            <i class="fa-solid fa-circle-check toast-icon"></i>
+                        {% elif 'error' in message.tags %}
+                            <i class="fa-solid fa-circle-exclamation toast-icon"></i>
+                        {% elif 'warning' in message.tags %}
+                            <i class="fa-solid fa-triangle-exclamation toast-icon"></i>
+                        {% else %}
+                            <i class="fa-solid fa-circle-info toast-icon"></i>
+                        {% endif %}
+                        <span>{{ message }}</span>
+                    </div>
+                    <button type="button" class="toast-close" onclick="this.closest('.toast-mensaje').remove();" aria-label="Cerrar">&times;</button>
+                </div>
+            {% endfor %}
+        </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                setTimeout(function() {
+                    const toasts = document.querySelectorAll('.toast-mensaje');
+                    toasts.forEach(function(toast) {
+                        toast.style.opacity = '0';
+                        toast.style.transform = 'translateY(-10px)';
+                        setTimeout(function() { toast.remove(); }, 300);
+                    });
+                }, 4500);
+            });
+        </script>
+    {% endif %}
+
+    <main class="pagina-publica">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer-publico">
+        <div class="footer-contenedor">
+
+            <div class="footer-col footer-brand">
+                <div class="footer-logo-area">
+                    <img src="{% static 'img/logo.jpg' %}" alt="Arahuana" class="footer-logo">
+                    <div>
+                        <h3>Arahuana Eco-Resort & Spa</h3>
+                        <span>Descanso y naturaleza en la Amazonía</span>
+                    </div>
+                </div>
+
+                <p>
+                    Tu descanso comienza con una reserva sencilla, rápida y segura.
+                    Disfruta de habitaciones, cabañas, cine y resort del día en la Amazonía ecuatoriana.
+                </p>
+            </div>
+
+            <div class="footer-col">
+                <h4>Enlaces rápidos</h4>
+                <a href="{% url 'gestion:inicio' %}">Inicio</a>
+                <a href="{% url 'gestion:sobre_nosotros' %}">Sobre nosotros</a>
+                <a href="{% url 'gestion:habitaciones' %}">Habitaciones</a>
+                <a href="{% url 'gestion:cabanas' %}">Cabañas</a>
+                <a href="{% url 'gestion:cine' %}">Cine</a>
+                <a href="{% url 'gestion:resort' %}">Resort del día</a>
+            </div>
+
+            <div class="footer-col">
+                <h4>Contacto</h4>
+
+                <div class="footer-contacto-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <div>
+                        <strong>Ubicación</strong>
+                        <span>Tena, Napo, Ecuador</span>
+                    </div>
+                </div>
+
+                <div class="footer-contacto-item">
+                    <i class="fas fa-phone"></i>
+                    <div>
+                        <strong>Teléfono</strong>
+                        <span>+593 99 999 9999</span>
+                    </div>
+                </div>
+
+                <div class="footer-contacto-item">
+                    <i class="fas fa-envelope"></i>
+                    <div>
+                        <strong>Correo</strong>
+                        <span>reservas@arahuana.com</span>
+                    </div>
+                </div>
+
+                <div class="footer-contacto-item">
+                    <i class="fas fa-clock"></i>
+                    <div>
+                        <strong>Atención</strong>
+                        <span>24 horas</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="footer-bottom">
+            <p>Sistema Hotelero Arahuana © 2026. Todos los derechos reservados.</p>
+            <p>Eco-Resort & Spa - Tena, Napo, Ecuador</p>
+        </div>
+    </footer>
+
+    <div id="profileModal" class="profile-modal" role="dialog" aria-modal="true" aria-labelledby="profileModalTitle">
+        <div class="profile-modal-overlay" id="closeProfileOverlay"></div>
+        <div class="profile-modal-card">
+            <button type="button" class="profile-modal-close" id="closeProfileModal" aria-label="Cerrar configuración de perfil">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="profile-modal-header">
+                <div class="profile-modal-icon">
+                    <i class="fa-solid fa-user-gear"></i>
+                </div>
+                <div>
+                    <h2 id="profileModalTitle">Configuración de perfil</h2>
+                    <p>Revisa tus datos de contacto y accede rápido a tu panel de cliente.</p>
+                </div>
+            </div>
+            <div class="profile-info-grid">
+                <div class="profile-info-item">
+                    <i class="fa-solid fa-user"></i>
+                    <div>
+                        <span>Nombre completo</span>
+                        <strong>{{ request.session.cliente_nombre|default:"Huésped Arahuana"|title }}</strong>
+                    </div>
+                </div>
+                <div class="profile-info-item">
+                    <i class="fa-solid fa-envelope"></i>
+                    <div>
+                        <span>Correo electrónico</span>
+                        <strong>{{ request.session.cliente_correo|default:"No disponible" }}</strong>
+                    </div>
+                </div>
+                <div class="profile-info-item">
+                    <i class="fa-solid fa-phone"></i>
+                    <div>
+                        <span>Teléfono</span>
+                        <strong>{{ request.session.cliente_telefono|default:"No disponible" }}</strong>
+                    </div>
+                </div>
+                <div class="profile-info-item">
+                    <i class="fa-solid fa-map-location-dot"></i>
+                    <div>
+                        <span>Ubicación</span>
+                        <strong>{{ request.session.cliente_ubicacion|default:"Amazonía Ecuatoriana" }}</strong>
+                    </div>
+                </div>
+            </div>
+            <div class="profile-modal-actions">
+                <a href="{% url 'gestion:mis_reservas' %}" class="resort-btn resort-btn-light">Ver mis reservas</a>
+                <a href="{% url 'gestion:panel_cliente' %}" class="resort-btn resort-btn-primary">Ir al panel</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const botonMenu = document.getElementById("botonMenu");
+        const menuPublico = document.getElementById("menuPublico");
+
+        if (botonMenu && menuPublico) {
+            botonMenu.addEventListener("click", function () {
+                menuPublico.classList.toggle("activo");
+            });
+        }
+
+        const userMenuToggle = document.querySelector(".user-menu-toggle");
+        const userDropdown = document.querySelector(".user-dropdown");
+        const openProfileConfig = document.getElementById("openProfileConfig");
+        const profileModal = document.getElementById("profileModal");
+        const closeProfileModal = document.getElementById("closeProfileModal");
+        const closeProfileOverlay = document.getElementById("closeProfileOverlay");
+
+        if (userMenuToggle && userDropdown) {
+            userMenuToggle.addEventListener("click", function (event) {
+                event.stopPropagation();
+                const isOpen = userDropdown.classList.toggle("activo");
+                this.setAttribute("aria-expanded", isOpen);
+            });
+
+            document.addEventListener("click", function (event) {
+                if (!event.target.closest(".user-menu")) {
+                    userDropdown.classList.remove("activo");
+                    userMenuToggle.setAttribute("aria-expanded", "false");
+                }
+            });
+        }
+
+        if (openProfileConfig && profileModal) {
+            openProfileConfig.addEventListener("click", function () {
+                profileModal.classList.add("activo");
+                if (userDropdown) {
+                    userDropdown.classList.remove("activo");
+                }
+            });
+        }
+
+        if (closeProfileModal && profileModal) {
+            closeProfileModal.addEventListener("click", function () {
+                profileModal.classList.remove("activo");
+            });
+        }
+
+        if (closeProfileOverlay && profileModal) {
+            closeProfileOverlay.addEventListener("click", function () {
+                profileModal.classList.remove("activo");
+            });
+        }
+    </script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

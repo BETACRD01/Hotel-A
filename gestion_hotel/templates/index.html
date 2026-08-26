@@ -1,0 +1,272 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Inicio | Arahuana Eco-Resort & Spa{% endblock %}
+
+{% block content %}
+
+<section class="home-hero-premium"{% if imagen_hero %} style="background-image: linear-gradient(90deg, rgba(6, 39, 25, 0.92), rgba(6, 39, 25, 0.58), rgba(6, 39, 25, 0.26)), url('{{ imagen_hero.url }}');"{% endif %}>
+    <div class="contenedor home-hero-content">
+        <span class="ar-kicker">
+            <i class="fa-solid fa-leaf"></i>
+            Bienvenido a Arahuana
+        </span>
+
+        <h1>Tu refugio en la Amazonia te espera</h1>
+
+        <p>
+            Naturaleza, descanso y experiencias unicas para reconectar contigo
+            y disfrutar momentos inolvidables en Arahuana Eco-Resort & Spa.
+        </p>
+
+        <div class="hero-actions">
+            <a href="{% url 'gestion:habitaciones' %}" class="ar-btn primary">
+                <i class="fa-solid fa-bed"></i>
+                Ver habitaciones
+            </a>
+
+            <a href="#experiencias" class="ar-btn secondary">
+                <i class="fa-solid fa-leaf"></i>
+                Explorar experiencias
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="contenedor">
+    <div class="home-feature-strip">
+        <article class="home-feature">
+            <i class="fa-solid fa-leaf"></i>
+            <div>
+                <strong>Naturaleza pura</strong>
+                <span>Entorno natural privilegiado</span>
+            </div>
+        </article>
+
+        <article class="home-feature">
+            <i class="fa-solid fa-spa"></i>
+            <div>
+                <strong>Descanso total</strong>
+                <span>Relájate y revitaliza tus sentidos</span>
+            </div>
+        </article>
+
+        <article class="home-feature">
+            <i class="fa-solid fa-champagne-glasses"></i>
+            <div>
+                <strong>Experiencias únicas</strong>
+                <span>Actividades para todos los gustos</span>
+            </div>
+        </article>
+
+        <article class="home-feature">
+            <i class="fa-solid fa-heart"></i>
+            <div>
+                <strong>Servicio especial</strong>
+                <span>Atención cálida y personalizada</span>
+            </div>
+        </article>
+    </div>
+</section>
+
+<section id="experiencias" class="ar-section">
+    <div class="contenedor">
+        <div class="section-header row">
+            <div>
+                <span class="ar-kicker">
+                    <i class="fa-solid fa-seedling"></i>
+                    Nuestras experiencias
+                </span>
+
+                <h2 class="ar-title">Vive Arahuana a tu manera</h2>
+
+                <p class="ar-subtitle">
+                    Disfruta de hospedaje, entretenimiento y descanso en un solo lugar,
+                    rodeado por la tranquilidad de la Amazonía.
+                </p>
+            </div>
+
+            <a href="{% url 'gestion:resort' %}" class="ar-btn secondary">
+                Ver todo
+                <i class="fa-solid fa-arrow-right"></i>
+            </a>
+        </div>
+
+        <div class="home-services-grid">
+            <article class="home-service-card">
+                <div class="home-service-image">
+                    {% if imagen_habitaciones %}
+                        <img src="{{ imagen_habitaciones.url }}" alt="Habitaciones Arahuana" onerror="this.onerror=null; this.src='{% static 'img/hotel_arahuana.jpg' %}';">
+                    {% else %}
+                        <img src="{% static 'img/hotel_arahuana.jpg' %}" alt="Habitaciones Arahuana" onerror="this.onerror=null; this.src='{% static 'img/logo.jpg' %}';">
+                    {% endif %}
+                    <span class="home-service-icon">
+                        <i class="fa-solid fa-bed"></i>
+                    </span>
+                </div>
+
+                <div class="home-service-body">
+                    <h3>Habitaciones</h3>
+                    <p>
+                        Confort y descanso en espacios pensados para tu bienestar,
+                        rodeados de naturaleza.
+                    </p>
+
+                    <a href="{% url 'gestion:habitaciones' %}">
+                        Ver opciones
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </article>
+
+            <article class="home-service-card">
+                <div class="home-service-image">
+                    {% if imagen_cabanas %}
+                        <img src="{{ imagen_cabanas.url }}" alt="Cabañas Arahuana" onerror="this.onerror=null; this.src='{% static 'img/cancha.jpg' %}';">
+                    {% else %}
+                        <img src="{% static 'img/cancha.jpg' %}" alt="Cabañas Arahuana" onerror="this.onerror=null; this.src='{% static 'img/logo.jpg' %}';">
+                    {% endif %}
+                    <span class="home-service-icon">
+                        <i class="fa-solid fa-house-chimney"></i>
+                    </span>
+                </div>
+
+                <div class="home-service-body">
+                    <h3>Cabañas</h3>
+                    <p>
+                        Vive la experiencia de la Amazonía con privacidad,
+                        comodidad y conexión natural.
+                    </p>
+
+                    <a href="{% url 'gestion:cabanas' %}">
+                        Ver opciones
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </article>
+
+            <article class="home-service-card">
+                <div class="home-service-image">
+                    {% if imagen_cine %}
+                        <img src="{{ imagen_cine.url }}" alt="Cine Arahuana" onerror="this.onerror=null; this.src='{% static 'img/fondo.jpg' %}';">
+                    {% else %}
+                        <img src="{% static 'img/fondo.jpg' %}" alt="Cine Arahuana" onerror="this.onerror=null; this.src='{% static 'img/logo.jpg' %}';">
+                    {% endif %}
+                    <span class="home-service-icon">
+                        <i class="fa-solid fa-film"></i>
+                    </span>
+                </div>
+
+                <div class="home-service-body">
+                    <h3>Cine</h3>
+                    <p>
+                        Noches de cine bajo las estrellas para compartir
+                        momentos especiales.
+                    </p>
+
+                    <a href="{% url 'gestion:cine' %}">
+                        Ver opciones
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </article>
+
+            <article class="home-service-card">
+                <div class="home-service-image">
+                    {% if imagen_resort %}
+                        <img src="{{ imagen_resort.url }}" alt="Resort del día Arahuana" onerror="this.onerror=null; this.src='{% static 'img/cancha.jpg' %}';">
+                    {% else %}
+                        <img src="{% static 'img/cancha.jpg' %}" alt="Resort del día Arahuana" onerror="this.onerror=null; this.src='{% static 'img/logo.jpg' %}';">
+                    {% endif %}
+                    <span class="home-service-icon">
+                        <i class="fa-solid fa-umbrella-beach"></i>
+                    </span>
+                </div>
+
+                <div class="home-service-body">
+                    <h3>Resort del día</h3>
+                    <p>
+                        Relájate y disfruta de piscinas, áreas verdes,
+                        recreación y bienestar.
+                    </p>
+
+                    <a href="{% url 'gestion:resort' %}">
+                        Ver opciones
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </article>
+        </div>
+    </div>
+</section>
+
+<section class="ar-section tight">
+    <div class="contenedor">
+        <div class="home-cta">
+            <div>
+                <span class="ar-kicker">
+                    <i class="fa-solid fa-leaf"></i>
+                    Tu próxima aventura
+                </span>
+
+                <h2>Tu aventura en la Amazonía comienza aquí</h2>
+
+                <p>
+                    Descubre naturaleza, cultura, bienestar y descanso en
+                    Arahuana Eco-Resort & Spa.
+                </p>
+            </div>
+
+            <a href="{% url 'gestion:habitaciones' %}" class="ar-btn gold">
+                Reservar ahora
+                <i class="fa-solid fa-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="ar-section">
+    <div class="contenedor">
+        <div class="section-header">
+            <span class="ar-kicker">
+                <i class="fa-solid fa-location-dot"></i>
+                Ubicación y atención
+            </span>
+
+            <h2 class="ar-title">Estamos en Tena, Napo</h2>
+
+            <p class="ar-subtitle">
+                Arahuana Eco-Resort & Spa te espera con espacios naturales,
+                atención cálida y servicios pensados para tu descanso.
+            </p>
+        </div>
+
+        <div class="values-grid">
+            <article class="value-card">
+                <i class="fa-solid fa-map-location-dot"></i>
+                <h3>Ubicación natural</h3>
+                <p>Un entorno ideal para escapar de la rutina y conectar con la Amazonía.</p>
+            </article>
+
+            <article class="value-card">
+                <i class="fa-solid fa-calendar-check"></i>
+                <h3>Reservas fáciles</h3>
+                <p>Consulta servicios y registra tus reservas desde la página web.</p>
+            </article>
+
+            <article class="value-card">
+                <i class="fa-solid fa-users"></i>
+                <h3>Ambiente familiar</h3>
+                <p>Espacios pensados para parejas, familias y visitantes.</p>
+            </article>
+
+            <article class="value-card">
+                <i class="fa-solid fa-headset"></i>
+                <h3>Atención personalizada</h3>
+                <p>Estamos listos para ayudarte durante tu experiencia.</p>
+            </article>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

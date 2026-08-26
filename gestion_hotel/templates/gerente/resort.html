@@ -1,0 +1,54 @@
+{% extends 'gerente/base_gerente.html' %}
+
+{% block title %}Resort Dia | Panel Gerencial{% endblock %}
+{% block breadcrumb %}Gerencia / Resort Dia{% endblock %}
+
+{% block content %}
+<div class="page-header-gerente">
+    <h1>Gestion Resort del Dia</h1>
+    <p>Areas y servicios disponibles del resort.</p>
+    <div style="margin-top:12px;">
+        <a href="{% url 'gestion:gerente_modelo_nuevo' 'resort' %}" class="badge badge-success" style="text-decoration:none;">Nueva area</a>
+        <a href="{% url 'gestion:gerente_resort' %}" class="badge badge-info" style="text-decoration:none;">Administrar resort</a>
+    </div>
+</div>
+
+<div class="gerente-card">
+    <div class="gerente-card-body no-padding">
+        <table class="gerente-table">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Tipo Area</th>
+                    <th>Capacidad</th>
+                    <th>Costo Adicional</th>
+                    <th>Estado</th>
+                    <th>Reserva</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for a in areas %}
+                <tr>
+                    <td><strong>{{ a.nombre }}</strong></td>
+                    <td>{{ a.get_tipo_area_display }}</td>
+                    <td>{{ a.capacidad_maxima }}</td>
+                    <td>${{ a.costo_adicional }}</td>
+                    <td><span class="estado-badge estado-{{ a.estado|lower }}">{{ a.estado }}</span></td>
+                    <td>{% if a.requiere_reserva %}<span class="badge badge-warning">Si</span>{% else %}<span class="badge badge-success">No</span>{% endif %}</td>
+                    <td><a href="{% url 'gestion:gerente_modelo_editar' 'resort' a.id_resort_dia %}" class="badge badge-info" style="text-decoration:none;">Editar</a></td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="empty-state">
+                        <i class="fa-solid fa-umbrella-beach"></i>
+                        <h3>No hay areas</h3>
+                        <p>No se encontraron areas del resort.</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

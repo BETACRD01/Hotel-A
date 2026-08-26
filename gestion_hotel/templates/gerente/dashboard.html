@@ -1,0 +1,554 @@
+{% extends 'gerente/base_gerente.html' %}
+{% load static %}
+
+{% block title %}Dashboard Gerencial | Arahuana Eco-Resort & Spa{% endblock %}
+{% block breadcrumb %}Gerencia / Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-toolbar">
+    <div class="page-header-gerente">
+        <h1>Dashboard Gerencial: Resumen de Operaciones</h1>
+    </div>
+    <div class="dashboard-period">
+        <i class="fa-solid fa-calendar-days"></i>
+        <span>Este mes ({{ mes_actual_largo }} {{ anio_actual }})</span>
+    </div>
+</div>
+
+<section class="kpi-grid dashboard-kpi-grid">
+    <article class="kpi-card dashboard-kpi-card">
+        <div class="kpi-info">
+            <div class="kpi-card-title">
+                <h3>Ocupaci&oacute;n Actual</h3>
+                <strong>{{ porcentaje_ocupacion }}%</strong>
+            </div>
+            <div class="kpi-progress">
+                <div class="kpi-progress-bar green" style="width: {{ porcentaje_ocupacion }}%"></div>
+            </div>
+            <div class="kpi-change">{{ habitaciones_ocupadas|add:cabanas_ocupadas }} de {{ total_habitaciones|add:total_cabanas }} unidades ocupadas</div>
+        </div>
+    </article>
+
+    <article class="kpi-card dashboard-kpi-card">
+        <div class="kpi-info">
+            <div class="kpi-card-title">
+                <h3>Ingresos Mes ({{ mes_actual }})</h3>
+                <i class="fa-solid fa-arrow-trend-up"></i>
+            </div>
+            <div class="kpi-value">${{ ingresos_mes|floatformat:0 }}</div>
+            {% if ingresos_mes > ingresos_mes_anterior %}
+                <div class="kpi-change up">Mayor que el mes anterior (${{ ingresos_mes_anterior|floatformat:0 }})</div>
+            {% elif ingresos_mes < ingresos_mes_anterior %}
+                <div class="kpi-change down">Menor que el mes anterior (${{ ingresos_mes_anterior|floatformat:0 }})</div>
+            {% else %}
+                <div class="kpi-change">Igual que el mes anterior</div>
+            {% endif %}
+        </div>
+    </article>
+
+    <article class="kpi-card dashboard-kpi-card">
+        <div class="kpi-info">
+            <div class="kpi-card-title">
+                <h3>Reservas Pendientes</h3>
+                {% if reservas_pendientes > 0 %}
+                    <span class="mini-badge">{{ reservas_pendientes }}</span>
+                {% endif %}
+            </div>
+            <div class="kpi-value">{{ reservas_pendientes }}</div>
+            <div class="kpi-change">{{ total_reservas_mes }} reservas registradas este mes</div>
+        </div>
+    </article>
+
+    <article class="kpi-card dashboard-kpi-card">
+        <div class="kpi-info">
+            <div class="kpi-card-title">
+                <h3>Pagos en Revisi&oacute;n</h3>
+                <i class="fa-solid fa-receipt"></i>
+            </div>
+            <div class="kpi-value">{{ pagos_revision }}</div>
+            <div class="kpi-change">${{ monto_revision|floatformat:0 }} por validar</div>
+        </div>
+    </article>
+</section>
+
+<section class="gerente-section">
+    <div class="gerente-card dashboard-chart-card">
+        <div class="gerente-card-header">
+            <h3>Tendencia de Reservas vs. Ingresos (Mensual)</h3>
+        </div>
+        <div class="gerente-card-body">
+            <div class="chart-container dashboard-chart-container">
+                <canvas id="chartTendenciaOperativa"></canvas>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="grid-2 gerente-section dashboard-bottom-grid">
+    <div class="gerente-card">
+        <div class="gerente-card-header">
+            <h3>Resumen de Rendimiento por Categor&iacute;a</h3>
+        </div>
+        <div class="gerente-card-body no-padding">
+            <table class="gerente-table dashboard-table">
+                <thead>
+                    <tr>
+                        <th>Categor&iacute;a</th>
+                        <th>Nombre</th>
+                        <th>Actividad</th>
+                        <th>Ingresos Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for fila in rendimiento_categorias %}
+                    <tr>
+                        <td>{{ fila.categoria }}</td>
+                        <td>{{ fila.nombre }}</td>
+                        <td>{{ fila.actividad }}</td>
+                        <td>${{ fila.ingresos|floatformat:0 }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="gerente-card">
+        <div class="gerente-card-header">
+            <h3>Indicadores Operativos del Mes</h3>
+        </div>
+        <div class="gerente-card-body no-padding">
+            <table class="gerente-table dashboard-table">
+                <thead>
+                    <tr>
+                        <th>Indicador</th>
+                        <th>Detalle</th>
+                        <th>Conteo</th>
+                        <th>Ingresos</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for fila in indicadores_mes %}
+                    <tr>
+                        <td>{{ fila.indicador }}</td>
+                        <td>{{ fila.detalle|truncatechars:54 }}</td>
+                        <td>{{ fila.conteo }}</td>
+                        <td>{% if fila.tiene_ingresos %}${{ fila.ingresos|floatformat:0 }}{% else %}-{% endif %}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<div class="dashboard-legacy-hidden">
+
+<div class="page-header-gerente">
+    <h1>Dashboard Gerencial: Resumen de Operaciones</h1>
+    <p>Vista general del rendimiento del resort y métricas clave del mes.</p>
+</div>
+
+<!-- KPI Cards -->
+<div class="kpi-grid">
+    <div class="kpi-card">
+        <div class="kpi-icon green">
+            <i class="fa-solid fa-bed"></i>
+        </div>
+        <div class="kpi-info">
+            <h3>Ocupación Actual</h3>
+            <div class="kpi-value">{{ porcentaje_ocupacion }}%</div>
+            <div class="kpi-progress">
+                <div class="kpi-progress-bar green" style="width: {{ porcentaje_ocupacion }}%"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="kpi-card">
+        <div class="kpi-icon gold">
+            <i class="fa-solid fa-dollar-sign"></i>
+        </div>
+        <div class="kpi-info">
+            <h3>Ingresos Mes ({{ mes_actual }})</h3>
+            <div class="kpi-value">${{ ingresos_mes|floatformat:0 }}</div>
+            {% if ingresos_mes > ingresos_mes_anterior %}
+                <div class="kpi-change up">
+                    <i class="fa-solid fa-arrow-trend-up"></i>
+                    +{{ ingresos_mes|floatformat:0 }} vs mes anterior
+                </div>
+            {% elif ingresos_mes < ingresos_mes_anterior %}
+                <div class="kpi-change down">
+                    <i class="fa-solid fa-arrow-trend-down"></i>
+                    Menos que el mes anterior
+                </div>
+            {% else %}
+                <div class="kpi-change">
+                    <i class="fa-solid fa-minus"></i>
+                    Igual que el mes anterior
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="kpi-card">
+        <div class="kpi-icon blue">
+            <i class="fa-solid fa-calendar-check"></i>
+        </div>
+        <div class="kpi-info">
+            <h3>Reservas Pendientes</h3>
+            <div class="kpi-value">{{ reservas_pendientes }}</div>
+            {% if reservas_pendientes > 0 %}
+                <div class="kpi-change">
+                    <span class="badge badge-warning">{{ reservas_pendientes }} por confirmar</span>
+                </div>
+            {% else %}
+                <div class="kpi-change up">
+                    <i class="fa-solid fa-circle-check"></i>
+                    Todas confirmadas
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="kpi-card">
+        <div class="kpi-icon red">
+            <i class="fa-solid fa-users"></i>
+        </div>
+        <div class="kpi-info">
+            <h3>Total Clientes</h3>
+            <div class="kpi-value">{{ total_clientes }}</div>
+            <div class="kpi-change up">
+                <i class="fa-solid fa-user-plus"></i>
+                {{ total_reservas }} reservas totales
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Gráfico + Panel de Insights -->
+<div class="grid-2 gerente-section">
+    <!-- Gráfico de Tendencias -->
+    <div class="gerente-card">
+        <div class="gerente-card-header">
+            <h3><i class="fa-solid fa-chart-line" style="margin-right:8px; color:var(--gerente-primary);"></i>Tendencia de Ocupación vs. Ingresos (Mensual)</h3>
+        </div>
+        <div class="gerente-card-body">
+            <div class="chart-container">
+                <canvas id="chartTendencia" height="250"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Panel de Insights -->
+    <div class="gerente-card">
+        <div class="gerente-card-header">
+            <h3><i class="fa-solid fa-lightbulb" style="margin-right:8px; color:var(--gerente-accent);"></i>Panel de Insights del Mes</h3>
+        </div>
+        <div class="gerente-card-body no-padding">
+            <ul class="insight-list">
+                <li class="insight-item">
+                    <div class="insight-icon green">
+                        <i class="fa-solid fa-trophy"></i>
+                    </div>
+                    <div class="insight-info">
+                        <strong>Mejor Habitación del Mes</strong>
+                        <span>Habitación más reservada con {{ total_reservas_mes }} reservas este mes</span>
+                    </div>
+                </li>
+                <li class="insight-item">
+                    <div class="insight-icon gold">
+                        <i class="fa-solid fa-chart-simple"></i>
+                    </div>
+                    <div class="insight-info">
+                        <strong>Ocupación Promedio</strong>
+                        <span>{{ porcentaje_ocupacion }}% de capacidad total ({{ habitaciones_ocupadas|add:cabanas_ocupadas }}/{{ total_habitaciones|add:total_cabanas }} unidades)</span>
+                    </div>
+                </li>
+                <li class="insight-item">
+                    <div class="insight-icon blue">
+                        <i class="fa-solid fa-comments"></i>
+                    </div>
+                    <div class="insight-info">
+                        <strong>Clientes Activos</strong>
+                        <span>{{ total_clientes }} clientes registrados en el sistema</span>
+                    </div>
+                </li>
+                <li class="insight-item">
+                    <div class="insight-icon green">
+                        <i class="fa-solid fa-money-bill-trend-up"></i>
+                    </div>
+                    <div class="insight-info">
+                        <strong>Ingresos Acumulados</strong>
+                        <span>${{ ingresos_mes|floatformat:0 }} generados este mes</span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Tabla Resumen por Categoría + Reservas Recientes -->
+<div class="grid-2 gerente-section">
+    <!-- Resumen por Categoría -->
+    <div class="gerente-card">
+        <div class="gerente-card-header">
+            <h3><i class="fa-solid fa-layer-group" style="margin-right:8px; color:var(--gerente-primary);"></i>Resumen por Categoría</h3>
+        </div>
+        <div class="gerente-card-body no-padding">
+            <table class="gerente-table">
+                <thead>
+                    <tr>
+                        <th>Categoría</th>
+                        <th>Nombre</th>
+                        <th>Estado</th>
+                        <th>Precio/Noche</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for h in habitaciones_info %}
+                    <tr>
+                        <td><span class="badge badge-info">Habitación</span></td>
+                        <td>{{ h.numero_habitacion }} - {{ h.tipo_habitacion }}</td>
+                        <td>
+                            <span class="estado-badge estado-{{ h.estado|lower }}">{{ h.estado }}</span>
+                        </td>
+                        <td>${{ h.precio_noche }}</td>
+                    </tr>
+                    {% endfor %}
+                    {% for c in cabanas_info %}
+                    <tr>
+                        <td><span class="badge badge-success">Cabaña</span></td>
+                        <td>{{ c.numero_cabana }} - {{ c.tipo_cabana|default:"Sin tipo" }}</td>
+                        <td>
+                            <span class="estado-badge estado-{{ c.estado|lower }}">{{ c.estado }}</span>
+                        </td>
+                        <td>${{ c.precio_noche }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Reservas por Estado -->
+    <div class="gerente-card">
+        <div class="gerente-card-header">
+            <h3><i class="fa-solid fa-chart-pie" style="margin-right:8px; color:var(--gerente-primary);"></i>Reservas por Estado</h3>
+        </div>
+        <div class="gerente-card-body">
+            <div class="chart-container">
+                <canvas id="chartEstados" height="220"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Últimas Reservas -->
+<div class="gerente-section">
+    <div class="gerente-card">
+        <div class="gerente-card-header">
+            <h3><i class="fa-solid fa-clock-rotate-left" style="margin-right:8px; color:var(--gerente-primary);"></i>Últimas Reservas</h3>
+            <a href="{% url 'gestion:gerente_reservas' %}" class="badge badge-info" style="text-decoration:none;">Ver todas</a>
+        </div>
+        <div class="gerente-card-body no-padding">
+            <table class="gerente-table">
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Cliente</th>
+                        <th>Fecha Ingreso</th>
+                        <th>Fecha Salida</th>
+                        <th>Total</th>
+                        <th>Estado</th>
+                        <th>Pago</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for reserva in ultimas_reservas %}
+                    <tr>
+                        <td><strong>{{ reserva.codigo_reserva }}</strong></td>
+                        <td>{{ reserva.id_cliente.nombres }} {{ reserva.id_cliente.apellidos }}</td>
+                        <td>{{ reserva.fecha_ingreso|date:"d/m/Y" }}</td>
+                        <td>{{ reserva.fecha_salida|date:"d/m/Y" }}</td>
+                        <td><strong>${{ reserva.total }}</strong></td>
+                        <td>
+                            <span class="estado-badge estado-{{ reserva.estado_reserva|lower|cut:" " }}">
+                                {{ reserva.estado_reserva }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="estado-badge estado-{{ reserva.estado_pago|lower|cut:" " }}">
+                                {{ reserva.estado_pago }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" style="text-align:center; padding:24px; color:var(--gerente-text-muted);">
+                            No hay reservas registradas aún.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+    const datosMensualesOperativos = {{ datos_mensuales|safe }};
+    const ctxTendenciaOperativa = document.getElementById('chartTendenciaOperativa').getContext('2d');
+    new Chart(ctxTendenciaOperativa, {
+        type: 'bar',
+        data: {
+            labels: datosMensualesOperativos.map(item => item.mes),
+            datasets: [
+                {
+                    label: 'Ingresos',
+                    data: datosMensualesOperativos.map(item => item.ingresos),
+                    backgroundColor: 'rgba(116, 214, 183, 0.82)',
+                    borderColor: 'rgba(116, 214, 183, 1)',
+                    borderWidth: 1,
+                    borderRadius: 2,
+                    yAxisID: 'y',
+                },
+                {
+                    label: 'Reservas',
+                    data: datosMensualesOperativos.map(item => item.reservas),
+                    type: 'line',
+                    borderColor: '#9ed8de',
+                    backgroundColor: '#9ed8de',
+                    tension: 0.32,
+                    pointRadius: 4,
+                    pointHoverRadius: 5,
+                    yAxisID: 'y1',
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: { color: '#d7e1e4', boxWidth: 34, boxHeight: 12 }
+                }
+            },
+            scales: {
+                x: {
+                    ticks: { color: '#d7e1e4' },
+                    grid: { color: 'rgba(255,255,255,0.04)' }
+                },
+                y: {
+                    beginAtZero: true,
+                    ticks: { color: '#d7e1e4' },
+                    title: { display: true, text: 'Ingresos ($)', color: '#9fb4b9' },
+                    grid: { color: 'rgba(255,255,255,0.05)' }
+                },
+                y1: {
+                    beginAtZero: true,
+                    position: 'right',
+                    ticks: { color: '#d7e1e4', precision: 0 },
+                    title: { display: true, text: 'Reservas', color: '#9fb4b9' },
+                    grid: { drawOnChartArea: false }
+                }
+            }
+        }
+    });
+
+    const datosMensuales = {{ datos_mensuales|safe }};
+
+    // Gráfico de Tendencia
+    const ctxTendencia = document.getElementById('chartTendencia').getContext('2d');
+    new Chart(ctxTendencia, {
+        type: 'bar',
+        data: {
+            labels: datosMensuales.map(d => d.mes),
+            datasets: [
+                {
+                    label: 'Reservas',
+                    data: datosMensuales.map(d => d.reservas),
+                    backgroundColor: 'rgba(10, 50, 37, 0.8)',
+                    borderRadius: 6,
+                    yAxisID: 'y',
+                },
+                {
+                    label: 'Ingresos ($)',
+                    data: datosMensuales.map(d => d.ingresos),
+                    type: 'line',
+                    borderColor: '#d4af37',
+                    backgroundColor: 'rgba(212, 175, 55, 0.1)',
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 5,
+                    pointBackgroundColor: '#d4af37',
+                    yAxisID: 'y1',
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: { usePointStyle: true, padding: 16 }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    position: 'left',
+                    title: { display: true, text: 'Reservas' }
+                },
+                y1: {
+                    beginAtZero: true,
+                    position: 'right',
+                    title: { display: true, text: 'Ingresos ($)' },
+                    grid: { drawOnChartArea: false }
+                }
+            }
+        }
+    });
+
+    // Gráfico de Estados
+    const estados = {{ reservas_por_estado|safe }};
+    const ctxEstados = document.getElementById('chartEstados').getContext('2d');
+    new Chart(ctxEstados, {
+        type: 'doughnut',
+        data: {
+            labels: estados.map(e => e.estado),
+            datasets: [{
+                data: estados.map(e => e.count),
+                backgroundColor: [
+                    '#f59e0b',
+                    '#3b82f6',
+                    '#10b981',
+                    '#6b7280',
+                    '#ef4444',
+                ],
+                borderWidth: 0,
+                hoverOffset: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: { usePointStyle: true, padding: 14 }
+                }
+            },
+            cutout: '60%'
+        }
+    });
+</script>
+{% endblock %}

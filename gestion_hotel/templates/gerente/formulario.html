@@ -1,0 +1,94 @@
+{% extends 'gerente/base_gerente.html' %}
+
+{% block title %}{{ titulo }} | Panel Gerencial{% endblock %}
+{% block breadcrumb %}Gerencia / {{ titulo }}{% endblock %}
+
+{% block content %}
+<div class="page-header-gerente">
+    <h1>{{ titulo }}</h1>
+    <p>Gestion completa desde el panel exclusivo del gerente.</p>
+</div>
+
+<div class="gerente-card">
+    <div class="gerente-card-body">
+        <form method="post" enctype="multipart/form-data" class="gerente-form">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="toast-gerente toast-error" style="margin-bottom:16px;">
+                    <div class="toast-content-gerente">
+                        <i class="fa-solid fa-circle-exclamation"></i>
+                        <span>{{ form.non_field_errors }}</span>
+                    </div>
+                </div>
+            {% endif %}
+
+            <div class="gerente-form-grid">
+                {% for field in form %}
+                    <div class="gerente-form-field {% if field.field.widget.input_type == 'checkbox' %}checkbox-field{% endif %}">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {% if field.field.widget.input_type == 'file' and field.value %}
+                            <div class="gerente-image-preview">
+                                <img src="{{ field.value.url }}" alt="{{ field.label }}" data-preview-for="{{ field.id_for_label }}">
+                                <span>Imagen actual</span>
+                            </div>
+                        {% elif field.field.widget.input_type == 'file' %}
+                            <div class="gerente-image-preview empty" data-preview-box="{{ field.id_for_label }}">
+                                <img src="" alt="{{ field.label }}" data-preview-for="{{ field.id_for_label }}">
+                                <span>Sin imagen cargada</span>
+                            </div>
+                        {% endif %}
+                        {{ field }}
+                        {% if field.help_text %}
+                            <small>{{ field.help_text }}</small>
+                        {% endif %}
+                        {% for error in field.errors %}
+                            <span class="field-error">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="gerente-form-actions">
+                <button type="submit" class="badge badge-success gerente-action-button">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    Guardar
+                </button>
+                <a href="{% url list_url %}" class="badge badge-info gerente-action-button">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    Volver
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.gerente-form input[type="file"]').forEach(function(input) {
+        const preview = document.querySelector('[data-preview-for="' + input.id + '"]');
+        const previewBox = document.querySelector('[data-preview-box="' + input.id + '"]');
+        if (!preview) return;
+
+        input.addEventListener('change', function() {
+            const file = input.files && input.files[0];
+            if (!file || !file.type.startsWith('image/')) return;
+
+            preview.src = URL.createObjectURL(file);
+            preview.onload = function() {
+                URL.revokeObjectURL(preview.src);
+            };
+
+            const box = preview.closest('.gerente-image-preview') || previewBox;
+            if (box) {
+                box.classList.remove('empty');
+                const label = box.querySelector('span');
+                if (label) label.textContent = 'Nueva imagen seleccionada';
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

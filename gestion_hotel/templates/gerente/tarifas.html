@@ -1,0 +1,151 @@
+{% extends 'gerente/base_gerente.html' %}
+
+{% block title %}Tarifas | Panel Gerencial{% endblock %}
+{% block breadcrumb %}Gerencia / Configuracion de Tarifas{% endblock %}
+
+{% block content %}
+<div class="page-header-gerente">
+    <h1>Configuracion de Tarifas</h1>
+    <p>Tarifas actuales de habitaciones, cabanas y funciones de cine.</p>
+    <div style="margin-top:12px;">
+        <a href="{% url 'gestion:gerente_habitaciones' %}" class="badge badge-info" style="text-decoration:none;">Gestionar hospedaje</a>
+    </div>
+</div>
+
+<div class="gerente-section">
+    <div class="gerente-card">
+        <div class="gerente-card-header">
+            <h3><i class="fa-solid fa-bed" style="margin-right:8px; color:var(--gerente-primary);"></i>Habitaciones</h3>
+        </div>
+        <div class="gerente-card-body no-padding">
+            <table class="gerente-table">
+                <thead>
+                    <tr>
+                        <th>Numero</th>
+                        <th>Tipo</th>
+                        <th>2D1N Total</th>
+                        <th>2D1N Sec.</th>
+                        <th>3D2N Total</th>
+                        <th>3D2N Sec.</th>
+                        <th>4D3N Total</th>
+                        <th>4D3N Sec.</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for h in habitaciones %}
+                    <tr>
+                        <td><strong>{{ h.numero_habitacion }}</strong></td>
+                        <td>{{ h.tipo_habitacion }}</td>
+                        <td>${{ h.precio_2d1n_total }}</td>
+                        <td>${{ h.precio_2d1n_secundaria }}</td>
+                        <td>${{ h.precio_3d2n_total }}</td>
+                        <td>${{ h.precio_3d2n_secundaria }}</td>
+                        <td>${{ h.precio_4d3n_total }}</td>
+                        <td>${{ h.precio_4d3n_secundaria }}</td>
+                        <td><a href="{% url 'gestion:gerente_modelo_editar' 'habitaciones' h.id_habitacion %}" class="badge badge-info" style="text-decoration:none;">Editar</a></td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="9" class="empty-state">
+                            <i class="fa-solid fa-bed"></i>
+                            <h3>No hay habitaciones</h3>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="gerente-section">
+    <div class="gerente-card">
+        <div class="gerente-card-header">
+            <h3><i class="fa-solid fa-house-chimney" style="margin-right:8px; color:var(--gerente-primary);"></i>Cabanas</h3>
+        </div>
+        <div class="gerente-card-body no-padding">
+            <table class="gerente-table">
+                <thead>
+                    <tr>
+                        <th>Numero</th>
+                        <th>Tipo</th>
+                        <th>2D1N Total</th>
+                        <th>2D1N Sec.</th>
+                        <th>3D2N Total</th>
+                        <th>3D2N Sec.</th>
+                        <th>4D3N Total</th>
+                        <th>4D3N Sec.</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in cabanas %}
+                    <tr>
+                        <td><strong>{{ c.numero_cabana }}</strong></td>
+                        <td>{{ c.tipo_cabana|default:"-" }}</td>
+                        <td>${{ c.precio_2d1n_total }}</td>
+                        <td>${{ c.precio_2d1n_secundaria }}</td>
+                        <td>${{ c.precio_3d2n_total }}</td>
+                        <td>${{ c.precio_3d2n_secundaria }}</td>
+                        <td>${{ c.precio_4d3n_total }}</td>
+                        <td>${{ c.precio_4d3n_secundaria }}</td>
+                        <td><a href="{% url 'gestion:gerente_modelo_editar' 'cabanas' c.id_cabana %}" class="badge badge-info" style="text-decoration:none;">Editar</a></td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="9" class="empty-state">
+                            <i class="fa-solid fa-house-chimney"></i>
+                            <h3>No hay cabanas</h3>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="gerente-section">
+    <div class="gerente-card">
+        <div class="gerente-card-header">
+            <h3><i class="fa-solid fa-film" style="margin-right:8px; color:var(--gerente-primary);"></i>Cine</h3>
+        </div>
+        <div class="gerente-card-body no-padding">
+            <table class="gerente-table">
+                <thead>
+                    <tr>
+                        <th>Pelicula</th>
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                        <th>Capacidad</th>
+                        <th>Precio Entrada</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for f in funciones %}
+                    <tr>
+                        <td><strong>{{ f.titulo_pelicula }}</strong></td>
+                        <td>{{ f.fecha_proyeccion|date:"d/m/Y" }}</td>
+                        <td>{{ f.hora_proyeccion|time:"H:i" }}</td>
+                        <td>{{ f.capacidad_sala }}</td>
+                        <td>${{ f.precio_entrada }}</td>
+                        <td><span class="estado-badge estado-{{ f.estado|lower }}">{{ f.estado }}</span></td>
+                        <td><a href="{% url 'gestion:gerente_modelo_editar' 'cine' f.id_funcion %}" class="badge badge-info" style="text-decoration:none;">Editar</a></td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="empty-state">
+                            <i class="fa-solid fa-film"></i>
+                            <h3>No hay funciones de cine</h3>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

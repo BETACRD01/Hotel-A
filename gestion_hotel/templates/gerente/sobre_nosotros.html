@@ -1,0 +1,48 @@
+{% extends 'gerente/base_gerente.html' %}
+
+{% block title %}Sobre Nosotros | Panel Gerencial{% endblock %}
+{% block breadcrumb %}Gerencia / Sobre Nosotros{% endblock %}
+
+{% block content %}
+<div class="page-header-gerente">
+    <h1>Configuracion Sobre Nosotros</h1>
+    <p>Contenido configurado para la pagina publica.</p>
+</div>
+
+<div class="gerente-card">
+    <div class="gerente-card-header">
+        <h3>Informacion General</h3>
+    </div>
+    <div class="gerente-card-body">
+        {% if config %}
+        <div class="grid-2">
+            <div>
+                <strong>Mision:</strong>
+                <p style="margin-top:4px; color:var(--gerente-text-muted);">{{ config.mision|default:"No configurada" }}</p>
+            </div>
+            <div>
+                <strong>Vision:</strong>
+                <p style="margin-top:4px; color:var(--gerente-text-muted);">{{ config.vision|default:"No configurada" }}</p>
+            </div>
+        </div>
+        <hr style="margin:20px 0; border-color:var(--gerente-border);">
+        <div class="grid-2">
+            <div>
+                <strong>Hero Titulo:</strong>
+                <p style="margin-top:4px; color:var(--gerente-text-muted);">{{ config.sn_hero_titulo|default:"No configurado" }}</p>
+            </div>
+            <div>
+                <strong>CTA Titulo:</strong>
+                <p style="margin-top:4px; color:var(--gerente-text-muted);">{{ config.sn_cta_titulo|default:"No configurado" }}</p>
+            </div>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <i class="fa-solid fa-circle-info"></i>
+            <h3>Sin configuracion</h3>
+            <p>No hay registros de configuracion de inicio.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

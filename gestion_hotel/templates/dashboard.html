@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Panel del Cliente | Hotel Arahuana
+{% endblock %}
+
+{% block body_class %}
+pagina-dashboard
+{% endblock %}
+
+{% block content %}
+
+<section
+    class="dashboard-hero"
+    style="
+        background-image:
+        linear-gradient(
+            rgba(8, 36, 26, 0.54),
+            rgba(8, 36, 26, 0.78)
+        ),
+        url('{% static "img/cabana4-dashboard.jpg" %}');
+    "
+>
+        <div class="dashboard-bienvenida">
+        <div>
+            <span class="etiqueta-seccion">Panel del Cliente</span>
+            <h1>Bienvenido, {{ usuario.nombres }} {{ usuario.apellidos }}</h1>
+            <p>Gestiona tus reservas, consulta disponibilidad y revisa tus servicios favoritos.</p>
+        </div>
+        <a href="{% url 'gestion:mis_reservas' %}" class="boton boton-principal">Ver mis reservas</a>
+    </div>
+</section>
+
+<section class="dashboard-estadisticas">
+    <div class="contenedor estadisticas-grid">
+        <article class="estadistica-card">
+            <h3>Habitaciones disponibles</h3>
+            <p>{{ total_habitaciones }}</p>
+        </article>
+        <article class="estadistica-card">
+            <h3>Cabañas disponibles</h3>
+            <p>{{ total_cabanas }}</p>
+        </article>
+        <article class="estadistica-card">
+            <h3>Funciones de cine</h3>
+            <p>{{ total_cine }}</p>
+        </article>
+        <article class="estadistica-card">
+            <h3>Paquetes resort</h3>
+            <p>{{ total_resort }}</p>
+        </article>
+    </div>
+</section>
+
+<section class="dashboard-resumen contenedor">
+    <div class="resumen-grid">
+        <article class="resumen-card">
+            <h4>Reservas pendientes</h4>
+            <p>{{ reservas_pendientes }}</p>
+        </article>
+        <article class="resumen-card">
+            <h4>Reservas confirmadas</h4>
+            <p>{{ reservas_confirmadas }}</p>
+        </article>
+        <article class="resumen-card">
+            <h4>Últimas reservas</h4>
+            <p>{{ ultimas_reservas_count }}</p>
+        </article>
+    </div>
+</section>
+
+<section class="dashboard-acciones contenedor">
+    <div class="acciones-grid">
+        <a href="{% url 'gestion:habitaciones' %}" class="accion-card">
+            <h4>Reservar habitación</h4>
+            <p>Explora las habitaciones disponibles y reserva al instante.</p>
+        </a>
+        <a href="{% url 'gestion:cabanas' %}" class="accion-card">
+            <h4>Reservar cabaña</h4>
+            <p>Consulta las cabañas disponibles y realiza tu reserva.</p>
+        </a>
+        <a href="{% url 'gestion:cine' %}" class="accion-card">
+            <h4>Ver cine</h4>
+            <p>Revisa la cartelera y reserva tus entradas.</p>
+        </a>
+        <a href="{% url 'gestion:resort_dia' %}" class="accion-card">
+            <h4>Reservar resort día</h4>
+            <p>Descubre los paquetes de ocio del resort día.</p>
+        </a>
+    </div>
+</section>
+
+{% endblock %}

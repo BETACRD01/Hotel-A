@@ -1,0 +1,426 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Resort del dia | Arahuana Eco-Resort & Spa{% endblock %}
+
+{% block body_class %}pagina-resort-dia{% endblock %}
+
+{% block content %}
+
+{% if messages %}
+    <div class="public-alerts" role="alert" aria-live="polite">
+        {% for message in messages %}
+            <div class="public-alert public-alert-{{ message.tags|default:'info' }}">
+                {% if message.tags == 'success' %}
+                    <i class="fas fa-circle-check"></i>
+                {% elif message.tags == 'error' %}
+                    <i class="fas fa-circle-exclamation"></i>
+                {% elif message.tags == 'warning' %}
+                    <i class="fas fa-triangle-exclamation"></i>
+                {% else %}
+                    <i class="fas fa-circle-info"></i>
+                {% endif %}
+                <span>{{ message }}</span>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<section class="catalog-hero-premium dayresort"{% if fondo_resort %} style="background-image: linear-gradient(90deg, rgba(6, 39, 25, 0.88), rgba(6, 39, 25, 0.6), rgba(6, 39, 25, 0.3)), url('{{ fondo_resort.url }}') !important;"{% endif %}>
+    <div class="contenedor catalog-hero-content">
+        <span class="ar-kicker">
+            <i class="fa-solid fa-leaf"></i>
+            Resort del día
+        </span>
+
+        <h1>Relájate y disfruta de un día perfecto</h1>
+
+        <p>
+            Accede a las áreas del resort para vivir bienestar, naturaleza,
+            descanso y diversión en un solo lugar.
+        </p>
+    </div>
+</section>
+
+<section class="contenedor">
+    <div class="catalog-feature-strip">
+        <article class="catalog-feature">
+            <i class="fa-solid fa-water-ladder"></i>
+            <div>
+                <strong>Piscinas</strong>
+                <span>Disfruta espacios para refrescarte</span>
+            </div>
+        </article>
+
+        <article class="catalog-feature">
+            <i class="fa-solid fa-tree"></i>
+            <div>
+                <strong>Zonas recreativas</strong>
+                <span>Áreas verdes para relajarte</span>
+            </div>
+        </article>
+
+        <article class="catalog-feature">
+            <i class="fa-solid fa-spa"></i>
+            <div>
+                <strong>Área de descanso</strong>
+                <span>Ambientes cómodos y naturales</span>
+            </div>
+        </article>
+
+        <article class="catalog-feature">
+            <i class="fa-solid fa-utensils"></i>
+            <div>
+                <strong>Gastronomía</strong>
+                <span>Opciones para complementar tu visita</span>
+            </div>
+        </article>
+    </div>
+</section>
+
+<section id="resortDia" class="catalog-section">
+    <div class="catalog-container">
+        <div class="catalog-header-row">
+            <div>
+                <span class="ar-kicker">
+                    <i class="fa-solid fa-seedling"></i>
+                    Nuestros paquetes del día
+                </span>
+
+                <h2 class="ar-title">Escoge tu experiencia ideal</h2>
+
+                <p class="ar-subtitle">
+                    Vive un día diferente en Arahuana con acceso a áreas,
+                    actividades y espacios naturales para descansar.
+                </p>
+            </div>
+
+            <a href="{% url 'gestion:cine' %}" class="ar-btn secondary">
+                Ver cine
+                <i class="fa-solid fa-arrow-right"></i>
+            </a>
+        </div>
+
+        <div class="catalog-grid" id="resortGrid">
+            {% for paquete in paquetes %}
+                <article class="catalog-card">
+                    <div class="catalog-image">
+                        {% if paquete.imagen %}
+                            <img src="{{ paquete.imagen.url }}" alt="{{ paquete.nombre_paquete|default:paquete.nombre }}" onerror="this.onerror=null; this.src='/media/resort_dia/piscina.jpeg';">
+                        {% elif 'recreativa' in paquete.nombre|lower %}
+                            <img src="/media/resort_dia/cuarto2.jpeg" alt="{{ paquete.nombre_paquete|default:paquete.nombre }}" onerror="this.onerror=null; this.src='/media/resort_dia/descarga.jpg';">
+                        {% elif 'descanso' in paquete.nombre|lower %}
+                            <img src="/media/resort_dia/zona_de_desacnzo.jpg" alt="{{ paquete.nombre_paquete|default:paquete.nombre }}" onerror="this.onerror=null; this.src='/media/resort_dia/piscina.jpeg';">
+                        {% elif 'piscina' in paquete.nombre|lower or 'spa' in paquete.nombre|lower or 'resort' in paquete.nombre|lower %}
+                            <img src="/media/resort_dia/piscina.jpeg" alt="{{ paquete.nombre_paquete|default:paquete.nombre }}" onerror="this.onerror=null; this.src='/media/resort_dia/descarga.jpg';">
+                        {% else %}
+                            <img src="/media/resort_dia/descarga.jpg" alt="{{ paquete.nombre_paquete|default:paquete.nombre }}" onerror="this.onerror=null; this.src='/media/resort_dia/piscina.jpeg';">
+                        {% endif %}
+
+                        <span class="catalog-status">
+                            {{ paquete.estado|default:"Disponible" }}
+                        </span>
+                    </div>
+
+                    <div class="catalog-body">
+                        <h3>{{ paquete.nombre_paquete|default:paquete.nombre }}</h3>
+
+                        <p>
+                            {{ paquete.descripcion|default:"Acceso a espacios del resort para disfrutar un día lleno de descanso, naturaleza y bienestar." }}
+                        </p>
+
+                        <div class="catalog-meta">
+                            <span>
+                                <i class="fa-solid fa-users"></i>
+                                {{ paquete.disponibilidad_cupos|default:paquete.capacidad_maxima }} cupos
+                            </span>
+
+                            <span>
+                                <i class="fa-solid fa-clock"></i>
+                                {{ paquete.horario_apertura|default:"08:00" }} - {{ paquete.horario_cierre|default:"17:00" }}
+                            </span>
+
+                            <span>
+                                <i class="fa-solid fa-circle-check"></i>
+                                {% if paquete.incluye_almuerzo %}
+                                    Incluye almuerzo
+                                {% else %}
+                                    Acceso al área
+                                {% endif %}
+                            </span>
+                        </div>
+
+                        <div class="catalog-price">
+                            ${{ paquete.precio_persona|default:paquete.costo_adicional }}
+                            <small>/ persona</small>
+                        </div>
+
+                        <div class="catalog-actions">
+                            {% if paquete.activo %}
+                                {% if usuario %}
+                                    <button type="button" class="abrir-modal"
+                                        data-id="{{ paquete.id_resort_dia }}"
+                                        data-nombre="{{ paquete.nombre_paquete|default:paquete.nombre }}"
+                                        data-precio="{{ paquete.precio_persona|default:paquete.costo_adicional }}"
+                                        data-cupos="{{ paquete.disponibilidad_cupos|default:paquete.capacidad_maxima }}">
+                                        <i class="fas fa-calendar-check"></i>
+                                        Reservar ahora
+                                    </button>
+                                {% else %}
+                                    <a href="{% url 'gestion:login' %}?next={% url 'gestion:resort' %}">
+                                        <i class="fas fa-calendar-check"></i>
+                                        Inicia sesión para reservar
+                                    </a>
+                                {% endif %}
+                            {% else %}
+                                <button type="button" disabled>
+                                    <i class="fa-solid fa-circle-xmark"></i>
+                                    No disponible
+                                </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </article>
+            {% empty %}
+                {% for paquete in areas_resort %}
+                    <article class="catalog-card">
+                        <div class="catalog-image">
+                            {% if paquete.imagen %}
+                                <img src="{{ paquete.imagen.url }}" alt="{{ paquete.nombre }}" onerror="this.onerror=null; this.src='/media/resort_dia/piscina.jpeg';">
+                            {% elif 'recreativa' in paquete.nombre|lower %}
+                                <img src="/media/resort_dia/cuarto2.jpeg" alt="{{ paquete.nombre }}" onerror="this.onerror=null; this.src='/media/resort_dia/descarga.jpg';">
+                            {% elif 'descanso' in paquete.nombre|lower %}
+                                <img src="/media/resort_dia/zona_de_desacnzo.jpg" alt="{{ paquete.nombre }}" onerror="this.onerror=null; this.src='/media/resort_dia/piscina.jpeg';">
+                            {% elif 'piscina' in paquete.nombre|lower or 'spa' in paquete.nombre|lower or 'resort' in paquete.nombre|lower %}
+                                <img src="/media/resort_dia/piscina.jpeg" alt="{{ paquete.nombre }}" onerror="this.onerror=null; this.src='/media/resort_dia/descarga.jpg';">
+                            {% else %}
+                                <img src="/media/resort_dia/descarga.jpg" alt="{{ paquete.nombre }}" onerror="this.onerror=null; this.src='/media/resort_dia/piscina.jpeg';">
+                            {% endif %}
+
+                            <span class="catalog-status">
+                                {{ paquete.estado|default:"Disponible" }}
+                            </span>
+                        </div>
+
+                        <div class="catalog-body">
+                            <h3>{{ paquete.nombre }}</h3>
+
+                            <p>
+                                {{ paquete.descripcion|default:"Espacio del resort para disfrutar descanso, recreación y naturaleza." }}
+                            </p>
+
+                            <div class="catalog-meta">
+                                <span>
+                                    <i class="fa-solid fa-users"></i>
+                                    {{ paquete.capacidad_maxima }} cupos
+                                </span>
+
+                                <span>
+                                    <i class="fa-solid fa-clock"></i>
+                                    {{ paquete.horario_apertura }} - {{ paquete.horario_cierre }}
+                                </span>
+
+                                <span>
+                                    <i class="fa-solid fa-leaf"></i>
+                                    {{ paquete.tipo_area }}
+                                </span>
+                            </div>
+
+                            <div class="catalog-price">
+                                ${{ paquete.costo_adicional }}
+                                <small>/ persona</small>
+                            </div>
+
+                            <div class="catalog-actions">
+                                {% if paquete.activo %}
+                                    {% if usuario %}
+                                        <button type="button" class="abrir-modal"
+                                            data-id="{{ paquete.id_resort_dia }}"
+                                            data-nombre="{{ paquete.nombre }}"
+                                            data-precio="{{ paquete.costo_adicional }}"
+                                            data-cupos="{{ paquete.capacidad_maxima }}">
+                                            <i class="fas fa-calendar-check"></i>
+                                            Reservar ahora
+                                        </button>
+                                    {% else %}
+                                        <a href="{% url 'gestion:login' %}?next={% url 'gestion:resort' %}">
+                                            <i class="fas fa-calendar-check"></i>
+                                            Iniciar sesión para reservar
+                                        </a>
+                                    {% endif %}
+                                {% else %}
+                                    <button type="button" disabled>
+                                        <i class="fa-solid fa-circle-xmark"></i>
+                                        No disponible
+                                    </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </article>
+                {% empty %}
+                    <div class="empty-public-state">
+                        <i class="fa-solid fa-umbrella-beach"></i>
+                        <h3>No hay paquetes disponibles por el momento</h3>
+                        <p>Vuelve a revisar más tarde o comunícate con el hotel para más información.</p>
+                        <a href="{% url 'gestion:inicio' %}" class="btn-primary-home">Volver al inicio</a>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="ar-section tight">
+    <div class="contenedor">
+        <div class="home-cta">
+            <div>
+                <span class="ar-kicker">
+                    <i class="fa-solid fa-leaf"></i>
+                    Día perfecto
+                </span>
+
+                <h2>¿Listo para disfrutar Arahuana?</h2>
+
+                <p>
+                    Reserva tu paquete del día y vive una experiencia completa
+                    entre naturaleza, descanso y bienestar.
+                </p>
+            </div>
+
+            <a href="#resortDia" class="ar-btn gold">
+                Reservar ahora
+                <i class="fa-solid fa-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<div class="reserva-modal" id="reservaModal" aria-hidden="true">
+    <div class="reserva-modal-contenido public-form-card" role="dialog" aria-modal="true" aria-labelledby="reservaModalTitulo">
+        <div class="reserva-modal-header public-form-header">
+            <div>
+                <h3 id="reservaModalTitulo">Reservar resort del día</h3>
+                <p class="public-form-subtitle">Completa los datos para registrar tu visita.</p>
+            </div>
+
+            <button type="button" class="modal-cerrar" id="reservaModalCerrar" aria-label="Cerrar modal">×</button>
+        </div>
+
+        <div class="reserva-modal-body">
+            <div class="info-note">
+                <strong>Experiencia:</strong> <span id="modalResortNombre">-</span>
+                <br>
+                <strong>Precio:</strong> $<span id="modalResortPrecio">-</span> / persona
+                <br>
+                <strong>Cupos:</strong> <span id="modalResortCupos">-</span>
+            </div>
+
+            <p class="public-form-help">
+                Selecciona la fecha y cantidad de personas para tu visita.
+            </p>
+
+            <form id="reservaForm" class="public-form-grid" method="POST" action="{% url 'gestion:resort' %}">
+                {% csrf_token %}
+
+                <input type="hidden" id="modalResortId" name="id_resort_dia" value="">
+
+                <div class="public-form-group">
+                    <label for="modalFechaIngreso">Fecha de visita</label>
+                    <input type="date" id="modalFechaIngreso" name="fecha_ingreso" required>
+                </div>
+
+                <div class="public-form-group">
+                    <label for="modalCantidadPersonas">Cantidad de personas</label>
+                    <input type="number" id="modalCantidadPersonas" name="cantidad_personas" min="1" value="1" required>
+                </div>
+
+                <div class="public-form-group public-form-full">
+                    <label for="modalMetodoPago">Modo de pago</label>
+                    <select id="modalMetodoPago" name="metodo_pago" required>
+                        <option value="">Seleccione un modo de pago</option>
+                        <option value="Transferencia">Transferencia bancaria</option>
+                        <option value="Recepcion">Pago en recepción</option>
+                    </select>
+                </div>
+
+                <div class="public-form-group public-form-full">
+                    <label for="modalObservaciones">Observaciones</label>
+                    <textarea id="modalObservaciones" name="observaciones" rows="3" placeholder="Ejemplo: visita familiar, cumpleaños, alergias alimentarias, etc."></textarea>
+                </div>
+
+                <div class="reserva-modal-footer public-form-actions">
+                    <button type="submit" class="boton boton-principal public-form-submit">
+                        <i class="fas fa-calendar-check"></i>
+                        <span>Confirmar reserva</span>
+                    </button>
+
+                    <button type="button" class="boton boton-claro" id="reservaModalCancelar">
+                        Cancelar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const modal = document.getElementById('reservaModal');
+        const abrirBotones = document.querySelectorAll('.abrir-modal');
+        const cerrarBoton = document.getElementById('reservaModalCerrar');
+        const cancelarBoton = document.getElementById('reservaModalCancelar');
+
+        const resortId = document.getElementById('modalResortId');
+        const resortNombre = document.getElementById('modalResortNombre');
+        const resortPrecio = document.getElementById('modalResortPrecio');
+        const resortCupos = document.getElementById('modalResortCupos');
+
+        function abrirModal(data) {
+            resortId.value = data.id;
+            resortNombre.textContent = data.nombre;
+            resortPrecio.textContent = data.precio;
+            resortCupos.textContent = data.cupos;
+
+            modal.classList.add('activo');
+            modal.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function cerrarModal() {
+            modal.classList.remove('activo');
+            modal.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+        }
+
+        abrirBotones.forEach(function (boton) {
+            boton.addEventListener('click', function () {
+                abrirModal({
+                    id: boton.dataset.id,
+                    nombre: boton.dataset.nombre,
+                    precio: boton.dataset.precio,
+                    cupos: boton.dataset.cupos,
+                });
+            });
+        });
+
+        if (cerrarBoton) {
+            cerrarBoton.addEventListener('click', cerrarModal);
+        }
+
+        if (cancelarBoton) {
+            cancelarBoton.addEventListener('click', cerrarModal);
+        }
+
+        if (modal) {
+            modal.addEventListener('click', function (event) {
+                if (event.target === modal) {
+                    cerrarModal();
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

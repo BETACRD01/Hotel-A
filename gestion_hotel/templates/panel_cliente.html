@@ -1,0 +1,342 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Panel Cliente | Arahuana Eco-Resort & Spa{% endblock %}
+{% block body_class %}panel-cliente-body{% endblock %}
+
+{% block content %}
+
+<section
+    class="guest-hero-premium"
+    style="background-image: linear-gradient(90deg, rgba(6, 39, 25, 0.88), rgba(6, 39, 25, 0.56), rgba(6, 39, 25, 0.22)), url('{% static "img/cabana4-dashboard.jpg" %}');"
+>
+    <div class="contenedor guest-hero-content">
+        <span class="ar-kicker">
+            <i class="fa-solid fa-leaf"></i>
+            Bienvenido de nuevo
+        </span>
+
+        <h1>Hola, {{ request.session.cliente_nombre|default:usuario.nombres|title }}</h1>
+
+        <p>
+            Tu refugio en la Amazonía te espera. Descanso, naturaleza y
+            experiencias únicas en Arahuana Eco-Resort & Spa.
+        </p>
+
+        <div class="hero-actions">
+            <a href="{% url 'gestion:mis_reservas' %}" class="ar-btn primary">
+                <i class="fa-solid fa-calendar-check"></i>
+                Ver mis reservas
+            </a>
+
+            <a href="{% url 'gestion:habitaciones' %}" class="ar-btn secondary">
+                <i class="fa-solid fa-leaf"></i>
+                Explorar experiencias
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Panel del Cliente -->
+<section class="contenedor">
+    <div class="guest-summary-grid">
+        <article class="guest-summary-card">
+            <span class="guest-summary-icon">
+                <i class="fa-solid fa-suitcase-rolling"></i>
+            </span>
+
+            <div>
+                <strong>{{ total_reservas|default:"0" }}</strong>
+                <p>Reservas totales</p>
+            </div>
+        </article>
+
+        <article class="guest-summary-card">
+            <span class="guest-summary-icon">
+                <i class="fa-solid fa-hourglass-half"></i>
+            </span>
+
+            <div>
+                <strong>{{ reservas_pendientes|default:"0" }}</strong>
+                <p>Por confirmar</p>
+            </div>
+        </article>
+
+        <article class="guest-summary-card">
+            <span class="guest-summary-icon">
+                <i class="fa-solid fa-circle-check"></i>
+            </span>
+
+            <div>
+                <strong>{{ reservas_confirmadas|default:"0" }}</strong>
+                <p>Confirmadas</p>
+            </div>
+        </article>
+
+        <article class="guest-summary-card">
+            <span class="guest-summary-icon">
+                <i class="fa-solid fa-circle-xmark"></i>
+            </span>
+
+            <div>
+                <strong>{{ reservas_canceladas|default:"0" }}</strong>
+                <p>Canceladas</p>
+            </div>
+        </article>
+    </div>
+</section>
+
+<section class="guest-section">
+    <div class="contenedor">
+        <div class="section-header row">
+            <div>
+                <span class="ar-kicker">
+                    <i class="fa-solid fa-seedling"></i>
+                    Explora nuestras experiencias
+                </span>
+
+                <h2 class="ar-title">¿Qué te gustaría hacer hoy?</h2>
+
+                <p class="ar-subtitle">
+                    Elige una experiencia y prepara una visita inolvidable
+                    en Arahuana.
+                </p>
+            </div>
+
+            <a href="{% url 'gestion:habitaciones' %}" class="ar-btn secondary">
+                Reservar ahora
+                <i class="fa-solid fa-arrow-right"></i>
+            </a>
+        </div>
+
+        <div class="guest-experience-grid">
+            <a href="{% url 'gestion:habitaciones' %}" class="guest-experience-card">
+                {% if imagen_habitaciones %}
+                    <img src="{{ imagen_habitaciones.url }}" alt="Habitaciones Arahuana" onerror="this.onerror=null; this.src='{% static 'img/hotel_arahuana.jpg' %}';">
+                {% else %}
+                    <img src="{% static 'img/hotel_arahuana.jpg' %}" alt="Habitaciones Arahuana">
+                {% endif %}
+
+                <div>
+                    <span>
+                        <i class="fa-solid fa-bed"></i>
+                    </span>
+
+                    <h3>Habitaciones</h3>
+
+                    <p>
+                        Confort y descanso en plena naturaleza.
+                    </p>
+                </div>
+            </a>
+
+            <a href="{% url 'gestion:cabanas' %}" class="guest-experience-card">
+                {% if imagen_cabanas %}
+                    <img src="{{ imagen_cabanas.url }}" alt="Cabañas Arahuana" onerror="this.onerror=null; this.src='{% static 'img/hotel_arahuana.jpg' %}';">
+                {% else %}
+                    <img src="{% static 'img/hotel_arahuana.jpg' %}" alt="Cabañas Arahuana">
+                {% endif %}
+
+                <div>
+                    <span>
+                        <i class="fa-solid fa-house-chimney"></i>
+                    </span>
+
+                    <h3>Cabañas</h3>
+
+                    <p>
+                        Vive la Amazonía con privacidad y comodidad.
+                    </p>
+                </div>
+            </a>
+
+            <a href="{% url 'gestion:cine' %}" class="guest-experience-card">
+                {% if imagen_cine %}
+                    <img src="{{ imagen_cine.url }}" alt="Cine Arahuana" onerror="this.onerror=null; this.src='{% static 'img/hotel_arahuana.jpg' %}';">
+                {% else %}
+                    <img src="{% static 'img/hotel_arahuana.jpg' %}" alt="Cine Arahuana">
+                {% endif %}
+
+                <div>
+                    <span>
+                        <i class="fa-solid fa-film"></i>
+                    </span>
+
+                    <h3>Cine</h3>
+
+                    <p>
+                        Noches de cine bajo las estrellas.
+                    </p>
+                </div>
+            </a>
+
+            <a href="{% url 'gestion:resort' %}" class="guest-experience-card">
+                {% if imagen_resort %}
+                    <img src="{{ imagen_resort.url }}" alt="Resort del día Arahuana" onerror="this.onerror=null; this.src='{% static 'img/hotel_arahuana.jpg' %}';">
+                {% else %}
+                    <img src="{% static 'img/hotel_arahuana.jpg' %}" alt="Resort del día Arahuana">
+                {% endif %}
+
+                <div>
+                    <span>
+                        <i class="fa-solid fa-umbrella-beach"></i>
+                    </span>
+
+                    <h3>Resort del día</h3>
+
+                    <p>
+                        Piscinas, recreación y bienestar en un solo lugar.
+                    </p>
+                </div>
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="guest-section">
+    <div class="contenedor">
+        <div class="section-header row">
+            <div>
+                <span class="ar-kicker">
+                    <i class="fa-solid fa-calendar-days"></i>
+                    Tus experiencias recientes
+                </span>
+
+                <h2 class="ar-title">Últimas reservas</h2>
+
+                <p class="ar-subtitle">
+                    Revisa tus reservas recientes y continúa preparando
+                    tu próxima aventura.
+                </p>
+            </div>
+
+            <a href="{% url 'gestion:mis_reservas' %}" class="ar-btn secondary">
+                Ver todas
+                <i class="fa-solid fa-arrow-right"></i>
+            </a>
+        </div>
+
+        {% if ultimas_reservas %}
+            <div class="guest-latest-grid">
+                {% for reserva in ultimas_reservas|slice:":3" %}
+                    <article class="guest-latest-card">
+                        <div class="guest-latest-img">
+                            {% if reserva.detallecine_set.all %}
+                                {% if imagen_cine %}
+                                    <img src="{{ imagen_cine.url }}" alt="Reserva de cine" onerror="this.onerror=null; this.src='{% static 'img/hotel_arahuana.jpg' %}';">
+                                {% else %}
+                                    <img src="{% static 'img/hotel_arahuana.jpg' %}" alt="Reserva de cine">
+                                {% endif %}
+                            {% elif reserva.detalleresort_set.all %}
+                                {% if imagen_resort %}
+                                    <img src="{{ imagen_resort.url }}" alt="Reserva de resort del día" onerror="this.onerror=null; this.src='{% static 'img/hotel_arahuana.jpg' %}';">
+                                {% else %}
+                                    <img src="{% static 'img/hotel_arahuana.jpg' %}" alt="Reserva de resort del día">
+                                {% endif %}
+                            {% elif reserva.detallecabanas_set.all %}
+                                {% if imagen_cabanas %}
+                                    <img src="{{ imagen_cabanas.url }}" alt="Reserva de cabaña" onerror="this.onerror=null; this.src='{% static 'img/hotel_arahuana.jpg' %}';">
+                                {% else %}
+                                    <img src="{% static 'img/hotel_arahuana.jpg' %}" alt="Reserva de cabaña">
+                                {% endif %}
+                            {% else %}
+                                {% if imagen_habitaciones %}
+                                    <img src="{{ imagen_habitaciones.url }}" alt="Reserva de habitación" onerror="this.onerror=null; this.src='{% static 'img/hotel_arahuana.jpg' %}';">
+                                {% else %}
+                                    <img src="{% static 'img/hotel_arahuana.jpg' %}" alt="Reserva de habitación">
+                                {% endif %}
+                            {% endif %}
+                        </div>
+
+                        <div class="guest-latest-content">
+                            <div class="latest-top">
+                                <strong>Reserva {{ reserva.codigo_reserva }}</strong>
+                                <span class="estado-mini estado-{{ reserva.estado_reserva|lower }}">
+                                    {{ reserva.estado_reserva }}
+                                </span>
+                            </div>
+
+                            <p>
+                                <i class="fa-regular fa-calendar"></i>
+                                {{ reserva.fecha_ingreso|date:"d/m/Y" }}
+                            </p>
+
+                            <p>
+                                <i class="fa-solid fa-location-dot"></i>
+                                {% if reserva.detallecabanas_set.all %}
+                                    Cabaña
+                                {% elif reserva.detallecine_set.all %}
+                                    Cine
+                                {% elif reserva.detalleresort_set.all %}
+                                    Resort del día
+                                {% else %}
+                                    Habitación
+                                {% endif %}
+                            </p>
+
+                            <div class="latest-top">
+                                {% if reserva.total %}
+                                    <strong>${{ reserva.total }}</strong>
+                                {% else %}
+                                    <strong>Por calcular</strong>
+                                {% endif %}
+
+                                <a href="{% url 'gestion:mis_reservas' %}" class="ar-btn secondary">
+                                    Ver detalle
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="guest-empty-card">
+                <div>
+                    <span class="ar-kicker">
+                        <i class="fa-solid fa-leaf"></i>
+                        Aún no tienes reservas
+                    </span>
+
+                    <h2>Tu primera experiencia está por comenzar</h2>
+
+                    <p>
+                        Explora habitaciones, cabañas, cine o resort del día
+                        y realiza tu primera reserva.
+                    </p>
+                </div>
+
+                <a href="{% url 'gestion:habitaciones' %}" class="ar-btn primary">
+                    Explorar opciones
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+<section class="ar-section tight">
+    <div class="contenedor">
+        <div class="guest-cta">
+            <div>
+                <span class="ar-kicker">
+                    <i class="fa-solid fa-leaf"></i>
+                    Arahuana te espera
+                </span>
+
+                <h2>Tu aventura en la Amazonía comienza aquí</h2>
+
+                <p>
+                    Descubre naturaleza, cultura y bienestar en
+                    Arahuana Eco-Resort & Spa.
+                </p>
+            </div>
+
+            <a href="{% url 'gestion:habitaciones' %}" class="ar-btn gold">
+                Explorar experiencias
+                <i class="fa-solid fa-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

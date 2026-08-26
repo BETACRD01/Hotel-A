@@ -1,0 +1,561 @@
+{% extends 'base.html' %}
+{% load static %}
+
+<!-- ============================================================
+     PAGINA DE REGISTRO (Crear cuenta)
+     ============================================================ -->
+
+{% block title %}Crear cuenta | Arahuana Eco-Resort & Spa{% endblock %}
+{% block body_class %}pagina-auth auth-register-body{% endblock %}
+
+{% block content %}
+
+<section class="auth-split-page">
+    <div class="auth-split-visual">
+        <div class="auth-split-logo">
+            <img src="{% static 'img/logo.jpg' %}" alt="Arahuana">
+            <div>
+                <strong>Arahuana</strong>
+                <span>Eco-Resort & Spa</span>
+            </div>
+        </div>
+
+        <div class="auth-split-copy">
+            <h1>Únete a Arahuana <i class="fa-solid fa-leaf"></i></h1>
+
+            <p>
+                Crea tu cuenta y comienza a vivir experiencias únicas
+                en la Amazonía.
+            </p>
+
+            <div class="auth-feature-list">
+                <div class="auth-feature-item">
+                    <i class="fa-solid fa-calendar-check"></i>
+                    <div>
+                        <strong>Reservas rápidas y fáciles</strong>
+                        <span>Gestiona tus reservas en minutos.</span>
+                    </div>
+                </div>
+
+                <div class="auth-feature-item">
+                    <i class="fa-solid fa-leaf"></i>
+                    <div>
+                        <strong>Experiencias naturales</strong>
+                        <span>Disfruta habitaciones, cabañas, cine y resort del día.</span>
+                    </div>
+                </div>
+
+                <div class="auth-feature-item">
+                    <i class="fa-solid fa-user-shield"></i>
+                    <div>
+                        <strong>Cuenta protegida</strong>
+                        <span>Tus datos se registran de forma segura.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="auth-split-panel">
+        <div class="auth-split-card auth-register-card">
+            <h2>Crear cuenta <i class="fa-solid fa-leaf"></i></h2>
+
+            <p class="auth-split-subtitle">
+                Completa tus datos para registrarte como cliente de Arahuana.
+            </p>
+
+            {% if messages %}
+                <div class="auth-messages">
+                    {% for message in messages %}
+                        <div class="mensaje-auth mensaje-{{ message.tags }}">
+                            <i class="fa-solid fa-circle-info"></i>
+                            <span>{{ message }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <form method="POST" action="{% url 'gestion:registro' %}" class="auth-clean-form">
+                {% csrf_token %}
+
+                <div class="auth-register-grid">
+                    <div class="auth-clean-group">
+                        <label for="tipo_documento">Tipo de documento</label>
+                        <div class="auth-clean-input">
+                            <i class="fa-solid fa-id-card"></i>
+                            <select id="tipo_documento" name="tipo_documento" required>
+                                <option value="Cédula" {% if request.POST.tipo_documento == "Cédula" %}selected{% endif %}>Cédula</option>
+                                <option value="RUC" {% if request.POST.tipo_documento == "RUC" %}selected{% endif %}>RUC</option>
+                                <option value="Pasaporte" {% if request.POST.tipo_documento == "Pasaporte" %}selected{% endif %}>Pasaporte</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="auth-clean-group">
+                        <label for="numero_documento">Número de documento</label>
+                        <div class="auth-clean-input">
+                            <i class="fa-solid fa-address-card"></i>
+                            <input
+                                type="text"
+                                id="numero_documento"
+                                name="numero_documento"
+                                placeholder="Ingresa tu número de documento"
+                                maxlength="15"
+                                value="{{ request.POST.numero_documento|default_if_none:'' }}"
+                                oninput="const tipo=this.form.tipo_documento.value; if(tipo==='Cédula'||tipo==='Cedula'||tipo==='cedula'||tipo==='RUC'||tipo==='ruc'){this.value=this.value.replace(/\D/g,'')} else if(tipo==='Pasaporte'||tipo==='pasaporte'){this.value=this.value.replace(/[^A-Za-z0-9]/g,'').toUpperCase()}"
+                                required
+                            >
+                        </div>
+                        <div id="documento_feedback" class="field-feedback" style="display:none;"></div>
+                    </div>
+                </div>
+
+                <div class="auth-register-grid">
+                    <div class="auth-clean-group">
+                        <label for="nombres">Nombres</label>
+                        <div class="auth-clean-input">
+                            <i class="fa-solid fa-user"></i>
+                            <input
+                                type="text"
+                                id="nombres"
+                                name="nombres"
+                                placeholder="Ingresa tus nombres"
+                                value="{{ request.POST.nombres|default_if_none:'' }}"
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <div class="auth-clean-group">
+                        <label for="apellidos">Apellidos</label>
+                        <div class="auth-clean-input">
+                            <i class="fa-solid fa-user"></i>
+                            <input
+                                type="text"
+                                id="apellidos"
+                                name="apellidos"
+                                placeholder="Ingresa tus apellidos"
+                                value="{{ request.POST.apellidos|default_if_none:'' }}"
+                                required
+                            >
+                        </div>
+                    </div>
+                </div>
+
+                <div class="auth-register-grid">
+                    <div class="auth-clean-group">
+                        <label for="telefono_celular">Teléfono celular</label>
+                        <div class="auth-clean-input">
+                            <i class="fa-solid fa-phone"></i>
+                            <input
+                                type="text"
+                                id="telefono_celular"
+                                name="telefono_celular"
+                                placeholder="Ej: 0998765432"
+                                maxlength="10"
+                                inputmode="numeric"
+                                autocomplete="tel"
+                                value="{{ request.POST.telefono_celular|default_if_none:'' }}"
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <div class="auth-clean-group">
+                        <label for="correo_electronico">Correo electrónico</label>
+                        <div class="auth-clean-input">
+                            <i class="fa-solid fa-envelope"></i>
+                            <input
+                                type="email"
+                                id="correo_electronico"
+                                name="correo_electronico"
+                                placeholder="correo@ejemplo.com"
+                                value="{{ request.POST.correo_electronico|default_if_none:'' }}"
+                                required
+                            >
+                        </div>
+                    </div>
+                </div>
+
+                <div class="auth-register-grid">
+                    <div class="auth-clean-group">
+                        <label for="pais_origen">País de origen</label>
+                        <div class="auth-clean-input">
+                            <i class="fa-solid fa-globe"></i>
+                            <input
+                                type="text"
+                                id="pais_origen"
+                                name="pais_origen"
+                                placeholder="Ej: Ecuador"
+                                value="{{ request.POST.pais_origen|default_if_none:'' }}"
+                            >
+                        </div>
+                    </div>
+
+                    <div class="auth-clean-group">
+                        <label for="ciudad">Ciudad</label>
+                        <div class="auth-clean-input">
+                            <i class="fa-solid fa-location-dot"></i>
+                            <input
+                                type="text"
+                                id="ciudad"
+                                name="ciudad"
+                                placeholder="Ej: Quito"
+                                value="{{ request.POST.ciudad|default_if_none:'' }}"
+                            >
+                        </div>
+                    </div>
+                </div>
+
+                <div class="auth-register-grid">
+                    <div class="auth-clean-group">
+                        <label for="password">Contraseña</label>
+                        <div class="auth-clean-input">
+                            <i class="fa-solid fa-lock"></i>
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                placeholder="Crea una contraseña"
+                                minlength="8"
+                                required
+                            >
+
+                            <button type="button" class="auth-eye-btn" aria-label="Mostrar contraseña">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="auth-clean-group">
+                        <label for="confirm_password">Confirmar contraseña</label>
+                        <div class="auth-clean-input">
+                            <i class="fa-solid fa-lock"></i>
+                            <input
+                                type="password"
+                                id="confirm_password"
+                                name="confirm_password"
+                                placeholder="Confirma tu contraseña"
+                                minlength="8"
+                                required
+                            >
+
+                            <button type="button" class="auth-eye-btn" aria-label="Mostrar contraseña">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="auth-help">
+                    La contraseña debe tener mínimo 8 caracteres.
+                </p>
+
+                <div class="auth-terms">
+                    <input type="checkbox" id="terminos" required>
+                    <label for="terminos">
+                        Acepto los <a href="#">Términos y condiciones</a> y la
+                        <a href="#">Política de privacidad</a>.
+                    </label>
+                </div>
+
+                <button type="submit" class="auth-clean-submit">
+                    <i class="fa-solid fa-leaf"></i>
+                    Crear cuenta
+                </button>
+            </form>
+
+            <div class="auth-clean-footer">
+                <span>¿Ya tienes una cuenta?</span>
+                <a href="{% url 'gestion:login' %}">Inicia sesión aquí</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".auth-eye-btn").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+            const input = btn.parentElement.querySelector("input");
+            const icon = btn.querySelector("i");
+
+            if (input.type === "password") {
+                input.type = "text";
+                icon.className = "fa-solid fa-eye-slash";
+            } else {
+                input.type = "password";
+                icon.className = "fa-solid fa-eye";
+            }
+        });
+    });
+
+    const tipoDocumento = document.getElementById('tipo_documento');
+    const numeroDocumento = document.getElementById('numero_documento');
+    const telefonoCelular = document.getElementById('telefono_celular');
+    const nombres = document.getElementById('nombres');
+    const apellidos = document.getElementById('apellidos');
+    const paisOrigen = document.getElementById('pais_origen');
+    const ciudad = document.getElementById('ciudad');
+
+    function limpiarSoloLetras(valor) {
+        return valor.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '');
+    }
+
+    function actualizarDocumentoInput() {
+        const tipo = tipoDocumento.value;
+
+        if (tipo === 'Cedula' || tipo === 'Cédula' || tipo === 'cedula') {
+            numeroDocumento.value = numeroDocumento.value.replace(/\D/g, '');
+            numeroDocumento.maxLength = 10;
+            numeroDocumento.inputMode = 'numeric';
+            numeroDocumento.placeholder = 'Ingrese 10 dígitos';
+        } else if (tipo === 'RUC' || tipo === 'ruc') {
+            numeroDocumento.value = numeroDocumento.value.replace(/\D/g, '');
+            numeroDocumento.maxLength = 13;
+            numeroDocumento.inputMode = 'numeric';
+            numeroDocumento.placeholder = 'Ingrese 13 dígitos';
+        } else if (tipo === 'Pasaporte' || tipo === 'pasaporte') {
+            numeroDocumento.value = numeroDocumento.value.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
+            numeroDocumento.maxLength = 15;
+            numeroDocumento.inputMode = 'text';
+            numeroDocumento.placeholder = 'Ingrese pasaporte';
+        } else {
+            numeroDocumento.maxLength = 15;
+            numeroDocumento.inputMode = 'text';
+            numeroDocumento.placeholder = 'Ingrese su documento';
+        }
+    }
+
+    function obtenerTipoDocumentoNormalizado() {
+        return (tipoDocumento.value || '')
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .toLowerCase();
+    }
+
+    function validarCedulaEcuatoriana(cedula) {
+        cedula = (cedula || '').replace(/\D/g, '');
+
+        if (cedula.length === 9) {
+            cedula = '0' + cedula;
+        }
+
+        if (cedula.length !== 10) {
+            return { valido: false, mensaje: 'La cédula debe tener 10 dígitos.' };
+        }
+
+        if (/^(\d)\1{9}$/.test(cedula)) {
+            return { valido: false, mensaje: 'La cédula ingresada no es válida.' };
+        }
+
+        const provincia = parseInt(cedula.slice(0, 2), 10);
+        if (provincia < 1 || provincia > 24) {
+            return { valido: false, mensaje: 'El código de provincia de la cédula no es válido.' };
+        }
+
+        if (parseInt(cedula.charAt(2), 10) >= 6) {
+            return { valido: false, mensaje: 'El tercer dígito de la cédula no es válido.' };
+        }
+
+        const coeficientes = [2, 1, 2, 1, 2, 1, 2, 1, 2];
+        let suma = 0;
+        for (let i = 0; i < 9; i++) {
+            let valor = parseInt(cedula.charAt(i), 10) * coeficientes[i];
+            if (valor >= 10) {
+                valor -= 9;
+            }
+            suma += valor;
+        }
+        let digitoVerificador = 10 - (suma % 10);
+        if (digitoVerificador === 10) {
+            digitoVerificador = 0;
+        }
+
+        if (digitoVerificador !== parseInt(cedula.charAt(9), 10)) {
+            return { valido: false, mensaje: 'El dígito verificador de la cédula no es válido.' };
+        }
+
+        return { valido: true, mensaje: 'Cédula válida.' };
+    }
+
+    function actualizarTelefonoInput() {
+        const tipo = obtenerTipoDocumentoNormalizado();
+
+        telefonoCelular.value = telefonoCelular.value.replace(/\D/g, '');
+
+        if (tipo === 'cedula' || tipo === 'ruc') {
+            telefonoCelular.maxLength = 10;
+            telefonoCelular.inputMode = 'numeric';
+            telefonoCelular.placeholder = 'Ej: 0998765432';
+
+            if (telefonoCelular.value.length > 10) {
+                telefonoCelular.value = telefonoCelular.value.slice(0, 10);
+            }
+        } else if (tipo === 'pasaporte') {
+            telefonoCelular.maxLength = 15;
+            telefonoCelular.inputMode = 'numeric';
+            telefonoCelular.placeholder = 'Teléfono internacional';
+
+            if (telefonoCelular.value.length > 15) {
+                telefonoCelular.value = telefonoCelular.value.slice(0, 15);
+            }
+        } else {
+            telefonoCelular.maxLength = 15;
+            telefonoCelular.inputMode = 'numeric';
+        }
+    }
+
+    tipoDocumento.addEventListener('change', function () {
+        numeroDocumento.value = '';
+        telefonoCelular.value = '';
+        actualizarDocumentoInput();
+        actualizarTelefonoInput();
+    });
+
+    numeroDocumento.addEventListener('keydown', function (event) {
+        const tipo = tipoDocumento.value;
+        const tecla = event.key;
+        const controles = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'Delete', 'Home', 'End'];
+
+        if (controles.includes(tecla) || event.ctrlKey || event.metaKey || event.altKey) {
+            return;
+        }
+
+        if (tipo === 'Cedula' || tipo === 'Cédula' || tipo === 'cedula' || tipo === 'RUC' || tipo === 'ruc') {
+            if (!/^[0-9]$/.test(tecla)) {
+                event.preventDefault();
+            }
+        } else if (tipo === 'Pasaporte' || tipo === 'pasaporte') {
+            if (!/^[A-Za-z0-9]$/.test(tecla)) {
+                event.preventDefault();
+            }
+        }
+    });
+
+    numeroDocumento.addEventListener('paste', function (event) {
+        event.preventDefault();
+        const tipo = tipoDocumento.value;
+        const pastedText = (event.clipboardData || window.clipboardData).getData('text');
+        let cleaned = pastedText;
+
+        if (tipo === 'Cedula' || tipo === 'Cédula' || tipo === 'cedula' || tipo === 'RUC' || tipo === 'ruc') {
+            cleaned = cleaned.replace(/\D/g, '');
+        } else if (tipo === 'Pasaporte' || tipo === 'pasaporte') {
+            cleaned = cleaned.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
+        }
+
+        const before = numeroDocumento.value.slice(0, numeroDocumento.selectionStart);
+        const after = numeroDocumento.value.slice(numeroDocumento.selectionEnd);
+        numeroDocumento.value = before + cleaned + after;
+        actualizarDocumentoInput();
+    });
+
+    numeroDocumento.addEventListener('input', function () {
+        actualizarDocumentoInput();
+    });
+
+    const documentoFeedback = document.getElementById('documento_feedback');
+
+    function mostrarFeedback(mensaje, esValido) {
+        if (!documentoFeedback) return;
+        if (!mensaje) {
+            documentoFeedback.style.display = 'none';
+            numeroDocumento.classList.remove('is-valid', 'is-invalid');
+            return;
+        }
+        documentoFeedback.textContent = mensaje;
+        documentoFeedback.style.display = 'block';
+        numeroDocumento.classList.remove('is-valid', 'is-invalid');
+        numeroDocumento.classList.add(esValido ? 'is-valid' : 'is-invalid');
+        documentoFeedback.style.color = esValido ? '#0b4b36' : '#c0392b';
+    }
+
+    function validarDocumentoEnTiempoReal() {
+        const tipo = obtenerTipoDocumentoNormalizado();
+        const valor = numeroDocumento.value.trim();
+
+        if (!valor) {
+            mostrarFeedback('', false);
+            return;
+        }
+
+        if (tipo === 'cedula') {
+            const resultado = validarCedulaEcuatoriana(valor);
+            if (resultado.valido) {
+                mostrarFeedback(resultado.mensaje, true);
+            } else {
+                mostrarFeedback(resultado.mensaje, false);
+            }
+        } else if (tipo === 'ruc') {
+            if (!/^\d{13}$/.test(valor)) {
+                mostrarFeedback('El RUC debe tener 13 dígitos.', false);
+            } else if (!valor.endsWith('001')) {
+                mostrarFeedback('El RUC debe terminar en 001.', false);
+            } else {
+                mostrarFeedback('', false);
+            }
+        } else if (tipo === 'pasaporte') {
+            if (valor.length < 6 || valor.length > 15) {
+                mostrarFeedback('El pasaporte debe tener entre 6 y 15 caracteres.', false);
+            } else {
+                mostrarFeedback('', false);
+            }
+        }
+    }
+
+    numeroDocumento.addEventListener('input', validarDocumentoEnTiempoReal);
+    tipoDocumento.addEventListener('change', function () {
+        numeroDocumento.value = '';
+        telefonoCelular.value = '';
+        mostrarFeedback('', false);
+        actualizarDocumentoInput();
+        actualizarTelefonoInput();
+    });
+
+    telefonoCelular.addEventListener('keydown', function (event) {
+        const tecla = event.key;
+        const controles = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'Delete', 'Home', 'End'];
+
+        if (controles.includes(tecla) || event.ctrlKey || event.metaKey || event.altKey) {
+            return;
+        }
+
+        if (!/^[0-9]$/.test(tecla)) {
+            event.preventDefault();
+        }
+    });
+
+    telefonoCelular.addEventListener('paste', function (event) {
+        event.preventDefault();
+
+        const pastedText = (event.clipboardData || window.clipboardData).getData('text');
+        const cleaned = pastedText.replace(/\D/g, '');
+
+        const before = telefonoCelular.value.slice(0, telefonoCelular.selectionStart);
+        const after = telefonoCelular.value.slice(telefonoCelular.selectionEnd);
+
+        telefonoCelular.value = before + cleaned + after;
+        actualizarTelefonoInput();
+    });
+
+    telefonoCelular.addEventListener('input', function () {
+        actualizarTelefonoInput();
+    });
+
+    [nombres, apellidos, paisOrigen, ciudad].forEach(function (campo) {
+        if (campo) {
+            campo.addEventListener('input', function () {
+                campo.value = limpiarSoloLetras(campo.value);
+            });
+        }
+    });
+
+    actualizarDocumentoInput();
+    actualizarTelefonoInput();
+});
+</script>
+{% endblock %}

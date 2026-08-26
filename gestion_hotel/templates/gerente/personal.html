@@ -1,0 +1,81 @@
+{% extends 'gerente/base_gerente.html' %}
+
+{% block title %}Personal | Panel Gerencial{% endblock %}
+{% block breadcrumb %}Gerencia / Desempeno de Personal{% endblock %}
+
+{% block content %}
+<div class="page-header-gerente">
+    <h1>Desempeno de Personal</h1>
+    <p>Administradores y gerentes del sistema.</p>
+</div>
+
+<div class="grid-2 gerente-section">
+    <div class="gerente-card">
+        <div class="gerente-card-header">
+            <h3><i class="fa-solid fa-user-shield" style="margin-right:8px; color:var(--gerente-primary);"></i>Administradores</h3>
+            <span class="badge badge-info">{{ admins.count }}</span>
+        </div>
+        <div class="gerente-card-body no-padding">
+            <table class="gerente-table">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Correo</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for a in admins %}
+                    <tr>
+                        <td><strong>{{ a.nombres }} {{ a.apellidos }}</strong></td>
+                        <td>{{ a.correo_electronico }}</td>
+                        <td><span class="estado-badge estado-disponible">Activo</span></td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3" class="empty-state">
+                            <i class="fa-solid fa-user-shield"></i>
+                            <h3>No hay administradores</h3>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="gerente-card">
+        <div class="gerente-card-header">
+            <h3><i class="fa-solid fa-user-tie" style="margin-right:8px; color:var(--gerente-primary);"></i>Gerentes</h3>
+            <span class="badge badge-success">{{ gerentes.count }}</span>
+        </div>
+        <div class="gerente-card-body no-padding">
+            <table class="gerente-table">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Correo</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for g in gerentes %}
+                    <tr>
+                        <td><strong>{{ g.nombres }} {{ g.apellidos }}</strong></td>
+                        <td>{{ g.correo_electronico }}</td>
+                        <td><span class="estado-badge estado-disponible">Activo</span></td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3" class="empty-state">
+                            <i class="fa-solid fa-user-tie"></i>
+                            <h3>No hay gerentes</h3>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

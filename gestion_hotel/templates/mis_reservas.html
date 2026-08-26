@@ -1,0 +1,470 @@
+﻿{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Mis Reservas | Arahuana Eco-Resort & Spa{% endblock %}
+{% block body_class %}mis-reservas-body{% endblock %}
+
+{% block content %}
+
+<section class="guest-reservas-hero">
+    <div class="contenedor guest-reservas-hero-inner">
+        <div>
+            <span class="ar-kicker">
+                <i class="fa-solid fa-leaf"></i>
+                Mis experiencias reservadas
+            </span>
+
+            <h1>Mis reservas</h1>
+
+            <p>
+                Consulta tus reservas, valores de anticipo, saldo pendiente
+                y estado de pago en Arahuana Eco-Resort & Spa.
+            </p>
+        </div>
+
+        <div class="guest-reservas-hero-actions">
+            <a href="{% url 'gestion:panel_cliente' %}" class="ar-btn secondary">
+                <i class="fa-solid fa-arrow-left"></i>
+                Volver al panel
+            </a>
+
+            <a href="{% url 'gestion:habitaciones' %}" class="ar-btn primary">
+                <i class="fa-solid fa-calendar-plus"></i>
+                Nueva reserva
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="guest-reservas-page">
+    <div class="contenedor">
+
+        {% if messages %}
+            <div class="public-alerts">
+                {% for message in messages %}
+                    <div class="public-alert public-alert-{{ message.tags }}">
+                        <i class="fa-solid fa-circle-info"></i>
+                        <span>{{ message }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="reservas-filter-bar">
+            <div class="reserva-filter-pills">
+                <span class="filter-pill active">
+                    <i class="fa-solid fa-calendar-check"></i>
+                    Todas
+                </span>
+
+                <span class="filter-pill">
+                    <i class="fa-solid fa-hourglass-half"></i>
+                    Pendientes
+                </span>
+
+                <span class="filter-pill">
+                    <i class="fa-solid fa-circle-check"></i>
+                    Confirmadas
+                </span>
+
+                <span class="filter-pill">
+                    <i class="fa-solid fa-credit-card"></i>
+                    Pagos
+                </span>
+            </div>
+
+            <a href="{% url 'gestion:habitaciones' %}" class="ar-btn secondary">
+                <i class="fa-solid fa-plus"></i>
+                Explorar experiencias
+            </a>
+        </div>
+
+        {% if reservas_canceladas_ocultas %}
+            <div class="payment-info-note reservas-clean-note">
+                <i class="fa-solid fa-circle-check"></i>
+                <p>Las reservas canceladas se retiraron de esta lista para mantener solo tus reservas activas.</p>
+            </div>
+        {% endif %}
+
+        {% if reservas_pago_pendiente_count %}
+            <div class="reserva-advertencia-card reserva-advertencia-unica">
+                <i class="fa-solid fa-triangle-exclamation advertencia-icon"></i>
+                <div class="advertencia-content">
+                    <strong>Plazo de pago de anticipo</strong>
+                    <p>
+                        Tienes {{ reservas_pago_pendiente_count }} reserva(s) pendiente(s) de pago.
+                        {% if proxima_reserva_pago %}
+                            La fecha limite mas cercana es <strong>{{ proxima_reserva_pago.fecha_limite_pago|date:"d/m/Y" }}</strong>
+                            por un anticipo de <strong>${{ proxima_reserva_pago.anticipo_minimo }}</strong>.
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if reservas %}
+            <div class="guest-reservas-list">
+                {% for reserva in reservas %}
+                    <article class="guest-reserva-card" id="reserva-{{ reserva.id_reserva }}">
+
+                        <div class="guest-reserva-media">
+                            {% if reserva.detallecine_set.all %}
+                                <img src="{% static 'img/fondo.jpg' %}" alt="Reserva de cine" onerror="this.onerror=null; this.src='{% static 'img/logo.jpg' %}';">
+                                <span><i class="fa-solid fa-film"></i></span>
+                            {% elif reserva.detalleresort_set.all %}
+                                <img src="{% static 'img/cancha.jpg' %}" alt="Reserva de resort del día" onerror="this.onerror=null; this.src='{% static 'img/logo.jpg' %}';">
+                                <span><i class="fa-solid fa-umbrella-beach"></i></span>
+                            {% elif reserva.detallecabanas_set.all %}
+                                <img src="{% static 'img/cancha.jpg' %}" alt="Reserva de cabaña" onerror="this.onerror=null; this.src='{% static 'img/logo.jpg' %}';">
+                                <span><i class="fa-solid fa-house-chimney"></i></span>
+                            {% else %}
+                                <img src="{% static 'img/hotel_arahuana.jpg' %}" alt="Reserva de habitación" onerror="this.onerror=null; this.src='{% static 'img/logo.jpg' %}';">
+                                <span><i class="fa-solid fa-bed"></i></span>
+                            {% endif %}
+                        </div>
+
+                        <div class="guest-reserva-content">
+                            {% with pago=reserva.pagos.last %}
+                                <div class="guest-reserva-header">
+                                    <div>
+                                        <span class="reserva-type">
+                                            {% if reserva.detallecabanas_set.all %}
+                                                Cabaña
+                                            {% elif reserva.detallecine_set.all %}
+                                                Cine
+                                            {% elif reserva.detalleresort_set.all %}
+                                                Resort del Día
+                                            {% else %}
+                                                Habitación
+                                            {% endif %}
+                                        </span>
+
+                                        <h2>Reserva {{ reserva.codigo_reserva }}</h2>
+
+                                        <p>
+                                            <i class="fa-regular fa-calendar"></i>
+                                            Registrada el {{ reserva.fecha_registro|date:"d/m/Y H:i" }}
+                                        </p>
+                                    </div>
+
+                                    <div class="guest-status-group">
+                                        <span class="estado-badge estado-{{ reserva.estado_reserva|lower }}">
+                                            Reserva: {{ reserva.estado_reserva }}
+                                        </span>
+
+                                        {% if pago %}
+                                            <span class="estado-badge estado-{{ pago.estado|lower|cut:" "|cut:"á"|cut:"é"|cut:"í"|cut:"ó"|cut:"ú" }}">
+                                                Pago: {{ pago.estado }}
+                                            </span>
+                                        {% else %}
+                                            <span class="estado-badge estado-{{ reserva.estado_pago|lower|cut:" "|cut:"á"|cut:"é"|cut:"í"|cut:"ó"|cut:"ú" }}">
+                                                Pago: {{ reserva.estado_pago|default:"Pendiente" }}
+                                            </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                            <div class="guest-reserva-info-grid reserva-money-grid">
+                                <div>
+                                    <span>Total reserva</span>
+                                    <strong>${{ reserva.total|default:"0.00" }}</strong>
+                                </div>
+
+                                <div>
+                                    <span>Anticipo mínimo 50%</span>
+                                    <strong>${{ reserva.anticipo_minimo|default:"0.00" }}</strong>
+                                </div>
+
+                                <div>
+                                    <span>Saldo pendiente</span>
+                                    <strong>${{ reserva.saldo_pendiente|default:"0.00" }}</strong>
+                                </div>
+
+                                <div>
+                                    <span>Fecha límite de pago</span>
+                                    <strong>{{ reserva.fecha_limite_pago|date:"d/m/Y"|default:"Por definir" }}</strong>
+                                </div>
+                            </div>
+
+                            <div class="guest-reserva-info-grid">
+                                <div>
+                                    <span>Entrada / uso</span>
+                                    <strong>{{ reserva.fecha_ingreso|date:"d/m/Y" }}</strong>
+                                </div>
+
+                                <div>
+                                    <span>Salida</span>
+                                    <strong>{{ reserva.fecha_salida|date:"d/m/Y"|default:"No aplica" }}</strong>
+                                </div>
+
+                                <div>
+                                    <span>Método de pago</span>
+                                    <strong>
+                                        {% if pago %}
+                                            {{ pago.metodo_pago }}
+                                        {% else %}
+                                            {{ reserva.metodo_pago|default:"Sin seleccionar" }}
+                                        {% endif %}
+                                    </strong>
+                                </div>
+
+                                <div>
+                                    <span>Porcentaje anticipo</span>
+                                    <strong>{{ reserva.porcentaje_anticipo|default:"50" }}%</strong>
+                                </div>
+                            </div>
+
+                            <div class="guest-services-box">
+                                <div class="guest-services-title">
+                                    <i class="fa-solid fa-leaf"></i>
+                                    <strong>Detalle de la experiencia</strong>
+                                </div>
+
+                                {% for detalle in reserva.detallehabitaciones_set.all %}
+                                    <div class="guest-service-item detailed">
+                                        <div>
+                                            <strong>Habitación {{ detalle.id_habitacion.numero_habitacion }}</strong>
+
+                                            <span>
+                                                {{ detalle.id_habitacion.tipo_habitacion }} ·
+                                                {{ detalle.get_programa_display }} ·
+                                                {{ detalle.get_tipo_ocupacion_display }}
+                                            </span>
+
+                                            <small>
+                                                Personas: {{ detalle.cantidad_personas }} ·
+                                                Noches: {{ detalle.cantidad_noches }} ·
+                                                Precio programa: ${{ detalle.precio_programa }}
+                                            </small>
+                                        </div>
+
+                                        <strong>${{ detalle.subtotal }}</strong>
+                                    </div>
+                                {% endfor %}
+
+                                {% for detalle in reserva.detallecabanas_set.all %}
+                                    <div class="guest-service-item detailed">
+                                        <div>
+                                            <strong>
+                                                Cabaña {{ detalle.id_cabana.numero_cabana }}
+                                            </strong>
+
+                                            <span>
+                                                {{ detalle.id_cabana.tipo_cabana|default:"Cabaña" }} ·
+                                                {{ detalle.get_programa_display }} ·
+                                                {{ detalle.get_tipo_ocupacion_display }}
+                                            </span>
+
+                                            <small>
+                                                Personas: {{ detalle.cantidad_personas }} ·
+                                                Noches: {{ detalle.cantidad_noches }} ·
+                                                Precio programa: ${{ detalle.precio_programa }}
+                                            </small>
+                                        </div>
+
+                                        <strong>${{ detalle.subtotal }}</strong>
+                                    </div>
+                                {% endfor %}
+
+                                {% for detalle in reserva.detallecine_set.all %}
+                                    <div class="guest-service-item detailed">
+                                        <div>
+                                            <strong>
+                                                {{ detalle.id_funcion.titulo_pelicula|default:"Película por confirmar" }}
+                                            </strong>
+
+                                            <span>
+                                                {{ detalle.id_funcion.dia_funcion|default:"Sábado" }} ·
+                                                {{ detalle.id_funcion.hora_proyeccion|time:"H:i" }} ·
+                                                {{ detalle.cantidad_asientos }} entrada(s)
+                                            </span>
+
+                                            <small>
+                                                Entrada: ${{ detalle.id_funcion.precio_entrada }} ·
+                                                Productos adicionales:
+                                                {% if detalle.productos_adicionales %}
+                                                    {{ detalle.productos_adicionales }}
+                                                {% else %}
+                                                    Sin productos adicionales
+                                                {% endif %}
+                                            </small>
+                                        </div>
+
+                                        <strong>${{ detalle.subtotal }}</strong>
+                                    </div>
+                                {% endfor %}
+
+                                {% for detalle in reserva.detalleresort_set.all %}
+                                    <div class="guest-service-item detailed">
+                                        <div>
+                                            <strong>
+                                                {{ detalle.id_resort_dia.nombre|default:"Resort del Día" }}
+                                            </strong>
+
+                                            <span>
+                                                {{ detalle.cantidad_personas }} persona(s) ·
+                                                {{ detalle.combo_cabana|default:"Cabañas C3 hasta C8" }}
+                                            </span>
+
+                                            <small>
+                                                Punto de atención:
+                                                {{ detalle.punto_atencion|default:"Vistro" }} ·
+                                                Toallas se solicitan en Vistro
+                                            </small>
+                                        </div>
+
+                                        <strong>${{ detalle.subtotal }}</strong>
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            {% if reserva.observaciones %}
+                                <div class="guest-note">
+                                    <strong>Observaciones:</strong>
+                                    <p>{{ reserva.observaciones }}</p>
+                                </div>
+                            {% endif %}
+
+                            <div class="payment-status-detail-box">
+                                <div class="payment-status-title">
+                                    <i class="fa-solid fa-money-check-dollar"></i>
+                                    <strong>Estado del pago</strong>
+                                </div>
+
+                                {% if pago %}
+                                    <div class="payment-status-list">
+                                        <div class="payment-status-item">
+                                            <div>
+                                                <span class="payment-method-label">{{ pago.metodo_pago }}</span>
+
+                                                <strong>
+                                                    {% if pago.estado == "Pendiente" %}
+                                                        Pago pendiente
+                                                    {% elif pago.estado == "En revision" %}
+                                                        Pago en revision
+                                                    {% elif pago.estado == "Pagado" %}
+                                                        Pago aprobado
+                                                    {% elif pago.estado == "Rechazado" %}
+                                                        Pago rechazado
+                                                    {% elif pago.estado == "Cancelado" %}
+                                                        Pago cancelado
+                                                    {% else %}
+                                                        {{ pago.estado }}
+                                                    {% endif %}
+                                                </strong>
+
+                                                <small>Registrado el {{ pago.fecha_creacion|date:"d/m/Y H:i" }}</small>
+
+                                                {% if pago.numero_comprobante %}
+                                                    <small>Comprobante: {{ pago.numero_comprobante }}</small>
+                                                {% endif %}
+                                            </div>
+
+                                            <span class="payment-state-pill payment-state-{{ pago.estado|slugify }}">
+                                                {{ pago.estado }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="payment-empty-state">
+                                        <i class="fa-solid fa-circle-info"></i>
+                                        <span>Aun no has seleccionado un metodo de pago para esta reserva.</span>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endwith %}
+
+                        <div class="guest-reserva-actions">
+                            <div class="guest-total">
+                                <span>Total</span>
+                                <strong>${{ reserva.total|default:"0.00" }}</strong>
+                            </div>
+
+                            <div class="guest-payment-mini">
+                                <span>Anticipo</span>
+                                <strong>${{ reserva.anticipo_minimo|default:"0.00" }}</strong>
+                            </div>
+
+                            {% if reserva.estado_pago == "Pagado" %}
+                                <span class="ar-btn primary paid-label">
+                                    <i class="fa-solid fa-circle-check"></i>
+                                    Pagado
+                                </span>
+                            {% elif reserva.estado_pago == "En revision" %}
+                                <span class="ar-btn gold paid-label">
+                                    <i class="fa-solid fa-clock"></i>
+                                    Pago en revision
+                                </span>
+                            {% elif reserva.estado_pago == "Anulado" or reserva.estado_pago == "Cancelado" %}
+                                <span class="ar-btn secondary paid-label">
+                                    <i class="fa-solid fa-ban"></i>
+                                    Pago anulado
+                                </span>
+                            {% else %}
+                                <a href="{% url 'gestion:pago_transferencia' reserva.id_reserva %}" class="ar-btn primary">
+                                    <i class="fa-solid fa-building-columns"></i>
+                                    Subir comprobante
+                                </a>
+                            {% endif %}
+
+                            {% if reserva.estado_reserva == "Pendiente" or reserva.estado_reserva == "Confirmada" %}
+                                <form method="POST" action="{% url 'gestion:cancelar_reserva' reserva.id_reserva %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="cancel-reserva-btn"
+                                        onclick="return confirm('¿Seguro que deseas cancelar esta reserva?');">
+                                        <i class="fa-solid fa-trash-can"></i>
+                                        Cancelar reserva
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="guest-empty-card">
+                <div>
+                    <span class="ar-kicker">
+                        <i class="fa-solid fa-leaf"></i>
+                        Sin reservas registradas
+                    </span>
+
+                    <h2>Aún no tienes experiencias reservadas</h2>
+
+                    <p>
+                        Explora habitaciones, cabañas, cine o resort del día
+                        y prepara tu visita a Arahuana.
+                    </p>
+                </div>
+
+                <a href="{% url 'gestion:habitaciones' %}" class="ar-btn primary">
+                    Explorar experiencias
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+        {% endif %}
+
+        <div class="support-card">
+            <div>
+                <span class="ar-kicker">
+                    <i class="fa-solid fa-headset"></i>
+                    ¿Necesitas ayuda?
+                </span>
+
+                <p>
+                    Recuerda que para asegurar la reserva se debe pagar
+                    mínimo el 50% del valor total.
+                </p>
+            </div>
+
+            <a href="{% url 'gestion:inicio' %}" class="ar-btn secondary">
+                <i class="fa-solid fa-house"></i>
+                Volver al inicio
+            </a>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+

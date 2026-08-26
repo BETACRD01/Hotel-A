@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Verificar código | Arahuana Eco-Resort & Spa{% endblock %}
+{% block body_class %}pagina-auth password-recovery-page{% endblock %}
+
+{% block content %}
+
+<section class="recovery-page">
+    <div class="recovery-topbar">
+        <a href="{% url 'gestion:inicio' %}" class="recovery-brand">
+            <img src="{% static 'img/logo.jpg' %}" alt="Arahuana">
+            <div>
+                <strong>Arahuana</strong>
+                <span>Eco-Resort & Spa</span>
+            </div>
+        </a>
+
+        <a href="{% url 'gestion:login' %}" class="recovery-back-top">
+            <i class="fa-solid fa-house"></i>
+            Volver al inicio de sesión
+        </a>
+    </div>
+
+    <div class="recovery-wrapper">
+        <div class="recovery-heading">
+            <span class="ar-kicker">
+                <i class="fa-solid fa-shield-halved"></i>
+                Verificación
+            </span>
+
+            <h1>Verificar código</h1>
+
+            <p>
+                Ingresa el código de 6 dígitos que enviamos a tu correo electrónico.
+            </p>
+        </div>
+
+        <div class="recovery-steps">
+            <div class="recovery-step done">
+                <span><i class="fa-solid fa-check"></i></span>
+                <p>Solicitar</p>
+            </div>
+
+            <div class="recovery-step active">
+                <span>2</span>
+                <p>Verificar</p>
+            </div>
+
+            <div class="recovery-step">
+                <span>3</span>
+                <p>Restablecer</p>
+            </div>
+        </div>
+
+        <div class="auth-card recovery-card">
+            <div class="recovery-icon">
+                <i class="fa-solid fa-lock"></i>
+            </div>
+
+            <h2>Verifica tu código</h2>
+
+            <p class="auth-subtitle">
+                Revisa tu correo e ingresa el código recibido.
+            </p>
+
+            {% if messages %}
+                <div class="auth-messages">
+                    {% for message in messages %}
+                        <div class="mensaje-auth mensaje-{{ message.tags }}">
+                            <i class="fa-solid fa-circle-info"></i>
+                            <span>{{ message }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <form method="POST" class="auth-form recovery-form">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label for="codigo">Código de verificación</label>
+                    <div class="input-icon">
+                        <i class="fa-solid fa-shield-halved"></i>
+                        <input
+                            type="text"
+                            id="codigo"
+                            name="codigo"
+                            placeholder="123456"
+                            maxlength="6"
+                            pattern="\d{6}"
+                            required
+                        >
+                    </div>
+                </div>
+
+                <button type="submit" class="auth-btn">
+                    <i class="fa-solid fa-check"></i>
+                    Verificar código
+                </button>
+            </form>
+
+            <div class="auth-footer">
+                <p>¿No recibiste el código?</p>
+                <a href="{% url 'gestion:recuperar_password' %}">Enviar nuevamente</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

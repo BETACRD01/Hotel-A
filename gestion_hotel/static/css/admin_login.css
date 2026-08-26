@@ -1,0 +1,99 @@
+:root {
+    --admin-green: #0f766e;
+    --admin-green-dark: #134e4a;
+    --admin-surface: rgba(255, 255, 255, 0.94);
+    --admin-text: #0f172a;
+    --admin-muted: #64748b;
+}
+
+body.login-page {
+    background: linear-gradient(135deg, rgba(15, 118, 110, 0.55), rgba(2, 6, 23, 0.65)), url('/static/img/fondo.jpg') center/cover no-repeat fixed;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+}
+
+body.login-page::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: rgba(2, 6, 23, 0.18);
+    z-index: -1;
+}
+
+.login-box {
+    width: min(430px, 100%);
+    margin: 0 auto;
+}
+
+.login-logo {
+    text-align: center;
+    margin-bottom: 18px;
+}
+
+.login-logo img {
+    max-width: 120px;
+    max-height: 120px;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 14px 35px rgba(15, 23, 42, 0.18);
+    background: #fff;
+    padding: 6px;
+}
+
+.login-box .card {
+    border: 0;
+    border-radius: 22px;
+    box-shadow: 0 20px 45px rgba(15, 23, 42, 0.22);
+    overflow: hidden;
+    background: var(--admin-surface);
+}
+
+.login-card-body {
+    padding: 32px 28px 28px;
+}
+
+.login-box-msg {
+    font-size: 0.95rem;
+    color: var(--admin-muted);
+    margin-bottom: 18px;
+    text-align: center;
+}
+
+.form-group label,
+.input-group-text {
+    color: var(--admin-text);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--admin-green), var(--admin-green-dark));
+    border: 0;
+    border-radius: 999px;
+    padding: 10px 16px;
+    font-weight: 600;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 20px rgba(15, 118, 110, 0.2);
+}
+
+.input-group .form-control {
+    border-radius: 10px;
+    padding: 10px 12px;
+}
+
+@media (max-width: 576px) {
+    body.login-page {
+        padding: 16px;
+    }
+
+    .login-card-body {
+        padding: 24px 18px 20px;
+    }
+}

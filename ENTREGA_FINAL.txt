@@ -1,0 +1,24 @@
+Proyecto: Sistema Hotelero Arahuana
+Desarrollado en: Django + PostgreSQL
+Estado: Proyecto listo para revisión
+
+Módulos incluidos:
+- Inicio público
+- Sobre nosotros
+- Registro de clientes
+- Login de clientes
+- Panel del cliente
+- Habitaciones
+- Cabañas
+- Cine
+- Resort del día
+- Mis reservas
+- Panel administrativo
+- Gestión de reservas
+
+Usuario administrador:
+Debe crearse con:
+python manage.py createsuperuser
+
+O cambiar la contraseña de un usuario existente con:
+python manage.py changepassword nombre_usuario

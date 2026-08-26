@@ -1,0 +1,137 @@
+body.login-page {
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.65), rgba(15, 118, 110, 0.4)), url('/static/img/fondo.jpg') center/cover no-repeat fixed;
+}
+
+.login-logo img,
+.login-box .card img,
+.brand-link img,
+.navbar-brand img {
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18);
+}
+
+.brand-link img {
+    width: 56px;
+    height: 56px;
+    margin-right: 10px;
+}
+
+/* Login page: center and size logo + form */
+.login-page .login-box {
+    width: 100%;
+    max-width: 420px;
+    margin: 40px auto 0;
+    text-align: center;
+}
+
+.login-page .login-logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.login-page .login-logo img,
+.login-page .login-box .card img {
+    width: 150px;
+    height: 150px;
+    max-width: 160px;
+    max-height: 160px;
+}
+
+/* Make sure the login card is visible and the form sits under the logo */
+.login-box .card {
+    background: rgba(255,255,255,0.95);
+    padding: 0;
+}
+
+.login-card-body {
+    padding: 20px 24px;
+}
+
+/* Welcome text styling */
+.login-box .card .card-body .login-welcome,
+.login-box .card .card-body p.login-welcome,
+.login-box .card .card-body .welcome-sign {
+    display: block;
+    text-align: center;
+    font-size: 1.05rem;
+    color: #0f766e;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+.login-box .card {
+    border: 0;
+    border-radius: 18px;
+    overflow: hidden;
+}
+
+.login-card-body {
+    padding: 28px 24px;
+}
+
+.main-sidebar {
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+}
+
+.brand-link {
+    background: linear-gradient(90deg, #0f766e 0%, #14b8a6 100%);
+    padding: 12px 14px;
+}
+
+.nav-sidebar .nav-link {
+    border-radius: 10px;
+    margin: 2px 8px;
+}
+
+.nav-sidebar .nav-link:hover {
+    background: rgba(15, 118, 110, 0.08);
+}
+
+.card,
+.form-row .form-group,
+.content-wrapper .card {
+    border-radius: 14px;
+}
+
+.btn-primary {
+    border-radius: 10px;
+}
+
+.small-box {
+    border-radius: 14px;
+}
+
+.main-header .navbar {
+    background: linear-gradient(90deg, #0f766e 0%, #14b8a6 100%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.navbar-dark .navbar-brand,
+.navbar-dark .navbar-nav .nav-link,
+.main-header .navbar .fas,
+.main-header .navbar .far,
+.main-header .navbar .nav-item .dropdown-toggle {
+    color: #f8fafc;
+}
+
+.main-header .navbar .navbar-brand:hover,
+.navbar-dark .navbar-nav .nav-link:hover,
+.main-header .navbar .nav-item .dropdown-toggle:hover {
+    color: #e2e8f0;
+}
+
+.main-header .navbar .form-control {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #f8fafc;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.main-header .navbar .form-control:focus {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: none;
+}

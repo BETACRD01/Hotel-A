@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Seleccionar pago | Arahuana Eco-Resort & Spa{% endblock %}
+
+{% block content %}
+
+<section class="payment-choice-hero">
+    <div class="contenedor">
+        <span class="ar-kicker">
+            <i class="fa-solid fa-credit-card"></i>
+            Pago de reserva
+        </span>
+
+        <h1>Selecciona tu método de pago</h1>
+
+        <p>
+            Para asegurar tu reserva debes cancelar mínimo el 50%
+            del valor total.
+        </p>
+    </div>
+</section>
+
+<section class="payment-choice-page">
+    <div class="contenedor">
+
+        {% if messages %}
+            <div class="public-alerts">
+                {% for message in messages %}
+                    <div class="public-alert public-alert-{{ message.tags }}">
+                        <i class="fa-solid fa-circle-info"></i>
+                        <span>{{ message }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="reserva-advertencia-card" style="margin-bottom: 24px;">
+            <i class="fa-solid fa-triangle-exclamation advertencia-icon"></i>
+            <div class="advertencia-content">
+                <strong>⚠️ ATENCIÓN: PLAZO LÍMITE DE PAGO (24 HORAS)</strong>
+                <p>
+                    Tienes un plazo de <strong>24 horas</strong> (hasta el <strong>{{ reserva.fecha_limite_pago|date:"d/m/Y" }}</strong>) para realizar tu transferencia bancaria del 50% de anticipo (<strong>${{ monto_anticipo }}</strong>) y subir tu comprobante. De lo contrario, la reserva será liberada.
+                </p>
+            </div>
+        </div>
+
+        <div class="payment-resume-card">
+            <div>
+                <span>Reserva</span>
+                <strong>{{ reserva.codigo_reserva }}</strong>
+            </div>
+
+            <div>
+                <span>Total</span>
+                <strong>${{ reserva.total }}</strong>
+            </div>
+
+            <div>
+                <span>Anticipo mínimo</span>
+                <strong>${{ monto_anticipo }}</strong>
+            </div>
+
+            <div>
+                <span>Saldo pendiente</span>
+                <strong>${{ reserva.saldo_pendiente }}</strong>
+            </div>
+        </div>
+
+        <div class="payment-method-grid two-options">
+
+            <article class="payment-method-card featured">
+                <div class="payment-method-icon">
+                    <i class="fa-solid fa-building-columns"></i>
+                </div>
+
+                <h2>Transferencia bancaria</h2>
+
+                <p>
+                    Realiza el pago del anticipo mínimo a una de las cuentas
+                    bancarias del hotel y sube el comprobante.
+                </p>
+
+                <a href="{% url 'gestion:pago_transferencia' reserva.id_reserva %}" class="ar-btn primary">
+                    <i class="fa-solid fa-upload"></i>
+                    Subir comprobante
+                </a>
+            </article>
+
+        </div>
+
+        <div class="payment-info-note">
+            <i class="fa-solid fa-circle-info"></i>
+            <p>
+                El anticipo mínimo corresponde al 50% del valor total.
+                La reserva se confirma cuando el administrador valide el pago.
+            </p>
+        </div>
+
+        <a href="{% url 'gestion:mis_reservas' %}" class="ar-btn secondary">
+            <i class="fa-solid fa-arrow-left"></i>
+            Volver a mis reservas
+        </a>
+    </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends 'gerente/base_gerente.html' %}
+
+{% block title %}Cabañas | Panel Gerencial{% endblock %}
+{% block breadcrumb %}Gerencia / Cabañas{% endblock %}
+
+{% block content %}
+<div class="page-header-gerente">
+    <h1>Gestión de Cabañas</h1>
+    <p>Estado actual de todas las cabañas del resort.</p>
+    <div style="margin-top:12px;">
+        <a href="{% url 'gestion:gerente_modelo_nuevo' 'cabanas' %}" class="badge badge-success" style="text-decoration:none;">Nueva cabana</a>
+        <a href="{% url 'gestion:gerente_cabanas' %}" class="badge badge-info" style="text-decoration:none;">Administrar cabanas</a>
+    </div>
+</div>
+
+<div class="gerente-card">
+    <div class="gerente-card-body no-padding">
+        <table class="gerente-table">
+            <thead>
+                <tr>
+                    <th>Número</th>
+                    <th>Tipo</th>
+                    <th>Capacidad</th>
+                    <th>Precio/Noche</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in cabanas %}
+                <tr>
+                    <td><strong>{{ c.numero_cabana }}</strong></td>
+                    <td>{{ c.tipo_cabana|default:"Sin tipo" }}</td>
+                    <td>{{ c.capacidad }} persona(s)</td>
+                    <td>${{ c.precio_noche }}</td>
+                    <td><span class="estado-badge estado-{{ c.estado|lower }}">{{ c.estado }}</span></td>
+                    <td><a href="{% url 'gestion:gerente_modelo_editar' 'cabanas' c.id_cabana %}" class="badge badge-info" style="text-decoration:none;">Editar</a></td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="empty-state">
+                        <i class="fa-solid fa-house-chimney"></i>
+                        <h3>No hay cabañas</h3>
+                        <p>No se encontraron cabañas registradas.</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

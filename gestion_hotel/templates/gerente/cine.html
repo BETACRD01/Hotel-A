@@ -1,0 +1,90 @@
+{% extends 'gerente/base_gerente.html' %}
+
+{% block title %}Cine | Panel Gerencial{% endblock %}
+{% block breadcrumb %}Gerencia / Cine{% endblock %}
+
+{% block content %}
+<div class="page-header-gerente">
+    <h1>Gestion de Cine</h1>
+    <p>Funciones, cupos, reservas e ingresos pagados del modulo de cine.</p>
+    <div style="margin-top:12px;">
+        <a href="{% url 'gestion:gerente_modelo_nuevo' 'cine' %}" class="badge badge-success" style="text-decoration:none;">Nueva funcion</a>
+        <a href="{% url 'gestion:gerente_cine' %}" class="badge badge-info" style="text-decoration:none;">Administrar cine</a>
+    </div>
+</div>
+
+<section class="kpi-grid gerente-section">
+    <article class="kpi-card">
+        <div class="kpi-info">
+            <div class="kpi-card-title">
+                <h3>Funciones</h3>
+                <i class="fa-solid fa-film"></i>
+            </div>
+            <div class="kpi-value">{{ total_funciones }}</div>
+            <div class="kpi-change">{{ funciones_activas }} activas</div>
+        </div>
+    </article>
+
+    <article class="kpi-card">
+        <div class="kpi-info">
+            <div class="kpi-card-title">
+                <h3>Gestion publica</h3>
+                <i class="fa-solid fa-ticket"></i>
+            </div>
+            <div class="kpi-value">Cine</div>
+            <div class="kpi-change">Visible en el sitio para clientes</div>
+        </div>
+    </article>
+</section>
+
+<div class="gerente-card">
+    <div class="gerente-card-body no-padding">
+        <table class="gerente-table">
+            <thead>
+                <tr>
+                    <th>Pelicula</th>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                    <th>Duracion</th>
+                    <th>Cupos</th>
+                    <th>Reservas</th>
+                    <th>Precio</th>
+                    <th>Ingresos Pagados</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for f in funciones %}
+                <tr>
+                    <td><strong>{{ f.titulo_pelicula }}</strong></td>
+                    <td>{{ f.fecha_proyeccion|date:"d/m/Y" }}</td>
+                    <td>{{ f.hora_proyeccion|time:"H:i" }}</td>
+                    <td>{{ f.duracion_minutos }} min</td>
+                    <td>{{ f.asientos_reservados|default:0 }} / {{ f.capacidad_sala }}</td>
+                    <td>{{ f.reservas_count|default:0 }}</td>
+                    <td>${{ f.precio_entrada }}</td>
+                    <td>${{ f.ingresos_pagados|default:0|floatformat:2 }}</td>
+                    <td>
+                        {% if f.activo %}
+                            <span class="estado-badge estado-{{ f.estado|lower }}">{{ f.estado }}</span>
+                        {% else %}
+                            <span class="estado-badge estado-inactivo">Inactiva</span>
+                        {% endif %}
+                    </td>
+                    <td><a href="{% url 'gestion:gerente_modelo_editar' 'cine' f.id_funcion %}" class="badge badge-info" style="text-decoration:none;">Editar</a></td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="10" class="empty-state">
+                        <i class="fa-solid fa-film"></i>
+                        <h3>No hay funciones de cine</h3>
+                        <p>No se encontraron funciones registradas.</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

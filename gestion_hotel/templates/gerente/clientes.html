@@ -1,0 +1,56 @@
+{% extends 'gerente/base_gerente.html' %}
+
+{% block title %}Clientes | Panel Gerencial{% endblock %}
+{% block breadcrumb %}Gerencia / Clientes{% endblock %}
+
+{% block content %}
+<div class="page-header-gerente">
+    <h1>Gestión de Clientes</h1>
+    <p>Lista de todos los clientes registrados en el sistema.</p>
+    <div style="margin-top:12px;">
+        <a href="{% url 'gestion:gerente_modelo_nuevo' 'clientes' %}" class="badge badge-success" style="text-decoration:none;">Nuevo cliente</a>
+        <a href="{% url 'gestion:gerente_clientes' %}" class="badge badge-info" style="text-decoration:none;">Administrar clientes</a>
+    </div>
+</div>
+
+<div class="gerente-card">
+    <div class="gerente-card-body no-padding">
+        <table class="gerente-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Documento</th>
+                    <th>Correo</th>
+                    <th>Teléfono</th>
+                    <th>Ubicación</th>
+                    <th>Registro</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in clientes %}
+                <tr>
+                    <td>{{ c.id_cliente }}</td>
+                    <td><strong>{{ c.nombres }} {{ c.apellidos }}</strong></td>
+                    <td>{{ c.tipo_documento }}: {{ c.numero_documento }}</td>
+                    <td>{{ c.correo_electronico }}</td>
+                    <td>{{ c.telefono_celular }}</td>
+                    <td>{{ c.ciudad|default:"-" }}, {{ c.pais_origen|default:"-" }}</td>
+                    <td>{{ c.fecha_registro|date:"d/m/Y" }}</td>
+                    <td><a href="{% url 'gestion:gerente_modelo_editar' 'clientes' c.id_cliente %}" class="badge badge-info" style="text-decoration:none;">Editar</a></td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" class="empty-state">
+                        <i class="fa-solid fa-users"></i>
+                        <h3>No hay clientes</h3>
+                        <p>No se encontraron clientes registrados.</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

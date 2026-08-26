@@ -1,0 +1,241 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Panel Gerencial | Arahuana Eco-Resort & Spa{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/gerente.css' %}?v=20260826-dark-image">
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="gerente-body">
+
+    <aside class="gerente-sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="{% url 'gestion:gerente_dashboard' %}" class="sidebar-brand">
+                <img src="{% static 'img/logo.jpg' %}" alt="Logo" class="sidebar-logo">
+                <div class="sidebar-brand-text">
+                    <strong>Panel Gerencial</strong>
+                    <small>Arahuana Resort</small>
+                </div>
+            </a>
+            <button type="button" class="sidebar-close" id="sidebarClose">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="sidebar-section">
+                <span class="sidebar-section-title">Módulo Gerencia</span>
+                <a href="{% url 'gestion:gerente_dashboard' %}" class="sidebar-link {% if request.resolver_match.url_name == 'gerente_dashboard' %}active{% endif %}">
+                    <i class="fa-solid fa-gauge-high"></i>
+                    <span>Panel de control</span>
+                </a>
+                <a href="{% url 'gestion:gerente_informes' %}" class="sidebar-link {% if request.resolver_match.url_name == 'gerente_informes' %}active{% endif %}">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span>Informes Financieros</span>
+                </a>
+                <a href="{% url 'gestion:gerente_ocupacion' %}" class="sidebar-link {% if request.resolver_match.url_name == 'gerente_ocupacion' %}active{% endif %}">
+                    <i class="fa-solid fa-bed"></i>
+                    <span>Análisis de Ocupación</span>
+                </a>
+                <a href="{% url 'gestion:gerente_reservas' %}" class="sidebar-link {% if request.resolver_match.url_name == 'gerente_reservas' %}active{% endif %}">
+                    <i class="fa-solid fa-calendar-check"></i>
+                    <span>Reportes de Reservas</span>
+                </a>
+                <a href="{% url 'gestion:gerente_personal' %}" class="sidebar-link {% if request.resolver_match.url_name == 'gerente_personal' %}active{% endif %}">
+                    <i class="fa-solid fa-users-gear"></i>
+                    <span>Desempeño de Personal</span>
+                </a>
+                <a href="{% url 'gestion:gerente_comentarios' %}" class="sidebar-link {% if request.resolver_match.url_name == 'gerente_comentarios' %}active{% endif %}">
+                    <i class="fa-solid fa-comments"></i>
+                    <span>Comentarios de Clientes</span>
+                </a>
+                <a href="{% url 'gestion:gerente_tarifas' %}" class="sidebar-link {% if request.resolver_match.url_name == 'gerente_tarifas' %}active{% endif %}">
+                    <i class="fa-solid fa-tags"></i>
+                    <span>Configuración de Tarifas</span>
+                </a>
+            </div>
+
+            <div class="sidebar-section">
+                <span class="sidebar-section-title">Módulo Gestión Hotel</span>
+                <a href="{% url 'gestion:gerente_clientes' %}" class="sidebar-link {% if request.resolver_match.url_name == 'gerente_clientes' %}active{% endif %}">
+                    <i class="fa-solid fa-users"></i>
+                    <span>Clientes</span>
+                </a>
+                <a href="{% url 'gestion:gerente_habitaciones' %}" class="sidebar-link {% if request.resolver_match.url_name == 'gerente_habitaciones' %}active{% endif %}">
+                    <i class="fa-solid fa-bed"></i>
+                    <span>Habitaciones</span>
+                </a>
+                <a href="{% url 'gestion:gerente_cabanas' %}" class="sidebar-link {% if request.resolver_match.url_name == 'gerente_cabanas' %}active{% endif %}">
+                    <i class="fa-solid fa-house-chimney"></i>
+                    <span>Cabañas</span>
+                </a>
+                <a href="{% url 'gestion:gerente_resort' %}" class="sidebar-link {% if request.resolver_match.url_name == 'gerente_resort' %}active{% endif %}">
+                    <i class="fa-solid fa-umbrella-beach"></i>
+                    <span>Resort Día</span>
+                </a>
+                <a href="{% url 'gestion:gerente_cine' %}" class="sidebar-link {% if request.resolver_match.url_name == 'gerente_cine' %}active{% endif %}">
+                    <i class="fa-solid fa-film"></i>
+                    <span>Cine</span>
+                </a>
+                <a href="{% url 'gestion:gerente_sobre_nosotros' %}" class="sidebar-link {% if request.resolver_match.url_name == 'gerente_sobre_nosotros' %}active{% endif %}">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <span>Sobre nosotros</span>
+                </a>
+            </div>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="{% url 'gestion:inicio' %}" class="sidebar-link">
+                <i class="fa-solid fa-arrow-left"></i>
+                <span>Volver al sitio</span>
+            </a>
+            <a href="{% url 'gestion:logout' %}" class="sidebar-link">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Cerrar sesión</span>
+            </a>
+        </div>
+    </aside>
+
+    <div class="gerente-main" id="mainContent">
+        <header class="gerente-navbar">
+            <div class="navbar-left">
+                <button type="button" class="sidebar-toggle" id="sidebarToggle">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <nav class="breadcrumb">
+                    <a href="{% url 'gestion:gerente_dashboard' %}">Inicio</a>
+                    <span>/</span>
+                    <span>{% block breadcrumb %}Dashboard{% endblock %}</span>
+                </nav>
+            </div>
+            <div class="navbar-right">
+                <a href="{% url 'gestion:inicio' %}" class="navbar-link">
+                    <i class="fa-solid fa-home"></i>
+                    Inicio
+                </a>
+                <a href="{% url 'gestion:gerente_reservas' %}" class="navbar-link">
+                    <i class="fa-solid fa-calendar-check"></i>
+                    Reservas
+                </a>
+                <a href="{% url 'gestion:gerente_clientes' %}" class="navbar-link">
+                    <i class="fa-solid fa-users"></i>
+                    Clientes
+                </a>
+                <a href="{% url 'gestion:gerente_dashboard' %}" class="navbar-link">
+                    <i class="fa-solid fa-screwdriver-wrench"></i>
+                    Gerente
+                </a>
+                <div class="user-menu-gerente">
+                    <button type="button" class="user-toggle-gerente" id="userToggle">
+                        <span class="user-avatar-gerente">
+                            <i class="fa-solid fa-user-tie"></i>
+                        </span>
+                        <span class="user-name-gerente">{{ usuario.nombres }} {{ usuario.apellidos }}</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </button>
+                    <div class="user-dropdown-gerente" id="userDropdown">
+                        <div class="user-dropdown-header-gerente">
+                            <strong>{{ usuario.nombres }} {{ usuario.apellidos }}</strong>
+                            <span>Gerente</span>
+                        </div>
+                        <a href="{% url 'gestion:inicio' %}" class="user-dropdown-link-gerente">
+                            <i class="fa-solid fa-home"></i>
+                            Ir al sitio
+                        </a>
+                        <a href="{% url 'gestion:gerente_dashboard' %}" class="user-dropdown-link-gerente">
+                            <i class="fa-solid fa-screwdriver-wrench"></i>
+                            Panel gerente
+                        </a>
+                        <a href="{% url 'gestion:logout' %}" class="user-dropdown-link-gerente logout">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                            Cerrar sesión
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="gerente-content">
+            {% if messages %}
+                <div class="toast-container-gerente">
+                    {% for message in messages %}
+                        <div class="toast-gerente toast-{{ message.tags|default:'info' }}">
+                            <div class="toast-content-gerente">
+                                {% if 'success' in message.tags %}
+                                    <i class="fa-solid fa-circle-check"></i>
+                                {% elif 'error' in message.tags %}
+                                    <i class="fa-solid fa-circle-exclamation"></i>
+                                {% elif 'warning' in message.tags %}
+                                    <i class="fa-solid fa-triangle-exclamation"></i>
+                                {% else %}
+                                    <i class="fa-solid fa-circle-info"></i>
+                                {% endif %}
+                                <span>{{ message }}</span>
+                            </div>
+                            <button type="button" class="toast-close-gerente" onclick="this.closest('.toast-gerente').remove();">&times;</button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {% block content %}{% endblock %}
+        </main>
+
+        <footer class="gerente-footer">
+            <p>Copyright &copy; 2026 Sistema Hotelero Arahuana. Todos los derechos reservados.</p>
+            <p>Versión de Jazzmin 3.0.5</p>
+        </footer>
+    </div>
+
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebarClose = document.getElementById('sidebarClose');
+        const mainContent = document.getElementById('mainContent');
+        const userToggle = document.getElementById('userToggle');
+        const userDropdown = document.getElementById('userDropdown');
+
+        if (sidebarToggle) {
+            sidebarToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('activo');
+                mainContent.classList.toggle('sidebar-open');
+            });
+        }
+
+        if (sidebarClose) {
+            sidebarClose.addEventListener('click', function() {
+                sidebar.classList.remove('activo');
+                mainContent.classList.remove('sidebar-open');
+            });
+        }
+
+        if (userToggle && userDropdown) {
+            userToggle.addEventListener('click', function(e) {
+                e.stopPropagation();
+                userDropdown.classList.toggle('activo');
+            });
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.user-menu-gerente')) {
+                    userDropdown.classList.remove('activo');
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const toasts = document.querySelectorAll('.toast-gerente');
+            toasts.forEach(function(toast) {
+                setTimeout(function() {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateY(-10px)';
+                    setTimeout(function() { toast.remove(); }, 300);
+                }, 4500);
+            });
+        });
+    </script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

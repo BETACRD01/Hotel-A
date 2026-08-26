@@ -1,0 +1,453 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Habitaciones | Arahuana Eco-Resort & Spa{% endblock %}
+
+{% block content %}
+
+{% if messages %}
+    <div class="public-alerts" role="alert" aria-live="polite">
+        {% for message in messages %}
+            <div class="public-alert public-alert-{{ message.tags|default:'info' }}">
+                {% if message.tags == 'success' %}
+                    <i class="fas fa-circle-check"></i>
+                {% elif message.tags == 'error' %}
+                    <i class="fas fa-circle-exclamation"></i>
+                {% elif message.tags == 'warning' %}
+                    <i class="fas fa-triangle-exclamation"></i>
+                {% else %}
+                    <i class="fas fa-circle-info"></i>
+                {% endif %}
+                <span>{{ message }}</span>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+ <section class="catalog-hero-premium rooms"{% if fondo_habitaciones %} style="background-image: linear-gradient(90deg, rgba(6, 39, 25, 0.9), rgba(6, 39, 25, 0.6), rgba(6, 39, 25, 0.3)), url('{{ fondo_habitaciones.url }}') !important;"{% endif %}>
+    <div class="contenedor catalog-hero-content">
+        <span class="ar-kicker">
+            <i class="fa-solid fa-leaf"></i>
+            Habitaciones
+        </span>
+
+        <h1>Confort y descanso en plena naturaleza</h1>
+
+        <p>
+            Espacios diseñados para tu bienestar, donde cada detalle te conecta
+            con la tranquilidad de la Amazonia.
+        </p>
+
+        <div class="hero-actions">
+            <a href="#habitaciones" class="ar-btn primary">
+                <i class="fa-solid fa-bed"></i>
+                Ver habitaciones
+            </a>
+
+            <a href="{% url 'gestion:cabanas' %}" class="ar-btn secondary">
+                <i class="fa-solid fa-house-chimney"></i>
+                Ver cabañas
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="contenedor">
+    <div class="catalog-feature-strip">
+        <article class="catalog-feature">
+            <i class="fa-solid fa-bed"></i>
+            <div>
+                <strong>Diseño natural</strong>
+                <span>Ambientes calidos y acogedores</span>
+            </div>
+        </article>
+
+        <article class="catalog-feature">
+            <i class="fa-solid fa-leaf"></i>
+            <div>
+                <strong>Vistas unicas</strong>
+                <span>Conecta con la belleza de la selva</span>
+            </div>
+        </article>
+
+        <article class="catalog-feature">
+            <i class="fa-solid fa-spa"></i>
+            <div>
+                <strong>Comodidades</strong>
+                <span>Todo lo que necesitas para descansar</span>
+            </div>
+        </article>
+
+        <article class="catalog-feature">
+            <i class="fa-solid fa-shield-heart"></i>
+            <div>
+                <strong>Seguridad</strong>
+                <span>Espacios pensados para tu tranquilidad</span>
+            </div>
+        </article>
+    </div>
+</section>
+
+<section id="habitaciones" class="catalog-section">
+    <div class="catalog-container">
+        <div class="catalog-header-row">
+            <div>
+                <span class="ar-kicker">
+                    <i class="fa-solid fa-seedling"></i>
+                    Nuestras habitaciones
+                </span>
+
+                <h2 class="ar-title">Elige tu espacio de descanso</h2>
+
+                <p class="ar-subtitle">
+                    Habitaciones comodas para relajarte despues de disfrutar
+                    la naturaleza, el resort y las experiencias de Arahuana.
+                </p>
+            </div>
+
+            <a href="{% url 'gestion:resort' %}" class="ar-btn secondary">
+                Explorar resort
+                <i class="fa-solid fa-arrow-right"></i>
+            </a>
+        </div>
+
+        <div class="catalog-grid" id="habitacionesGrid">
+            {% for hab in habitaciones %}
+                <article class="catalog-card">
+                    <div class="catalog-image">
+                        {% if hab.imagen %}
+                            <img src="{{ hab.imagen.url }}" alt="Habitacion {{ hab.numero_habitacion }}" onerror="this.onerror=null; this.src='{% static 'img/hotel_arahuana.jpg' %}';">
+                        {% elif hab.numero_habitacion == '102' %}
+                            <img src="{% static 'img/hotel_arahuana.jpg' %}" alt="Habitacion {{ hab.numero_habitacion }}" onerror="this.onerror=null; this.src='{% static 'img/logo.jpg' %}';">
+                        {% elif hab.numero_habitacion == '103' %}
+                            <img src="{% static 'img/hotel_arahuana.jpg' %}" alt="Habitacion {{ hab.numero_habitacion }}" onerror="this.onerror=null; this.src='{% static 'img/logo.jpg' %}';">
+                        {% elif hab.numero_habitacion == '105' %}
+                            <img src="{% static 'img/hotel_arahuana.jpg' %}" alt="Habitacion {{ hab.numero_habitacion }}" onerror="this.onerror=null; this.src='{% static 'img/logo.jpg' %}';">
+                        {% else %}
+                            <img src="{% static 'img/hotel_arahuana.jpg' %}" alt="Habitacion {{ hab.numero_habitacion }}" onerror="this.onerror=null; this.src='{% static 'img/logo.jpg' %}';">
+                        {% endif %}
+
+                        <span class="catalog-status">
+                            {{ hab.estado }}
+                        </span>
+                    </div>
+
+                    <div class="catalog-body">
+                        <h3>Habitacion {{ hab.numero_habitacion }}</h3>
+
+                        <p>
+                            {{ hab.descripcion|default:"Espacio comodo, acogedor y pensado para una estadia relajada en Arahuana." }}
+                        </p>
+
+                        <div class="catalog-meta">
+                            <span>
+                                <i class="fa-solid fa-tag"></i>
+                                {{ hab.tipo_habitacion }}
+                            </span>
+
+                            <span>
+                                <i class="fa-solid fa-user-group"></i>
+                                {{ hab.capacidad }} personas
+                            </span>
+
+                        </div>
+
+                        <div class="catalog-price">
+                            Tarifas por programa
+                            <small>2D/1N · 3D/2N · 4D/3N</small>
+                        </div>
+
+                        <div class="catalog-actions">
+                            {% if hab.estado == "Disponible" %}
+                                {% if usuario %}
+                                    <button type="button" class="abrir-modal"
+                                        data-id="{{ hab.id_habitacion }}"
+                                        data-numero="{{ hab.numero_habitacion }}"
+                                        data-tipo="{{ hab.tipo_habitacion }}"
+                                        data-secundaria-label="{{ hab.get_tipo_ocupacion_secundaria_display }}"
+                                        data-precio-2d1n-total="{{ hab.precio_2d1n_total }}"
+                                        data-precio-2d1n-secundaria="{{ hab.precio_2d1n_secundaria }}"
+                                        data-precio-3d2n-total="{{ hab.precio_3d2n_total }}"
+                                        data-precio-3d2n-secundaria="{{ hab.precio_3d2n_secundaria }}"
+                                        data-precio-4d3n-total="{{ hab.precio_4d3n_total }}"
+                                        data-precio-4d3n-secundaria="{{ hab.precio_4d3n_secundaria }}">
+                                        <i class="fas fa-calendar-check"></i>
+                                        Reservar ahora
+                                    </button>
+                                {% else %}
+                                    <a href="{% url 'gestion:login' %}?next={% url 'gestion:habitaciones' %}">
+                                        <i class="fas fa-calendar-check"></i>
+                                        Inicia sesión para reservar
+                                    </a>
+                                {% endif %}
+                            {% else %}
+                                <button type="button" disabled>
+                                    <i class="fa-solid fa-circle-xmark"></i>
+                                    No disponible
+                                </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </article>
+            {% empty %}
+                <div class="empty-public-state">
+                    <i class="fa-solid fa-bed"></i>
+                    <h3>No hay habitaciones disponibles por el momento</h3>
+                    <p>Vuelve a revisar mas tarde o comunicate con el hotel para mas informacion.</p>
+                    <a href="{% url 'gestion:inicio' %}" class="btn-primary-home">Volver al inicio</a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="ar-section tight">
+    <div class="contenedor">
+        <div class="home-cta">
+            <div>
+                <span class="ar-kicker">
+                    <i class="fa-solid fa-leaf"></i>
+                    Descanso en la Amazonía
+                </span>
+
+                <h2>¿Listo para tu descanso perfecto?</h2>
+
+                <p>
+                    Reserva una habitación y vive una experiencia única en
+                    Arahuana Eco-Resort & Spa.
+                </p>
+            </div>
+
+            <a href="#habitaciones" class="ar-btn gold">
+                Reservar ahora
+                <i class="fa-solid fa-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<div class="reserva-modal" id="reservaModal" aria-hidden="true">
+    <div class="reserva-modal-contenido public-form-card" role="dialog" aria-modal="true" aria-labelledby="reservaModalTitulo">
+        <div class="reserva-modal-header public-form-header">
+            <div>
+                <h3 id="reservaModalTitulo">Reservar habitación</h3>
+                <p class="public-form-subtitle">
+                    Selecciona la tarifa real de hospedaje según el programa del hotel.
+                </p>
+            </div>
+
+            <button type="button" class="modal-cerrar" id="reservaModalCerrar" aria-label="Cerrar modal">×</button>
+        </div>
+
+        <div class="reserva-modal-body">
+            <div class="info-note">
+                <strong>Habitación:</strong> <span id="modalHabitacionNumero">-</span>
+                <br>
+                <strong>Tipo:</strong> <span id="modalHabitacionTipo">-</span>
+            </div>
+
+            <form id="reservaForm" class="public-form-grid" method="POST" action="{% url 'gestion:habitaciones' %}">
+                {% csrf_token %}
+
+                <input type="hidden" id="modalHabitacionId" name="id_habitacion" value="">
+
+                <div class="public-form-group public-form-full">
+                    <label for="modalPrograma">Programa de hospedaje</label>
+                    <select id="modalPrograma" name="programa" required>
+                        <option value="">Seleccione un programa</option>
+                        <option value="2D1N">2 días / 1 noche</option>
+                        <option value="3D2N">3 días / 2 noches</option>
+                        <option value="4D3N">4 días / 3 noches</option>
+                    </select>
+                </div>
+
+                <div class="public-form-group">
+                    <label for="modalTipoOcupacion">Tipo de ocupación</label>
+                    <select id="modalTipoOcupacion" name="tipo_ocupacion" required>
+                        <option value="Total">Ocupación total</option>
+                        <option value="Secundaria" id="opcionSecundaria">Ocupación secundaria</option>
+                    </select>
+                </div>
+
+                <div class="public-form-group">
+                    <label for="modalCantidadPersonas">Cantidad de personas</label>
+                    <input type="number" id="modalCantidadPersonas" name="cantidad_personas" min="1" value="1" required>
+                </div>
+
+                <div class="public-form-group">
+                    <label for="modalFechaIngreso">Fecha de ingreso</label>
+                    <input type="date" id="modalFechaIngreso" name="fecha_ingreso" required>
+                </div>
+
+                <div class="public-form-group public-form-full">
+                    <div class="info-note" id="resumenTarifa">
+                        Selecciona una tarifa para ver el precio del programa.
+                    </div>
+                </div>
+
+                <div class="public-form-group public-form-full">
+                    <label for="modalMetodoPago">Modo de pago</label>
+                    <select id="modalMetodoPago" name="metodo_pago" required>
+                        <option value="">Seleccione un modo de pago</option>
+                        <option value="Transferencia">Transferencia bancaria</option>
+                        <option value="Recepcion">Pago en recepción</option>
+                    </select>
+                </div>
+
+                <div class="public-form-group public-form-full">
+                    <label for="modalObservaciones">Observaciones</label>
+                    <textarea id="modalObservaciones" name="observaciones" rows="3" placeholder="Ejemplo: llegada temprano, decoración especial, etc."></textarea>
+                </div>
+
+                <div class="reserva-modal-footer public-form-actions">
+                    <button type="submit" class="boton boton-principal public-form-submit">
+                        <i class="fas fa-calendar-check"></i>
+                        <span>Confirmar reserva</span>
+                    </button>
+
+                    <button type="button" class="boton boton-claro" id="reservaModalCancelar">
+                        Cancelar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const modal = document.getElementById('reservaModal');
+        const abrirBotones = document.querySelectorAll('.abrir-modal');
+        const cerrarBoton = document.getElementById('reservaModalCerrar');
+        const cancelarBoton = document.getElementById('reservaModalCancelar');
+
+        const habitacionIdInput = document.getElementById('modalHabitacionId');
+        const habitacionNumero = document.getElementById('modalHabitacionNumero');
+        const habitacionTipo = document.getElementById('modalHabitacionTipo');
+        const programaSelect = document.getElementById('modalPrograma');
+        const tipoOcupacionSelect = document.getElementById('modalTipoOcupacion');
+        const opcionSecundaria = document.getElementById('opcionSecundaria');
+        const resumenTarifa = document.getElementById('resumenTarifa');
+
+        let preciosServicio = {};
+        let secundariaLabel = 'Ocupación secundaria';
+
+        function actualizarResumenTarifa() {
+            const programa = programaSelect.value;
+            const tipo = tipoOcupacionSelect.value;
+
+            if (!programa || !preciosServicio[programa]) {
+                resumenTarifa.innerHTML = 'Selecciona un programa para ver el precio.';
+                return;
+            }
+
+            const precio = tipo === 'Total'
+                ? preciosServicio[programa].total
+                : preciosServicio[programa].secundaria;
+
+            const tipoTexto = tipo === 'Total'
+                ? 'Ocupación total'
+                : secundariaLabel;
+
+            const anticipo = (parseFloat(precio || 0) / 2).toFixed(2);
+
+            resumenTarifa.innerHTML =
+                '<strong>Programa:</strong> ' + programa + '<br>' +
+                '<strong>Tipo:</strong> ' + tipoTexto + '<br>' +
+                '<strong>Total:</strong> $' + precio + '<br>' +
+                '<strong>Anticipo mínimo 50%:</strong> $' + anticipo;
+        }
+
+        function abrirModal(data) {
+            habitacionIdInput.value = data.id;
+            habitacionNumero.textContent = data.numero;
+            habitacionTipo.textContent = data.tipo;
+
+            preciosServicio = {
+                '2D1N': {
+                    total: data.precio2d1nTotal,
+                    secundaria: data.precio2d1nSecundaria,
+                },
+                '3D2N': {
+                    total: data.precio3d2nTotal,
+                    secundaria: data.precio3d2nSecundaria,
+                },
+                '4D3N': {
+                    total: data.precio4d3nTotal,
+                    secundaria: data.precio4d3nSecundaria,
+                },
+            };
+
+            secundariaLabel = data.secundariaLabel || 'Ocupación secundaria';
+
+            if (opcionSecundaria) {
+                opcionSecundaria.textContent = secundariaLabel;
+            }
+
+            if (programaSelect) {
+                programaSelect.value = '';
+            }
+
+            if (tipoOcupacionSelect) {
+                tipoOcupacionSelect.value = 'Total';
+            }
+
+            actualizarResumenTarifa();
+
+            modal.classList.add('activo');
+            modal.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function cerrarModal() {
+            modal.classList.remove('activo');
+            modal.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+        }
+
+        abrirBotones.forEach(function (boton) {
+            boton.addEventListener('click', function () {
+                abrirModal({
+                    id: boton.dataset.id,
+                    numero: boton.dataset.numero,
+                    tipo: boton.dataset.tipo,
+                    secundariaLabel: boton.dataset.secundariaLabel,
+                    precio2d1nTotal: boton.dataset.precio2d1nTotal,
+                    precio2d1nSecundaria: boton.dataset.precio2d1nSecundaria,
+                    precio3d2nTotal: boton.dataset.precio3d2nTotal,
+                    precio3d2nSecundaria: boton.dataset.precio3d2nSecundaria,
+                    precio4d3nTotal: boton.dataset.precio4d3nTotal,
+                    precio4d3nSecundaria: boton.dataset.precio4d3nSecundaria,
+                });
+            });
+        });
+
+        if (programaSelect) {
+            programaSelect.addEventListener('change', actualizarResumenTarifa);
+        }
+
+        if (tipoOcupacionSelect) {
+            tipoOcupacionSelect.addEventListener('change', actualizarResumenTarifa);
+        }
+
+        if (cerrarBoton) {
+            cerrarBoton.addEventListener('click', cerrarModal);
+        }
+
+        if (cancelarBoton) {
+            cancelarBoton.addEventListener('click', cerrarModal);
+        }
+
+        if (modal) {
+            modal.addEventListener('click', function (event) {
+                if (event.target === modal) {
+                    cerrarModal();
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

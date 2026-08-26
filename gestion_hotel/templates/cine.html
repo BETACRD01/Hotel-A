@@ -1,0 +1,350 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Cine | Arahuana Eco-Resort & Spa{% endblock %}
+
+{% block content %}
+
+{% if messages %}
+    <div class="public-alerts" role="alert" aria-live="polite">
+        {% for message in messages %}
+            <div class="public-alert public-alert-{{ message.tags|default:'info' }}">
+                {% if message.tags == 'success' %}
+                    <i class="fas fa-circle-check"></i>
+                {% elif message.tags == 'error' %}
+                    <i class="fas fa-circle-exclamation"></i>
+                {% elif message.tags == 'warning' %}
+                    <i class="fas fa-triangle-exclamation"></i>
+                {% else %}
+                    <i class="fas fa-circle-info"></i>
+                {% endif %}
+                <span>{{ message }}</span>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+ <section class="catalog-hero-premium cinema"{% if fondo_cine %} style="background-image: linear-gradient(90deg, rgba(6, 39, 25, 0.92), rgba(6, 39, 25, 0.54), rgba(6, 39, 25, 0.2)), url('{{ fondo_cine.url }}') !important;"{% endif %}>
+    <div class="contenedor catalog-hero-content">
+        <span class="ar-kicker">
+            <i class="fa-solid fa-leaf"></i>
+            Cine Arahuana
+        </span>
+
+        <h1>Noches de cine bajo las estrellas</h1>
+
+        <p>
+            Disfruta de películas en un ambiente acogedor, rodeado de naturaleza,
+            buena compañía y momentos especiales.
+        </p>
+
+        <div class="hero-actions">
+            <a href="#funciones" class="ar-btn primary">
+                <i class="fa-solid fa-film"></i>
+                Ver funciones
+            </a>
+
+            <a href="{% url 'gestion:resort' %}" class="ar-btn secondary">
+                <i class="fa-solid fa-umbrella-beach"></i>
+                Ver resort del día
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="contenedor">
+    <div class="catalog-feature-strip">
+        <article class="catalog-feature">
+            <i class="fa-solid fa-star"></i>
+            <div>
+                <strong>Pantalla especial</strong>
+                <span>Experiencia visual diferente</span>
+            </div>
+        </article>
+
+        <article class="catalog-feature">
+            <i class="fa-solid fa-couch"></i>
+            <div>
+                <strong>Ambiente cómodo</strong>
+                <span>Butacas y espacios acogedores</span>
+            </div>
+        </article>
+
+        <article class="catalog-feature">
+            <i class="fa-solid fa-mug-hot"></i>
+            <div>
+                <strong>Snacks y bebidas</strong>
+                <span>Complementos para disfrutar</span>
+            </div>
+        </article>
+
+        <article class="catalog-feature">
+            <i class="fa-solid fa-tree"></i>
+            <div>
+                <strong>Entorno natural</strong>
+                <span>Una experiencia dentro del resort</span>
+            </div>
+        </article>
+    </div>
+</section>
+
+<section id="funciones" class="catalog-section">
+    <div class="catalog-container">
+        <div class="catalog-header-row">
+            <div>
+                <span class="ar-kicker">
+                    <i class="fa-solid fa-seedling"></i>
+                    Próximas funciones
+                </span>
+
+                <h2 class="ar-title">Funciones de Cine</h2>
+
+                <p class="ar-subtitle">
+                    Revisa las funciones disponibles y reserva tus entradas
+                    para disfrutar una noche diferente en Arahuana.
+                </p>
+            </div>
+
+            <a href="{% url 'gestion:habitaciones' %}" class="ar-btn secondary">
+                Ver habitaciones
+                <i class="fa-solid fa-arrow-right"></i>
+            </a>
+        </div>
+
+        <div class="catalog-grid" id="cineGrid">
+            {% for funcion in funciones %}
+                <article class="catalog-card">
+                    <div class="catalog-image">
+                        {% if funcion.imagen %}
+                            <img src="{{ funcion.imagen.url }}" alt="{{ funcion.titulo_pelicula }}" onerror="this.onerror=null; this.src='{% static 'img/cine.jpg' %}';">
+                        {% else %}
+                            <img src="{% static 'img/cine.jpg' %}" alt="{{ funcion.titulo_pelicula }}">
+                        {% endif %}
+
+                        <span class="catalog-status">
+                            {{ funcion.estado|default:"Disponible" }}
+                        </span>
+                    </div>
+
+                    <div class="catalog-body">
+                        <h3>{{ funcion.titulo_pelicula }}</h3>
+
+                        <p>
+                            {{ funcion.descripcion|default:"Disfruta una función especial dentro de Arahuana Eco-Resort & Spa." }}
+                        </p>
+
+                        <div class="catalog-meta">
+                            <span>
+                                <i class="fa-solid fa-calendar-days"></i>
+                                {{ funcion.fecha_proyeccion|date:"d/m/Y" }}
+                            </span>
+
+                            <span>
+                                <i class="fa-solid fa-clock"></i>
+                                {{ funcion.hora_proyeccion|time:"H:i" }}
+                            </span>
+
+                            <span>
+                                <i class="fa-solid fa-hourglass-half"></i>
+                                {{ funcion.duracion_minutos|default:"120" }} min
+                            </span>
+
+                            <span>
+                                <i class="fa-solid fa-chair"></i>
+                                {{ funcion.asientos_disponibles|default:funcion.capacidad_sala }} cupos
+                            </span>
+                        </div>
+
+                        <div class="catalog-price">
+                            ${{ funcion.precio_entrada }}
+                            <small>/ entrada</small>
+                        </div>
+
+                        <div class="catalog-actions">
+                            {% if funcion.activo %}
+                                {% if usuario %}
+                                    <button type="button" class="abrir-modal"
+                                        data-id="{{ funcion.id_funcion }}"
+                                        data-titulo="{{ funcion.titulo_pelicula }}"
+                                        data-fecha="{{ funcion.fecha_proyeccion|date:'d/m/Y' }}"
+                                        data-hora="{{ funcion.hora_proyeccion|time:'H:i' }}"
+                                        data-precio="{{ funcion.precio_entrada }}">
+                                        <i class="fas fa-ticket"></i>
+                                        Reservar ahora
+                                    </button>
+                                {% else %}
+                                    <a href="{% url 'gestion:login' %}?next={% url 'gestion:cine' %}">
+                                        <i class="fas fa-ticket"></i>
+                                        Inicia sesión para reservar
+                                    </a>
+                                {% endif %}
+                            {% else %}
+                                <button type="button" disabled>
+                                    <i class="fa-solid fa-circle-xmark"></i>
+                                    No disponible
+                                </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </article>
+            {% empty %}
+                <div class="empty-public-state">
+                    <i class="fa-solid fa-film"></i>
+                    <h3>No hay funciones disponibles por el momento</h3>
+                    <p>Vuelve a revisar más tarde o comunícate con el hotel para más información.</p>
+                    <a href="{% url 'gestion:inicio' %}" class="btn-primary-home">Volver al inicio</a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="ar-section tight">
+    <div class="contenedor">
+        <div class="home-cta">
+            <div>
+                <span class="ar-kicker">
+                    <i class="fa-solid fa-leaf"></i>
+                    Experiencia especial
+                </span>
+
+                <h2>Vive una noche inolvidable</h2>
+
+                <p>
+                    Cine, naturaleza y buena energía en un solo lugar.
+                    Reserva tus entradas y disfruta Arahuana.
+                </p>
+            </div>
+
+            <a href="#funciones" class="ar-btn gold">
+                Ver funciones
+                <i class="fa-solid fa-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<div class="reserva-modal" id="reservaModal" aria-hidden="true">
+    <div class="reserva-modal-contenido public-form-card" role="dialog" aria-modal="true" aria-labelledby="reservaModalTitulo">
+        <div class="reserva-modal-header public-form-header">
+            <div>
+                <h3 id="reservaModalTitulo">Reservar función de cine</h3>
+                <p class="public-form-subtitle">Completa los datos para registrar tu reserva.</p>
+            </div>
+
+            <button type="button" class="modal-cerrar" id="reservaModalCerrar" aria-label="Cerrar modal">×</button>
+        </div>
+
+        <div class="reserva-modal-body">
+            <div class="info-note">
+                <strong>Película:</strong> <span id="modalCineTitulo">-</span>
+                <br>
+                <strong>Fecha:</strong> <span id="modalCineFecha">-</span>
+                <br>
+                <strong>Hora:</strong> <span id="modalCineHora">-</span>
+                <br>
+                <strong>Precio:</strong> $<span id="modalCinePrecio">-</span> / entrada
+            </div>
+
+            <p class="public-form-help">
+                Selecciona la cantidad de entradas que deseas reservar.
+            </p>
+
+            <form id="reservaForm" class="public-form-grid" method="POST" action="{% url 'gestion:cine' %}">
+                {% csrf_token %}
+
+                <input type="hidden" id="modalCineId" name="id_funcion" value="">
+
+                <div class="public-form-group public-form-full">
+                    <label for="modalCantidadAsientos">Cantidad de entradas</label>
+                    <input type="number" id="modalCantidadAsientos" name="cantidad_asientos" min="1" value="1" required>
+                </div>
+
+                <div class="public-form-group public-form-full">
+                    <label for="modalMetodoPago">Modo de pago</label>
+                    <select id="modalMetodoPago" name="metodo_pago" required>
+                        <option value="">Seleccione un modo de pago</option>
+                        <option value="Transferencia">Transferencia bancaria</option>
+                        <option value="Recepcion">Pago en recepción</option>
+                    </select>
+                </div>
+
+                <div class="reserva-modal-footer public-form-actions">
+                    <button type="submit" class="boton boton-principal public-form-submit">
+                        <i class="fas fa-ticket"></i>
+                        <span>Confirmar reserva</span>
+                    </button>
+
+                    <button type="button" class="boton boton-claro" id="reservaModalCancelar">
+                        Cancelar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const modal = document.getElementById('reservaModal');
+        const abrirBotones = document.querySelectorAll('.abrir-modal');
+        const cerrarBoton = document.getElementById('reservaModalCerrar');
+        const cancelarBoton = document.getElementById('reservaModalCancelar');
+
+        const cineId = document.getElementById('modalCineId');
+        const cineTitulo = document.getElementById('modalCineTitulo');
+        const cineFecha = document.getElementById('modalCineFecha');
+        const cineHora = document.getElementById('modalCineHora');
+        const cinePrecio = document.getElementById('modalCinePrecio');
+
+        function abrirModal(data) {
+            cineId.value = data.id;
+            cineTitulo.textContent = data.titulo;
+            cineFecha.textContent = data.fecha;
+            cineHora.textContent = data.hora;
+            cinePrecio.textContent = data.precio;
+
+            modal.classList.add('activo');
+            modal.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function cerrarModal() {
+            modal.classList.remove('activo');
+            modal.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+        }
+
+        abrirBotones.forEach(function (boton) {
+            boton.addEventListener('click', function () {
+                abrirModal({
+                    id: boton.dataset.id,
+                    titulo: boton.dataset.titulo,
+                    fecha: boton.dataset.fecha,
+                    hora: boton.dataset.hora,
+                    precio: boton.dataset.precio,
+                });
+            });
+        });
+
+        if (cerrarBoton) {
+            cerrarBoton.addEventListener('click', cerrarModal);
+        }
+
+        if (cancelarBoton) {
+            cancelarBoton.addEventListener('click', cerrarModal);
+        }
+
+        if (modal) {
+            modal.addEventListener('click', function (event) {
+                if (event.target === modal) {
+                    cerrarModal();
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

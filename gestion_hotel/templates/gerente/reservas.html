@@ -1,0 +1,78 @@
+{% extends 'gerente/base_gerente.html' %}
+
+{% block title %}Reportes de Reservas | Panel Gerencial{% endblock %}
+{% block breadcrumb %}Gerencia / Reportes de Reservas{% endblock %}
+
+{% block content %}
+<div class="page-header-gerente">
+    <h1>Reportes de Reservas</h1>
+    <p>Consulta y filtra todas las reservas del sistema.</p>
+    <div style="margin-top:12px;">
+        <a href="{% url 'gestion:gerente_modelo_nuevo' 'reservas' %}" class="badge badge-success" style="text-decoration:none;">Nueva reserva</a>
+        <a href="{% url 'gestion:gerente_reservas' %}" class="badge badge-info" style="text-decoration:none;">Administrar reservas</a>
+    </div>
+</div>
+
+<div class="filter-bar">
+    <select id="filtroEstado" onchange="filtrarReservas()">
+        <option value="">Todos los estados</option>
+        {% for codigo, nombre in estados %}
+            <option value="{{ codigo }}" {% if estado_filtro == codigo %}selected{% endif %}>{{ nombre }}</option>
+        {% endfor %}
+    </select>
+</div>
+
+<div class="gerente-card">
+    <div class="gerente-card-body no-padding">
+        <table class="gerente-table" id="tablaReservas">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Cliente</th>
+                    <th>Fecha Ingreso</th>
+                    <th>Fecha Salida</th>
+                    <th>Total</th>
+                    <th>Estado</th>
+                    <th>Pago</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for reserva in reservas %}
+                <tr data-estado="{{ reserva.estado_reserva }}">
+                    <td><strong>{{ reserva.codigo_reserva }}</strong></td>
+                    <td>{{ reserva.id_cliente.nombres }} {{ reserva.id_cliente.apellidos }}</td>
+                    <td>{{ reserva.fecha_ingreso|date:"d/m/Y" }}</td>
+                    <td>{{ reserva.fecha_salida|date:"d/m/Y" }}</td>
+                    <td><strong>${{ reserva.total }}</strong></td>
+                    <td><span class="estado-badge estado-{{ reserva.estado_reserva|lower|cut:" " }}">{{ reserva.estado_reserva }}</span></td>
+                    <td><span class="estado-badge estado-{{ reserva.estado_pago|lower|cut:" " }}">{{ reserva.estado_pago }}</span></td>
+                    <td><a href="{% url 'gestion:gerente_modelo_editar' 'reservas' reserva.id_reserva %}" class="badge badge-info" style="text-decoration:none;">Editar</a></td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" class="empty-state">
+                        <i class="fa-solid fa-calendar-xmark"></i>
+                        <h3>No hay reservas</h3>
+                        <p>No se encontraron reservas con los filtros seleccionados.</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function filtrarReservas() {
+    const estado = document.getElementById('filtroEstado').value;
+    const rows = document.querySelectorAll('#tablaReservas tbody tr[data-estado]');
+    rows.forEach(row => {
+        row.style.display = !estado || row.dataset.estado === estado ? '' : 'none';
+    });
+}
+</script>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends 'gerente/base_gerente.html' %}
+
+{% block title %}Informes Financieros | Panel Gerencial{% endblock %}
+{% block breadcrumb %}Gerencia / Informes Financieros{% endblock %}
+
+{% block content %}
+<div class="page-header-gerente">
+    <h1>Informes Financieros</h1>
+    <p>Resumen financiero general del resort.</p>
+</div>
+
+<div class="kpi-grid">
+    <div class="kpi-card">
+        <div class="kpi-icon gold">
+            <i class="fa-solid fa-dollar-sign"></i>
+        </div>
+        <div class="kpi-info">
+            <h3>Ingresos Totales</h3>
+            <div class="kpi-value">${{ ingresos_totales|floatformat:2 }}</div>
+        </div>
+    </div>
+    <div class="kpi-card">
+        <div class="kpi-icon green">
+            <i class="fa-solid fa-calendar-check"></i>
+        </div>
+        <div class="kpi-info">
+            <h3>Ingresos del Mes</h3>
+            <div class="kpi-value">${{ ingresos_mes|floatformat:2 }}</div>
+        </div>
+    </div>
+    <div class="kpi-card">
+        <div class="kpi-icon blue">
+            <i class="fa-solid fa-file-invoice"></i>
+        </div>
+        <div class="kpi-info">
+            <h3>Total Reservas</h3>
+            <div class="kpi-value">{{ total_reservas }}</div>
+        </div>
+    </div>
+    <div class="kpi-card">
+        <div class="kpi-icon red">
+            <i class="fa-solid fa-ban"></i>
+        </div>
+        <div class="kpi-info">
+            <h3>Reservas Canceladas</h3>
+            <div class="kpi-value">{{ reservas_canceladas }}</div>
+        </div>
+    </div>
+</div>
+{% endblock %}

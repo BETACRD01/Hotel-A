@@ -1,0 +1,265 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Pago por transferencia | Arahuana Eco-Resort & Spa{% endblock %}
+
+{% block content %}
+
+<section class="payment-choice-hero transfer-hero-clean">
+    <div class="contenedor transfer-hero-inner">
+        <div>
+            <span class="ar-kicker">
+                <i class="fa-solid fa-building-columns"></i>
+                Deposito o transferencia
+            </span>
+
+            <h1>Registra tu comprobante</h1>
+
+            <p>
+                Escanea el QR o usa una cuenta bancaria, realiza el anticipo y sube
+                la imagen del comprobante para que el hotel valide tu reserva.
+            </p>
+        </div>
+
+        <div class="transfer-hero-summary">
+            <span>Reserva</span>
+            <strong>{{ reserva.codigo_reserva }}</strong>
+            <small>Anticipo requerido: ${{ monto_anticipo }}</small>
+        </div>
+    </div>
+</section>
+
+<section class="payment-choice-page">
+    <div class="contenedor">
+
+        {% if messages %}
+            <div class="public-alerts">
+                {% for message in messages %}
+                    <div class="public-alert public-alert-{{ message.tags }}">
+                        <i class="fa-solid fa-circle-info"></i>
+                        <span>{{ message }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="transfer-summary-strip">
+            <div>
+                <span>Total reserva</span>
+                <strong>${{ reserva.total }}</strong>
+            </div>
+            <div>
+                <span>Anticipo minimo</span>
+                <strong>${{ monto_anticipo }}</strong>
+            </div>
+            <div>
+                <span>Fecha limite</span>
+                <strong>{{ reserva.fecha_limite_pago|date:"d/m/Y" }}</strong>
+            </div>
+            <div>
+                <span>Estado</span>
+                <strong>{{ reserva.estado_pago|default:"Pendiente" }}</strong>
+            </div>
+        </div>
+
+        <div class="reserva-advertencia-card transfer-warning-compact">
+            <i class="fa-solid fa-triangle-exclamation advertencia-icon"></i>
+            <div class="advertencia-content">
+                <strong>Plazo de pago: 24 horas</strong>
+                <p>
+                    Sube el comprobante antes de la fecha limite. Si no se registra,
+                    la reserva puede liberarse automaticamente.
+                </p>
+            </div>
+        </div>
+
+        <div class="payment-transfer-layout transfer-layout-clean">
+
+            <div class="bank-info-panel transfer-bank-panel">
+                <div class="transfer-panel-heading">
+                    <span class="ar-kicker">
+                        <i class="fa-solid fa-qrcode"></i>
+                        Donde transferir
+                    </span>
+                    <h2>Paga con QR o cuenta bancaria</h2>
+                    <p>Despues de pagar, guarda la captura o comprobante y subelo en el formulario.</p>
+                </div>
+
+                <div class="transfer-qr-card transfer-qr-card-large">
+                    <img src="{% static 'img/qr_transferencia_deuna.jpeg' %}" alt="QR para transferencia Banco Pichincha deuna">
+                    <div class="transfer-qr-copy">
+                        <h3>QR Banco Pichincha / deuna</h3>
+                        <p>Escanea este codigo desde tu app bancaria para realizar el anticipo.</p>
+                    </div>
+                </div>
+
+                <div class="bank-grid bank-grid-compact">
+                    {% for banco in bancos %}
+                        <article class="bank-card">
+                            <h3>{{ banco.nombre }}</h3>
+                            <p><strong>{{ banco.tipo }}</strong></p>
+                            <p><strong>No. Cuenta:</strong> {{ banco.cuenta }}</p>
+                            <p><strong>Titular:</strong> {{ banco.titular }}</p>
+                            <p><strong>RUC / C.I.:</strong> {{ banco.identificacion }}</p>
+                            <p><strong>Correo:</strong> {{ banco.correo }}</p>
+                        </article>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="transfer-form-card transfer-form-panel">
+                <div class="transfer-panel-heading">
+                    <span class="ar-kicker">
+                        <i class="fa-solid fa-upload"></i>
+                        Comprobante
+                    </span>
+                    <h2>Sube tu comprobante</h2>
+                    <p>Completa solo los datos necesarios para validar tu pago.</p>
+                </div>
+
+                <form method="POST" enctype="multipart/form-data" class="transfer-form" id="formTransferencia">
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                        <label for="banco_origen">Banco desde donde transferiste</label>
+                        <select id="banco_origen" name="banco_origen" required>
+                            <option value="">Seleccione el banco</option>
+                            <option value="Banco Pichincha">Banco Pichincha</option>
+                            <option value="Banco del Austro">Banco del Austro</option>
+                            <option value="Banco Guayaquil">Banco Guayaquil</option>
+                            <option value="Banco Pacifico">Banco Pacifico</option>
+                            <option value="Cooperativa">Cooperativa</option>
+                            <option value="Otro">Otro</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" id="grupoNuevoContacto">
+                        <label for="numero_cuenta">Numero de cuenta desde donde transferiste</label>
+                        <input
+                            type="text"
+                            id="numero_cuenta"
+                            name="numero_cuenta"
+                            placeholder="Ej: 02054012194"
+                            inputmode="numeric"
+                            required
+                        >
+                        <small class="form-text text-muted">Solo digitos, entre 8 y 30 caracteres.</small>
+                        <p class="error-cuenta" id="errorCuenta" hidden>
+                            El numero de cuenta debe contener solo digitos y tener entre 8 y 30 caracteres.
+                        </p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="numero_comprobante">Numero de comprobante</label>
+                        <input
+                            type="text"
+                            id="numero_comprobante"
+                            name="numero_comprobante"
+                            placeholder="Ej: 000123456"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="comprobante">Imagen del comprobante</label>
+                        <div class="transfer-upload-box">
+                            <input
+                                type="file"
+                                id="comprobante"
+                                name="comprobante"
+                                accept="image/*"
+                                required
+                            >
+                            <div class="transfer-upload-preview" id="comprobantePreview">
+                                <i class="fa-solid fa-image"></i>
+                                <span>Selecciona una imagen para previsualizarla</span>
+                                <img src="" alt="Vista previa del comprobante">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="observacion">Observacion opcional</label>
+                        <textarea
+                            id="observacion"
+                            name="observacion"
+                            rows="3"
+                            placeholder="Ej: transferencia realizada desde cuenta de un familiar"
+                        ></textarea>
+                    </div>
+
+                    <div class="transfer-actions">
+                        <button type="submit" class="ar-btn primary" id="btnValidarContinuar">
+                            <i class="fa-solid fa-shield-halved"></i>
+                            Enviar comprobante
+                        </button>
+
+                        <a href="{% url 'gestion:mis_reservas' %}" class="ar-btn secondary">
+                            <i class="fa-solid fa-arrow-left"></i>
+                            Volver a mis reservas
+                        </a>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const cuentaInput = document.getElementById('numero_cuenta');
+        const errorCuenta = document.getElementById('errorCuenta');
+        const formTransfer = document.getElementById('formTransferencia');
+        const comprobanteInput = document.getElementById('comprobante');
+        const previewBox = document.getElementById('comprobantePreview');
+
+        function validarCuenta(valor) {
+            return /^\d{8,30}$/.test(valor);
+        }
+
+        if (cuentaInput) {
+            cuentaInput.addEventListener('input', function () {
+                this.value = this.value.replace(/[^0-9]/g, '');
+                if (errorCuenta) {
+                    errorCuenta.hidden = !(this.value && !validarCuenta(this.value));
+                }
+            });
+        }
+
+        if (comprobanteInput && previewBox) {
+            comprobanteInput.addEventListener('change', function () {
+                const file = this.files && this.files[0];
+                if (!file || !file.type.startsWith('image/')) return;
+
+                const img = previewBox.querySelector('img');
+                const label = previewBox.querySelector('span');
+                const icon = previewBox.querySelector('i');
+
+                img.src = URL.createObjectURL(file);
+                img.onload = function () {
+                    URL.revokeObjectURL(img.src);
+                };
+
+                previewBox.classList.add('has-image');
+                if (label) label.textContent = file.name;
+                if (icon) icon.style.display = 'none';
+            });
+        }
+
+        if (formTransfer) {
+            formTransfer.addEventListener('submit', function (event) {
+                const valor = cuentaInput ? cuentaInput.value.trim() : '';
+                if (!validarCuenta(valor)) {
+                    if (errorCuenta) errorCuenta.hidden = false;
+                    if (cuentaInput) cuentaInput.focus();
+                    event.preventDefault();
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}
