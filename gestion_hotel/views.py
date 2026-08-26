@@ -1,7 +1,6 @@
 ﻿from datetime import date, datetime, timedelta
 from decimal import Decimal, ROUND_HALF_UP
 from types import SimpleNamespace
-from urllib.parse import urlencode
 import random
 import re
 import socket
@@ -13,7 +12,6 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import get_user_model, login as auth_login
 from django.contrib.auth.hashers import check_password, make_password
-from django.core import signing
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from django.db import transaction
@@ -637,15 +635,13 @@ Hotel Arahuana Eco-Resort & Spa
                     "Se enviÃ³ un cÃ³digo de recuperaciÃ³n a tu correo electrÃ³nico."
                 )
                 return redirect("gestion:verificar_codigo")
-            except (TimeoutError, socket.timeout, smtplib.SMTPException) as e:
-                print("Error SMTP recuperaciÃ³n contraseÃ±a:", type(e).__name__, str(e))
+            except (TimeoutError, socket.timeout, smtplib.SMTPException):
                 messages.error(
                     request,
                     "No se pudo enviar el cÃ³digo porque la conexiÃ³n con el servidor de correo fue bloqueada o tardÃ³ demasiado. Intenta desde otra red o verifica tu conexiÃ³n."
                 )
                 return redirect("gestion:recuperar_password")
-            except Exception as e:
-                print("Error SMTP recuperaciÃ³n contraseÃ±a:", type(e).__name__, str(e))
+            except Exception:
                 messages.error(
                     request,
                     "No se pudo enviar el cÃ³digo porque la conexiÃ³n con el servidor de correo fue bloqueada o tardÃ³ demasiado. Intenta desde otra red o verifica tu conexiÃ³n."
@@ -733,106 +729,6 @@ def nueva_password(request):
         return redirect("gestion:login")
 
     return render(request, "nueva_password.html")
-
-
-def recuperar_contrasena_view(request):
-    """
-    Muestra el formulario para recuperar contraseÃ±a por correo.
-    """
-    if request.method == "POST":
-        email = request.POST.get("email", "").strip().lower()
-        usuario = Cliente.objects.filter(
-            correo_electronico__iexact=email,
-            rol="cliente",
-            activo=True,
-        ).first()
-
-        if usuario:
-            token = signing.dumps({
-                "usuario_id": usuario.id_cliente,
-                "email": usuario.correo_electronico,
-            })
-            enlace = request.build_absolute_uri(
-                reverse("gestion:restablecer_contrasena", args=[token])
-            )
-            send_mail(
-                subject="RecuperaciÃ³n de contraseÃ±a - Arahuana",
-                message=(
-                    f"Hola {usuario.nombres},\n\n"
-                    f"Recibimos una solicitud para restablecer tu contraseÃ±a. "
-                    f"Haz clic en el siguiente enlace:\n\n{enlace}\n\n"
-                    "Este enlace expira en 1 hora. Si no solicitaste este cambio, "
-                    "ignora este correo."
-                ),
-                from_email=getattr(settings, "DEFAULT_FROM_EMAIL", "no-reply@arahuana.com"),
-                recipient_list=[usuario.correo_electronico],
-                fail_silently=True,
-            )
-
-        messages.success(
-            request,
-            "Si el correo estÃ¡ registrado, recibirÃ¡s instrucciones para restablecer tu contraseÃ±a."
-        )
-        return render(request, "recuperar_contrasena.html")
-
-    return render(request, "recuperar_contrasena.html")
-
-
-def restablecer_contrasena_view(request, token):
-    """
-    Valida el token de recuperaciÃ³n y actualiza la contraseÃ±a.
-    """
-    try:
-        datos = signing.loads(token, max_age=3600)
-        usuario_id = datos.get("usuario_id")
-        email = datos.get("email")
-    except (signing.BadSignature, signing.SignatureExpired):
-        messages.error(
-            request,
-            "El enlace de recuperaciÃ³n no es vÃ¡lido o ha expirado."
-        )
-        return render(request, "restablecer_contrasena.html", {"token_error": True})
-
-    usuario = Cliente.objects.filter(
-        id_cliente=usuario_id,
-        correo_electronico__iexact=email,
-        rol="cliente",
-        activo=True,
-    ).first()
-
-    if usuario is None:
-        messages.error(
-            request,
-            "El enlace de recuperaciÃ³n no es vÃ¡lido o ha expirado."
-        )
-        return render(request, "restablecer_contrasena.html", {"token_error": True})
-
-    if request.method == "POST":
-        password = request.POST.get("password", "")
-        confirmar_password = request.POST.get("confirmar_password", "")
-
-        if password != confirmar_password:
-            messages.error(request, "Las contraseÃ±as no coinciden.")
-            return render(request, "restablecer_contrasena.html", {"token": token})
-
-        try:
-            validate_password_strength(password)
-        except ValidationError as exc:
-            for error in exc.messages:
-                messages.error(request, error)
-            return render(request, "restablecer_contrasena.html", {"token": token})
-
-        usuario.password = make_password(password)
-        usuario.save(update_fields=["password"])
-
-        messages.success(
-            request,
-            "ContraseÃ±a actualizada correctamente. Ya puedes iniciar sesiÃ³n."
-        )
-        return redirect("gestion:login")
-
-    return render(request, "restablecer_contrasena.html", {"token": token})
-
 
 def logout_view(request):
     """
