@@ -1,0 +1,215 @@
+/* ================= CATÁLOGOS ================= */
+
+.catalog-hero-premium.rooms {
+    background-image:
+        linear-gradient(90deg, rgba(6, 39, 25, 0.9), rgba(6, 39, 25, 0.6), rgba(6, 39, 25, 0.3)),
+        url("../../img/hotel_arahuana.jpg") !important;
+    background-size: cover !important;
+    background-position: center !important;
+}
+
+.catalog-hero-premium.cabins {
+    background-image:
+        linear-gradient(90deg, rgba(6, 39, 25, 0.92), rgba(6, 39, 25, 0.54), rgba(6, 39, 25, 0.2)),
+        url("../../img/cabana4-dashboard.jpg");
+}
+
+.catalog-hero-premium.cinema {
+    background-image:
+        linear-gradient(90deg, rgba(6, 39, 25, 0.92), rgba(6, 39, 25, 0.54), rgba(6, 39, 25, 0.2)),
+        url("../../img/hotel_arahuana.jpg");
+}
+
+.catalog-hero-premium.dayresort {
+    background-image:
+        linear-gradient(90deg, rgba(6, 39, 25, 0.88), rgba(6, 39, 25, 0.6), rgba(6, 39, 25, 0.3)),
+        url("../../img/hotel_arahuana.jpg") !important;
+    background-size: cover !important;
+    background-position: center !important;
+}
+
+.catalog-section {
+    padding: 78px 0;
+}
+
+.catalog-header-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    align-items: end;
+    margin-bottom: 26px;
+}
+
+.catalog-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.catalog-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.catalog-meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 10px;
+    border-radius: 999px;
+    background: rgba(7, 53, 31, 0.06);
+    color: var(--ar-muted);
+    font-size: 0.78rem;
+    font-weight: 800;
+}
+
+.catalog-price {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 1.8rem;
+    color: var(--ar-texto);
+    font-weight: 800;
+}
+
+.catalog-price small {
+    font-family: inherit;
+    font-size: 0.86rem;
+    color: var(--ar-muted);
+}
+
+.catalog-actions a,
+.catalog-actions button {
+    width: 100%;
+}
+
+.catalog-actions button:disabled {
+    background: #d7d2c6 !important;
+    color: #776f62 !important;
+    box-shadow: none !important;
+    cursor: not-allowed;
+}
+
+.catalog-status {
+    top: 14px;
+    bottom: auto;
+    left: 14px;
+    min-width: auto;
+    height: auto;
+    padding: 8px 12px;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+}
+
+/* ================= MODAL RESERVA ================= */
+
+.reserva-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 3000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(6, 39, 25, 0.62);
+    backdrop-filter: blur(8px);
+}
+
+.reserva-modal.activo {
+    display: flex;
+}
+
+.reserva-modal-contenido {
+    width: min(720px, 96vw);
+    max-height: 92vh;
+    overflow: auto;
+}
+
+.public-form-card {
+    background: var(--ar-card) !important;
+    border-radius: 26px;
+    box-shadow: var(--ar-shadow-dark);
+    border: 1px solid rgba(217, 170, 56, 0.24);
+}
+
+.public-form-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 24px 26px 0;
+}
+
+.public-form-header h3 {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 1.8rem;
+}
+
+.modal-cerrar {
+    width: 42px;
+    height: 42px;
+    border: 0;
+    border-radius: 999px;
+    background: var(--ar-verde-900);
+    color: var(--ar-crema);
+    cursor: pointer;
+    font-size: 1.4rem;
+}
+
+.reserva-modal-body {
+    padding: 22px 26px 26px;
+}
+
+.info-note {
+    padding: 16px;
+    border-radius: 18px;
+    background: rgba(7, 53, 31, 0.07);
+    color: var(--ar-texto);
+    border: 1px solid var(--ar-borde);
+}
+
+.public-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 18px;
+}
+
+.public-form-full {
+    grid-column: 1 / -1;
+}
+
+.public-form-group label {
+    display: block;
+    margin-bottom: 7px;
+    color: var(--ar-texto);
+    font-weight: 900;
+    font-size: 0.88rem;
+}
+
+.public-form-group input,
+.public-form-group textarea,
+.public-form-group select,
+.input-icon input,
+.input-icon select {
+    width: 100%;
+    min-height: 46px;
+    border: 1px solid rgba(22, 48, 36, 0.18);
+    border-radius: 13px;
+    background: rgba(255, 255, 255, 0.62);
+    padding: 12px 14px;
+    outline: none;
+    color: var(--ar-texto);
+}
+
+.public-form-group input:focus,
+.public-form-group textarea:focus,
+.input-icon input:focus {
+    border-color: var(--ar-dorado);
+    box-shadow: 0 0 0 4px rgba(217, 170, 56, 0.14);
+}
+
+.public-form-actions {
+    grid-column: 1 / -1;
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 4px;
+}
+

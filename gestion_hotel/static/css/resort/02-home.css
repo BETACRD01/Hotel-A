@@ -1,0 +1,254 @@
+/* ================= HOME ================= */
+
+.home-premium {
+    background: transparent;
+}
+
+.home-hero-premium,
+.catalog-hero-premium,
+.guest-hero-premium {
+    position: relative;
+    overflow: hidden;
+    min-height: 520px;
+    display: grid;
+    align-items: center;
+    color: var(--ar-crema);
+    background:
+        linear-gradient(90deg, rgba(6, 39, 25, 0.92), rgba(6, 39, 25, 0.58), rgba(6, 39, 25, 0.26)),
+        url("../../img/fondo.jpg") center/cover;
+}
+
+.home-hero-premium::after,
+.catalog-hero-premium::after,
+.guest-hero-premium::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(circle at 18% 18%, rgba(217, 170, 56, 0.18), transparent 32%),
+        linear-gradient(180deg, transparent 70%, rgba(255, 246, 228, 0.95) 100%);
+    pointer-events: none;
+}
+
+.home-hero-content,
+.catalog-hero-content,
+.guest-hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 690px;
+    padding: 80px 0 120px;
+}
+
+.home-hero-content h1,
+.catalog-hero-content h1,
+.guest-hero-content h1,
+.about-premium-hero h1,
+.auth-visual h1 {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(3rem, 7vw, 5.8rem);
+    line-height: 0.98;
+    letter-spacing: -0.05em;
+    color: var(--ar-crema);
+}
+
+.home-hero-content p,
+.catalog-hero-content p,
+.guest-hero-content p {
+    color: rgba(255, 246, 228, 0.9);
+    max-width: 570px;
+    font-size: 1.08rem;
+    margin: 22px 0 28px;
+}
+
+.hero-actions,
+.about-hero-actions,
+.guest-hero-actions,
+.auth-actions {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.home-feature-strip,
+.catalog-feature-strip,
+.about-stat-strip,
+.guest-summary-grid {
+    position: relative;
+    z-index: 4;
+    margin-top: -62px;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    background: rgba(7, 53, 31, 0.96);
+    border: 1px solid rgba(217, 170, 56, 0.28);
+    border-radius: 20px;
+    box-shadow: var(--ar-shadow-dark);
+    overflow: hidden;
+}
+
+.home-feature,
+.catalog-feature,
+.about-stat,
+.guest-summary-card {
+    padding: 24px;
+    color: var(--ar-crema);
+    border-right: 1px solid rgba(255, 246, 228, 0.12);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: transparent !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    border-top: 0 !important;
+    border-bottom: 0 !important;
+    border-left: 0 !important;
+}
+
+.home-feature:last-child,
+.catalog-feature:last-child,
+.about-stat:last-child {
+    border-right: 0;
+}
+
+.home-feature i,
+.catalog-feature i,
+.about-stat i,
+.guest-summary-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
+    color: var(--ar-dorado-2);
+    border: 1px solid rgba(217, 170, 56, 0.45);
+    flex: 0 0 auto;
+}
+
+.home-feature strong,
+.catalog-feature strong,
+.about-stat strong,
+.guest-summary-card strong {
+    display: block;
+    font-size: 1.1rem;
+    color: var(--ar-crema);
+}
+
+.home-feature span,
+.catalog-feature span,
+.about-stat span,
+.guest-summary-card p {
+    color: rgba(255, 246, 228, 0.7);
+    font-size: 0.83rem;
+}
+
+.home-services-grid,
+.catalog-grid,
+.values-grid,
+.experience-grid,
+.guest-experience-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 22px;
+}
+
+.home-service-card,
+.catalog-card,
+.experience-card,
+.value-card {
+    overflow: hidden;
+}
+
+.home-service-image,
+.catalog-image {
+    position: relative;
+    height: 210px;
+    overflow: hidden;
+}
+
+.home-service-image img,
+.catalog-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.home-service-card:hover img,
+.catalog-card:hover img {
+    transform: scale(1.05);
+}
+
+.home-service-icon,
+.catalog-status {
+    position: absolute;
+    left: 16px;
+    bottom: 16px;
+    display: inline-grid;
+    place-items: center;
+    min-width: 46px;
+    height: 46px;
+    border-radius: 999px;
+    background: rgba(7, 53, 31, 0.96);
+    color: var(--ar-dorado-2);
+    border: 1px solid rgba(217, 170, 56, 0.38);
+    padding: 0 14px;
+    font-weight: 900;
+    font-size: 0.75rem;
+}
+
+.home-service-body,
+.catalog-body {
+    padding: 22px;
+    display: grid;
+    gap: 12px;
+}
+
+.home-service-body h3,
+.catalog-body h3,
+.about-card h3,
+.value-card h3,
+.experience-card h3,
+.guest-latest-content strong,
+.guest-reserva-content h2 {
+    font-family: Georgia, "Times New Roman", serif;
+    color: var(--ar-texto);
+}
+
+.home-service-body p,
+.catalog-body p {
+    color: var(--ar-muted);
+    font-size: 0.92rem;
+}
+
+.home-service-body a {
+    color: var(--ar-verde-800);
+    font-weight: 900;
+}
+
+.home-cta,
+.about-cta-inner,
+.guest-cta {
+    border-radius: var(--ar-radius-lg);
+    padding: 34px;
+    background:
+        linear-gradient(90deg, rgba(7, 53, 31, 0.97), rgba(11, 75, 54, 0.85)),
+        url("../../img/hotel_arahuana.jpg") center/cover;
+    color: var(--ar-crema);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    box-shadow: var(--ar-shadow-dark);
+}
+
+.home-cta h2,
+.guest-cta h2 {
+    color: var(--ar-crema);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(1.8rem, 3vw, 2.5rem);
+}
+
+.home-cta p,
+.guest-cta p {
+    color: rgba(255, 246, 228, 0.82);
+}
+

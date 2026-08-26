@@ -1,0 +1,260 @@
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 1050px) {
+    .guest-hero,
+    .guest-reserva-card {
+        grid-template-columns: 1fr;
+    }
+
+    .guest-summary-grid,
+    .guest-experience-grid,
+    .guest-latest-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .guest-reserva-media {
+        min-height: 260px;
+    }
+
+    .guest-reserva-media img {
+        min-height: 260px;
+    }
+
+    .guest-reservas-hero {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 720px) {
+    .resort-client-page,
+    .guest-reservas-page {
+        padding: 28px 12px 52px;
+    }
+
+    .guest-hero-text,
+    .guest-reservas-hero {
+        padding: 26px 18px;
+        border-radius: 24px;
+    }
+
+    .guest-hero-card,
+    .guest-hero-card img {
+        min-height: 260px;
+        border-radius: 24px;
+    }
+
+    .guest-summary-grid,
+    .guest-experience-grid,
+    .guest-latest-grid,
+    .guest-reserva-info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .guest-section-head,
+    .guest-section-head.row,
+    .guest-reserva-header,
+    .guest-reserva-footer {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .guest-status-group {
+        justify-content: flex-start;
+    }
+
+    .guest-reserva-card {
+        padding: 12px;
+        border-radius: 22px;
+    }
+
+    .guest-reserva-media,
+    .guest-reserva-media img {
+        min-height: 220px;
+    }
+
+    .guest-service-item {
+        flex-direction: column;
+    }
+
+    .resort-btn,
+    .guest-reservas-actions,
+    .guest-hero-actions {
+        width: 100%;
+    }
+
+    .resort-btn {
+        justify-content: center;
+    }
+
+    .guest-empty-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .user-dropdown {
+        right: -10px;
+        width: min(280px, 92vw);
+    }
+}
+
+/* =========================================================
+   PANEL CLIENTE Y MIS RESERVAS - CONSISTENCIA ECO RESORT
+   ========================================================= */
+
+:root {
+    --arena: #f3ead8;
+    --crema: #fff8ea;
+    --dorado-suave: #d8a84f;
+}
+
+.panel-cliente-body,
+.mis-reservas-body {
+    background:
+        linear-gradient(180deg, rgba(6, 57, 40, 0.96) 0%, rgba(11, 75, 54, 0.86) 250px, var(--arena) 250px, #efe2c6 100%);
+}
+
+.resort-client-page,
+.guest-reservas-page {
+    background:
+        radial-gradient(circle at top left, rgba(216, 168, 79, 0.20), transparent 32%),
+        radial-gradient(circle at top right, rgba(15, 143, 99, 0.18), transparent 34%),
+        linear-gradient(180deg, var(--verde-suave), var(--crema));
+}
+
+.guest-hero-text {
+    background:
+        linear-gradient(135deg, rgba(6, 57, 40, 0.72), rgba(11, 75, 54, 0.42)),
+        url("../../img/fondo.jpg") center/cover;
+    border: 1px solid rgba(255, 248, 234, 0.22);
+    box-shadow: 0 22px 55px rgba(6, 57, 40, 0.20);
+}
+
+.guest-hero-text h1,
+.guest-hero-text .resort-kicker {
+    color: #fff8ea;
+}
+
+.guest-hero-text p {
+    color: rgba(255, 248, 234, 0.88);
+}
+
+.guest-hero-card {
+    background: var(--verde-oscuro);
+    border: 1px solid rgba(255, 248, 234, 0.24);
+    box-shadow: 0 22px 55px rgba(6, 57, 40, 0.24);
+}
+
+.guest-hero-card img {
+    filter: brightness(0.88) saturate(1.08);
+}
+
+.guest-hero-card-content h3,
+.guest-hero-card-content p,
+.guest-hero-card-content span {
+    color: #fff8ea;
+}
+
+.guest-summary-card {
+    background: linear-gradient(135deg, var(--crema), #f4efde);
+    border: 1px solid rgba(15, 143, 99, 0.14);
+    box-shadow: 0 12px 28px rgba(6, 57, 40, 0.10);
+}
+
+.guest-summary-card strong {
+    color: var(--verde-oscuro);
+}
+
+.guest-summary-card p {
+    color: var(--texto);
+}
+
+.guest-section {
+    background: rgba(255, 248, 234, 0.42);
+    border-radius: 28px;
+    padding: 22px;
+    border: 1px solid rgba(15, 143, 99, 0.10);
+}
+
+.guest-experience-card {
+    border: 1px solid rgba(255, 248, 234, 0.28);
+    box-shadow: 0 18px 40px rgba(6, 57, 40, 0.22);
+}
+
+.guest-experience-card::after {
+    background: linear-gradient(180deg, rgba(6, 57, 40, 0.05) 0%, rgba(6, 57, 40, 0.30) 45%, rgba(6, 57, 40, 0.92) 100%);
+}
+
+.guest-experience-card h3,
+.guest-experience-card p,
+.guest-experience-card span {
+    color: #fff;
+}
+
+.guest-latest-card {
+    background: linear-gradient(135deg, var(--crema), #e8f5ec);
+    border: 1px solid rgba(15, 143, 99, 0.16);
+    box-shadow: 0 12px 28px rgba(6, 57, 40, 0.10);
+}
+
+.guest-latest-card .estado-mini {
+    color: var(--verde-oscuro);
+}
+
+.guest-reservas-hero {
+    background:
+        linear-gradient(135deg, rgba(6, 57, 40, 0.84), rgba(11, 75, 54, 0.56)),
+        url("../../img/hotel_arahuana.jpg") center/cover;
+    border: 1px solid rgba(255, 248, 234, 0.22);
+    box-shadow: 0 22px 55px rgba(6, 57, 40, 0.22);
+}
+
+.guest-reservas-hero h1,
+.guest-reservas-hero .resort-kicker {
+    color: #fff8ea;
+}
+
+.guest-reservas-hero p {
+    color: rgba(255, 248, 234, 0.86);
+}
+
+.guest-reserva-card {
+    background: linear-gradient(135deg, var(--crema), #eef5ed);
+    border: 1px solid rgba(15, 143, 99, 0.18);
+    box-shadow: 0 18px 40px rgba(6, 57, 40, 0.13);
+}
+
+.guest-reserva-media span {
+    background: rgba(255, 248, 234, 0.88);
+    color: var(--verde-oscuro);
+    border: 1px solid rgba(15, 143, 99, 0.12);
+}
+
+.guest-reserva-info-grid div {
+    background: rgba(243, 234, 216, 0.74);
+    border: 1px solid rgba(15, 143, 99, 0.14);
+}
+
+.guest-services-box,
+.guest-note {
+    background: rgba(255, 248, 234, 0.76);
+    border: 1px solid rgba(216, 168, 79, 0.25);
+}
+
+.resort-btn-light {
+    background: rgba(255, 248, 234, 0.95);
+    color: var(--verde-oscuro);
+    border-color: rgba(15, 143, 99, 0.16);
+}
+
+.cancel-reserva-btn {
+    background: var(--crema);
+    color: #b42318;
+    border: 1px solid rgba(180, 35, 24, 0.18);
+    box-shadow: none;
+}
+
+.cancel-reserva-btn:hover {
+    background: #ffe8e8;
+}
+

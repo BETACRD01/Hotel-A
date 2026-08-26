@@ -1,0 +1,550 @@
+/* =========================================================
+   PAGOS MANUALES - TRANSFERENCIA Y PAYPHONE
+   ========================================================= */
+
+.payment-choice-hero {
+    padding: 82px 0 56px;
+    background:
+        linear-gradient(135deg, rgba(6, 39, 25, 0.94), rgba(11, 75, 54, 0.86)),
+        url("../../img/fondo.jpg") center/cover no-repeat;
+    color: var(--ar-crema);
+}
+
+.payment-choice-hero h1 {
+    margin: 10px 0 12px;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(2.6rem, 5vw, 4.8rem);
+    color: var(--ar-crema);
+    line-height: 1;
+}
+
+.payment-choice-hero p {
+    max-width: 640px;
+    color: rgba(255, 246, 228, 0.84);
+    font-size: 1.04rem;
+    line-height: 1.65;
+}
+
+.payment-choice-page {
+    padding: 42px 0 70px;
+    background:
+        radial-gradient(circle at top right, rgba(217, 170, 56, 0.10), transparent 24%),
+        linear-gradient(180deg, var(--ar-crema), var(--ar-crema-2));
+}
+
+.payment-resume-card {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 28px;
+    padding: 18px;
+    border-radius: 24px;
+    background: rgba(255, 251, 242, 0.94);
+    border: 1px solid rgba(11, 75, 54, 0.12);
+    box-shadow: 0 18px 44px rgba(6, 39, 25, 0.08);
+}
+
+.payment-resume-card div {
+    padding: 14px;
+    border-radius: 18px;
+    background: rgba(217, 170, 56, 0.10);
+}
+
+.payment-resume-card span,
+.payment-resume-mini span {
+    display: block;
+    color: var(--ar-muted);
+    font-size: 0.76rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.payment-resume-card strong,
+.payment-resume-mini strong {
+    color: var(--ar-verde-900);
+    font-size: 1.12rem;
+}
+
+.payment-method-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+.payment-method-grid.two-options {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.payment-method-card {
+    padding: 30px;
+    border-radius: 26px;
+    background: rgba(255, 251, 242, 0.95);
+    border: 1px solid rgba(11, 75, 54, 0.12);
+    box-shadow: 0 18px 44px rgba(6, 39, 25, 0.09);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.payment-method-card.featured {
+    border-color: rgba(217, 170, 56, 0.40);
+    background:
+        radial-gradient(circle at top right, rgba(217, 170, 56, 0.16), transparent 36%),
+        rgba(255, 251, 242, 0.98);
+}
+
+.payment-method-icon {
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: rgba(11, 75, 54, 0.10);
+    color: var(--ar-verde-900);
+    font-size: 1.4rem;
+}
+
+.payment-method-card h2,
+.bank-info-panel h2,
+.transfer-form-card h2,
+.payment-summary-card h2,
+.payment-box-card h2 {
+    margin: 0;
+    font-family: Georgia, "Times New Roman", serif;
+    color: var(--ar-texto);
+}
+
+.payment-method-card p {
+    color: var(--ar-muted);
+    line-height: 1.6;
+    flex: 1;
+}
+
+.payment-info-note {
+    margin: 28px 0;
+    padding: 16px 18px;
+    border-radius: 18px;
+    background: rgba(217, 170, 56, 0.12);
+    border: 1px solid rgba(217, 170, 56, 0.22);
+    color: var(--ar-texto);
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-weight: 700;
+}
+
+.payment-info-note p {
+    margin: 0;
+    line-height: 1.55;
+}
+
+.payment-transfer-layout,
+.payment-payphone-layout {
+    display: grid;
+    grid-template-columns: 1fr 0.85fr;
+    gap: 28px;
+    align-items: start;
+}
+
+.bank-info-panel,
+.transfer-form-card,
+.payment-summary-card,
+.payment-box-card {
+    background: rgba(255, 251, 242, 0.95);
+    border: 1px solid rgba(11, 75, 54, 0.12);
+    border-radius: 26px;
+    padding: 28px;
+    box-shadow: 0 18px 44px rgba(6, 39, 25, 0.09);
+}
+
+.bank-grid {
+    display: grid;
+    gap: 16px;
+    margin-top: 18px;
+}
+
+.transfer-qr-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 180px;
+    gap: 18px;
+    align-items: center;
+    padding: 18px;
+    margin-top: 18px;
+    border-radius: 22px;
+    background: linear-gradient(135deg, rgba(11, 75, 54, 0.08), rgba(217, 170, 56, 0.12));
+    border: 1px solid rgba(11, 75, 54, 0.14);
+}
+
+.transfer-qr-card h3 {
+    margin: 8px 0 8px;
+    color: var(--ar-verde-900);
+    font-size: 1.15rem;
+}
+
+.transfer-qr-card p {
+    margin: 0;
+    color: var(--ar-muted);
+    line-height: 1.55;
+}
+
+.transfer-qr-card img {
+    width: 180px;
+    max-width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: contain;
+    padding: 10px;
+    border-radius: 18px;
+    background: #fff;
+    box-shadow: 0 12px 28px rgba(6, 39, 25, 0.14);
+}
+
+.bank-card {
+    padding: 20px;
+    border-radius: 20px;
+    background: rgba(11, 75, 54, 0.06);
+    border: 1px solid rgba(11, 75, 54, 0.12);
+}
+
+.bank-card h3 {
+    margin: 0 0 12px;
+    color: var(--ar-verde-900);
+}
+
+.bank-card p {
+    margin: 8px 0;
+    color: var(--ar-muted);
+}
+
+.bank-card strong {
+    color: var(--ar-texto);
+}
+
+.payment-resume-mini {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 14px;
+    padding: 16px;
+    border-radius: 18px;
+    background: rgba(217, 170, 56, 0.10);
+    margin-bottom: 18px;
+}
+
+.transfer-form {
+    display: grid;
+    gap: 16px;
+}
+
+.transfer-form .form-group {
+    display: grid;
+    gap: 8px;
+}
+
+.transfer-form label {
+    color: var(--ar-texto);
+    font-weight: 900;
+    font-size: 0.86rem;
+}
+
+.transfer-form input,
+.transfer-form textarea {
+    width: 100%;
+    border: 1px solid rgba(11, 75, 54, 0.18);
+    border-radius: 14px;
+    padding: 13px 14px;
+    background: rgba(255, 253, 247, 0.96);
+    outline: none;
+}
+
+.transfer-form input:focus,
+.transfer-form textarea:focus {
+    border-color: var(--ar-verde-800);
+    box-shadow: 0 0 0 4px rgba(11, 75, 54, 0.08);
+}
+
+.transfer-hero-clean {
+    padding: 58px 0 42px;
+}
+
+.transfer-hero-inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 280px;
+    gap: 26px;
+    align-items: end;
+}
+
+.transfer-hero-summary {
+    padding: 18px;
+    border-radius: 22px;
+    background: rgba(255, 246, 228, 0.12);
+    border: 1px solid rgba(255, 246, 228, 0.22);
+    backdrop-filter: blur(10px);
+}
+
+.transfer-hero-summary span,
+.transfer-hero-summary small,
+.transfer-summary-strip span {
+    display: block;
+    font-size: 0.76rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.transfer-hero-summary span,
+.transfer-hero-summary small {
+    color: rgba(255, 246, 228, 0.78);
+}
+
+.transfer-hero-summary strong {
+    display: block;
+    margin: 5px 0 8px;
+    color: var(--ar-crema);
+    font-size: 1.35rem;
+}
+
+.transfer-summary-strip {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.transfer-summary-strip div {
+    padding: 16px;
+    border-radius: 18px;
+    background: rgba(255, 251, 242, 0.95);
+    border: 1px solid rgba(11, 75, 54, 0.12);
+    box-shadow: 0 12px 28px rgba(6, 39, 25, 0.07);
+}
+
+.transfer-summary-strip span {
+    color: var(--ar-muted);
+}
+
+.transfer-summary-strip strong {
+    display: block;
+    margin-top: 5px;
+    color: var(--ar-verde-900);
+    font-size: 1.12rem;
+}
+
+.transfer-warning-compact {
+    margin: 0 0 22px;
+}
+
+.transfer-layout-clean {
+    grid-template-columns: minmax(0, 1.02fr) minmax(360px, 0.82fr);
+}
+
+.transfer-panel-heading {
+    margin-bottom: 18px;
+}
+
+.transfer-panel-heading h2 {
+    margin: 8px 0 8px;
+}
+
+.transfer-panel-heading p {
+    margin: 0;
+    color: var(--ar-muted);
+    line-height: 1.55;
+}
+
+.transfer-qr-card.transfer-qr-card-large {
+    grid-template-columns: 240px minmax(0, 1fr);
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+.transfer-qr-card-large img {
+    width: 240px;
+}
+
+.bank-grid-compact {
+    grid-template-columns: 1fr;
+    margin-top: 0;
+}
+
+.transfer-form-panel {
+    position: sticky;
+    top: 88px;
+}
+
+.transfer-form select {
+    width: 100%;
+    border: 1px solid rgba(11, 75, 54, 0.18);
+    border-radius: 14px;
+    padding: 13px 14px;
+    background: rgba(255, 253, 247, 0.96);
+    outline: none;
+}
+
+.transfer-upload-box {
+    display: grid;
+    gap: 10px;
+}
+
+.transfer-upload-box input[type="file"] {
+    cursor: pointer;
+}
+
+.transfer-upload-preview {
+    min-height: 132px;
+    border: 1.5px dashed rgba(11, 75, 54, 0.24);
+    border-radius: 18px;
+    background: rgba(11, 75, 54, 0.05);
+    display: grid;
+    place-items: center;
+    gap: 8px;
+    padding: 14px;
+    text-align: center;
+    color: var(--ar-muted);
+    overflow: hidden;
+}
+
+.transfer-upload-preview i {
+    font-size: 1.9rem;
+    color: var(--ar-verde-800);
+}
+
+.transfer-upload-preview img {
+    display: none;
+    max-width: 100%;
+    max-height: 240px;
+    object-fit: contain;
+    border-radius: 14px;
+    background: #fff;
+}
+
+.transfer-upload-preview.has-image {
+    place-items: stretch;
+}
+
+.transfer-upload-preview.has-image img {
+    display: block;
+    justify-self: center;
+}
+
+.transfer-upload-preview.has-image span {
+    font-size: 0.82rem;
+    font-weight: 800;
+    color: var(--ar-verde-900);
+    overflow-wrap: anywhere;
+}
+
+.error-cuenta {
+    margin: 0;
+    color: #dc3545;
+    font-weight: 800;
+}
+
+.transfer-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.payment-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(11, 75, 54, 0.10);
+    color: var(--ar-muted);
+}
+
+.payment-row strong {
+    color: var(--ar-texto);
+}
+
+.payment-row.total {
+    border-bottom: none;
+    font-size: 1.08rem;
+}
+
+.payment-row.total strong {
+    color: var(--ar-verde-900);
+    font-size: 1.35rem;
+}
+
+.payment-warning {
+    margin-top: 18px;
+    padding: 14px;
+    border-radius: 16px;
+    background: #fff7ed;
+    color: #9a3412;
+    font-weight: 800;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+}
+
+.payphone-status-box {
+    margin: 18px 0;
+    padding: 16px;
+    border-radius: 18px;
+    background: rgba(11, 75, 54, 0.08);
+    border: 1px solid rgba(11, 75, 54, 0.14);
+}
+
+.payphone-status-box span {
+    display: block;
+    color: var(--ar-muted);
+    font-size: 0.78rem;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.payphone-status-box strong {
+    color: var(--ar-verde-900);
+    font-size: 1.1rem;
+}
+
+.payment-separator {
+    margin: 26px 0;
+    border: none;
+    border-top: 1px solid rgba(11, 75, 54, 0.14);
+}
+
+.payment-back-btn {
+    margin-top: 24px;
+}
+
+@media (max-width: 980px) {
+    .payment-method-grid,
+    .payment-method-grid.two-options,
+    .payment-transfer-layout,
+    .payment-payphone-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .payment-resume-card {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .payment-resume-card {
+        grid-template-columns: 1fr;
+    }
+
+    .payment-method-card,
+    .bank-info-panel,
+    .transfer-form-card,
+    .payment-summary-card,
+    .payment-box-card {
+        padding: 22px;
+    }
+
+    .transfer-qr-card {
+        grid-template-columns: 1fr;
+    }
+
+    .transfer-qr-card img {
+        width: 220px;
+        justify-self: center;
+    }
+}
+

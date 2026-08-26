@@ -1,0 +1,100 @@
+/* Strong dark consistency pass: keep late in the file. */
+.gerente-body *,
+.gerente-body *::before,
+.gerente-body *::after {
+    scrollbar-color: #4b5563 #111827;
+}
+
+.gerente-body a:not(.badge):not(.sidebar-link):not(.navbar-link):not(.sidebar-brand) {
+    color: #67e8f9;
+}
+
+.gerente-body a:not(.badge):not(.sidebar-link):not(.navbar-link):not(.sidebar-brand):hover {
+    color: #99f6e4;
+}
+
+.gerente-card,
+.page-header-gerente,
+.kpi-card,
+.toast-gerente,
+.user-dropdown-gerente,
+.filter-bar,
+.gerente-form,
+.gerente-form-field {
+    color: var(--gerente-text);
+}
+
+.gerente-card-header,
+.user-dropdown-header-gerente,
+.sidebar-footer,
+.gerente-form-actions {
+    border-color: var(--gerente-border);
+}
+
+.user-dropdown-link-gerente,
+.toast-content-gerente,
+.breadcrumb a,
+.breadcrumb span,
+.navbar-link,
+.gerente-table strong {
+    color: var(--gerente-text);
+}
+
+.gerente-form-field input,
+.gerente-form-field select,
+.gerente-form-field textarea {
+    background-color: #111827;
+    color: var(--gerente-text);
+    border-color: var(--gerente-border);
+}
+
+.gerente-form-field input[type="file"] {
+    padding: 7px;
+}
+
+.gerente-form-field input[type="file"]::file-selector-button {
+    margin-right: 10px;
+    padding: 7px 10px;
+    border: 1px solid var(--gerente-primary);
+    border-radius: 4px;
+    background: var(--gerente-primary);
+    color: #052e2b;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.gerente-form-field option {
+    background: #111827;
+    color: var(--gerente-text);
+}
+
+.gerente-form-field input:-webkit-autofill,
+.gerente-form-field input:-webkit-autofill:hover,
+.gerente-form-field input:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--gerente-text);
+    -webkit-box-shadow: 0 0 0 1000px #111827 inset;
+}
+
+.mini-badge {
+    background: var(--gerente-warning);
+    color: #111827;
+}
+
+.kpi-icon.green,
+.kpi-icon.blue,
+.kpi-icon.gold,
+.kpi-icon.red,
+.insight-icon.green,
+.insight-icon.gold,
+.insight-icon.blue {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.sidebar-section-title,
+.sidebar-brand-text small {
+    color: #9ca3af;
+}
+
+.sidebar-link:hover {
+    background: rgba(20, 184, 166, 0.12);
+}

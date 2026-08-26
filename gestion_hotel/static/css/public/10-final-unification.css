@@ -1,0 +1,294 @@
+/* --------------------------------------------------
+   MÓDULO 1 - UNIFICACIÓN GRADUAL (Panel Cliente & Mis Reservas)
+   - No eliminamos clases antiguas, solo armonizamos estilos
+   - Alcance: botones, tarjetas y badges para panel_cliente y mis_reservas
+   -------------------------------------------------- */
+
+/* 1) Botones: mapear resort-btn* a utilidades action-button */
+.resort-btn,
+.resort-btn-primary,
+.resort-btn-light {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-radius: 12px;
+  font-weight: 800;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
+
+/* primaria: verde oscuro */
+.resort-btn-primary {
+  background: linear-gradient(135deg, var(--resort-green) 0%, var(--resort-green-dark) 100%);
+  color: var(--blanco-suave);
+  border: 1px solid rgba(12,38,29,0.12);
+  box-shadow: 0 14px 34px rgba(22,34,28,0.12);
+}
+
+/* secundaria: crema cálida */
+.resort-btn-light {
+  background: rgba(251,244,231,0.98);
+  color: var(--resort-green-dark);
+  border: 1px solid rgba(46,72,55,0.12);
+}
+
+/* cancelar: mantener acento rojo suave */
+.cancel-reserva-btn {
+  background: linear-gradient(180deg, #fff8f7, #fff1f1);
+  color: #b42318;
+  border: 1px solid rgba(180,35,24,0.12);
+}
+
+/* Hover coherente */
+.resort-btn:hover,
+.resort-btn-primary:hover,
+.resort-btn-light:hover,
+.cancel-reserva-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 20px 44px rgba(23,38,31,0.14);
+}
+
+/* 2) Tarjetas del Panel Cliente */
+.guest-summary-card,
+.guest-experience-card,
+.guest-latest-card {
+  background: #fbf2e8; /* crema cálida */
+  border-radius: 14px;
+  border: 1px solid var(--resort-border);
+  box-shadow: 0 12px 28px rgba(22,34,28,0.08);
+  color: var(--texto);
+}
+
+.guest-summary-card { padding: 16px; }
+.guest-experience-card { overflow: hidden; border-radius: 14px; }
+.guest-experience-card img { display: block; width: 100%; height: auto; }
+.guest-latest-card { display: grid; grid-template-columns: 150px 1fr; gap: 14px; padding: 14px; align-items: center; }
+
+/* 3) Tarjetas de Mis Reservas */
+.guest-reserva-card {
+  background: #fbf2e8;
+  border-radius: 16px;
+  border: 1px solid var(--resort-border);
+  box-shadow: 0 14px 34px rgba(22,34,28,0.08);
+  padding: 18px;
+}
+
+.guest-reserva-media { border-radius: 12px; overflow: hidden; }
+.guest-reserva-media img { width: 100%; height: 100%; object-fit: cover; }
+
+.guest-reserva-info-grid div {
+  background: rgba(251,244,231,0.9);
+  border: 1px solid rgba(46,72,55,0.08);
+  border-radius: 12px;
+  padding: 10px;
+}
+
+.guest-services-box,
+.guest-note {
+  background: rgba(251,244,231,0.94);
+  border: 1px solid rgba(198,164,107,0.12);
+  border-radius: 12px;
+  padding: 12px;
+  margin-top: 12px;
+}
+
+/* 4) Badges/estados unificados (mantener nombres) */
+.estado-badge,
+.estado-mini {
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-weight: 900;
+  font-size: 0.82rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.estado-pendiente { background: rgba(198,164,107,0.18); color: #9a6500; }
+.estado-confirmada { background: #dcfce7; color: #0b744d; }
+.estado-cancelada { background: #ffe8e8; color: #ad1d1d; }
+.estado-finalizada { background: rgba(229,233,228,0.86); color: #5a665c; }
+
+/* 5) Heroes del panel y reservas (controlados y coherentes) */
+.guest-hero,
+.guest-hero-text,
+.guest-reservas-hero {
+  background-size: cover;
+  background-position: center;
+  min-height: 300px;
+  border-radius: 14px;
+  color: var(--blanco-suave);
+}
+
+.guest-hero::before,
+.guest-reservas-hero::before,
+.guest-hero-text::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(22,34,28,0.64), rgba(22,34,28,0.36));
+}
+
+/* Notas:
+   - No se eliminan reglas antiguas aquí, solo se armonizan. Si encuentras efectos inesperados, puedo revertir o ajustar selectivamente.
+*/
+
+/* ==================================================
+   CONSOLIDADO: BOTONES, TARJETAS, BADGES, HEROES
+   MÓDULO 1 - Base visual global para público y cliente
+   Estas reglas finalizan y unifican la estética eco-resort
+ ================================================== */
+
+/* Botones unificados */
+.btn,
+.btn-primary,
+.btn-secondary,
+.resort-btn,
+.resort-btn-primary,
+.resort-btn-light,
+.action-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-radius: 12px;
+  font-weight: 800;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
+
+/* primary: verde oscuro premium */
+.btn-primary,
+.resort-btn-primary,
+.action-primary {
+  background: linear-gradient(135deg, var(--resort-green) 0%, var(--resort-green-dark) 100%);
+  color: var(--blanco-suave);
+  border: 1px solid rgba(12, 38, 29, 0.12);
+  box-shadow: 0 14px 34px rgba(22,34,28,0.12);
+}
+
+/* secondary: crema/beige cálido */
+.btn-secondary,
+.resort-btn-light,
+.action-secondary {
+  background: rgba(251,244,231,0.98);
+  color: var(--resort-green-dark);
+  border: 1px solid rgba(46,72,55,0.12);
+}
+
+/* cancelar: acento rojo suave sobre crema */
+.cancel-reserva-btn {
+  background: linear-gradient(180deg, #fff8f7, #fff1f1);
+  color: #b42318;
+  border: 1px solid rgba(180,35,24,0.12);
+  box-shadow: none;
+}
+
+.btn:hover,
+.resort-btn:hover,
+.action-button:hover,
+.btn-primary:hover,
+.resort-btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 20px 44px rgba(23,38,31,0.14);
+}
+
+/* Tarjetas unificadas */
+.card-resort,
+.guest-summary-card,
+.guest-experience-card,
+.guest-latest-card,
+.guest-reserva-card,
+.catalog-card,
+.service-card,
+.card {
+  background: #fbf2e8; /* crema cálida */
+  border-radius: 16px;
+  border: 1px solid var(--resort-border);
+  box-shadow: 0 14px 34px rgba(22,34,28,0.08);
+  color: var(--texto);
+}
+
+/* Asegurar imágenes en tarjetas con esquinas redondeadas */
+.card img,
+.catalog-card img,
+.guest-latest-img img,
+.guest-reserva-media img {
+  border-radius: 12px;
+}
+
+/* Badges / estados unificados */
+.estado-badge,
+.estado-mini,
+.badge-status {
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-weight: 900;
+  font-size: 0.82rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.estado-pendiente,
+.badge-pending { background: rgba(198,164,107,0.18); color: #9a6500; }
+.estado-confirmada,
+.badge-confirmed { background: #dcfce7; color: #0b744d; }
+.estado-cancelada,
+.badge-cancel { background: #ffe8e8; color: #ad1d1d; }
+.estado-finalizada { background: rgba(229,233,228,0.86); color: #5a665c; }
+
+/* Heroes públicos y cliente - altura controlada y overlay */
+.home-hero,
+.about-hero,
+.guest-hero,
+.guest-reservas-hero,
+.hero-resort {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  color: var(--blanco-suave);
+  min-height: 320px;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.home-hero::before,
+.about-hero::before,
+.guest-hero::before,
+.guest-reservas-hero::before,
+.hero-resort::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(22,34,28,0.62), rgba(22,34,28,0.36));
+  mix-blend-mode: multiply;
+}
+
+.home-hero h1,
+.about-hero h1,
+.guest-hero-text h1,
+.guest-reservas-hero h1 { color: var(--blanco-suave); }
+
+/* Secciones con fondos cálidos suaves */
+.section-soft,
+.about-section-soft,
+.public-section-soft { background: linear-gradient(180deg, rgba(251,244,231,0.96), rgba(245,238,224,0.96)); border-radius: 12px; padding: 18px; }
+
+/* Evitar blancos puros en elementos grandes */
+.no-pure-white { background: var(--blanco-suave); }
+
+/* Small responsive tweaks */
+@media (max-width: 1050px) {
+  .guest-summary-grid, .guest-experience-grid, .guest-latest-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .guest-reserva-card, .guest-latest-card { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 720px) {
+  .home-hero, .guest-hero, .guest-reservas-hero { min-height: 260px; }
+  .btn, .resort-btn, .action-button { width: 100%; justify-content: center; }
+}
+
+

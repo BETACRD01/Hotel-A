@@ -1,0 +1,755 @@
+/* ================= PANEL CLIENTE ================= */
+
+.panel-cliente-body,
+.mis-reservas-body {
+    background: linear-gradient(180deg, var(--ar-crema), var(--ar-crema-2)) !important;
+}
+
+.cliente-panel-page {
+    padding-bottom: 72px;
+}
+
+.guest-hero-premium {
+    min-height: 470px;
+    background-image:
+        linear-gradient(90deg, rgba(6, 39, 25, 0.92), rgba(6, 39, 25, 0.52), rgba(6, 39, 25, 0.18)),
+        url("../../img/cabana4-dashboard.jpg");
+}
+
+.guest-summary-grid {
+    margin-top: -50px;
+}
+
+.guest-summary-card strong {
+    font-size: 1.9rem;
+}
+
+.guest-section {
+    padding: 58px 0 0;
+}
+
+.guest-experience-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.guest-experience-card {
+    position: relative;
+    min-height: 270px;
+    overflow: hidden;
+    border-radius: 22px;
+    box-shadow: var(--ar-shadow);
+    color: var(--ar-crema);
+}
+
+.guest-experience-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    inset: 0;
+}
+
+.guest-experience-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 10%, rgba(6, 39, 25, 0.85) 100%);
+}
+
+.guest-experience-card div {
+    position: absolute;
+    z-index: 2;
+    left: 18px;
+    right: 18px;
+    bottom: 18px;
+}
+
+.guest-experience-card span {
+    width: 46px;
+    height: 46px;
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
+    background: var(--ar-verde-900);
+    color: var(--ar-dorado-2);
+    border: 1px solid rgba(217, 170, 56, 0.4);
+    margin-bottom: 10px;
+}
+
+.guest-experience-card h3 {
+    color: var(--ar-crema);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 1.45rem;
+}
+
+.guest-experience-card p {
+    color: rgba(255, 246, 228, 0.78);
+    font-size: 0.88rem;
+}
+
+.guest-latest-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.guest-latest-card {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 14px;
+    padding: 14px;
+    align-items: center;
+}
+
+.guest-latest-img {
+    height: 118px;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.guest-latest-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.guest-latest-content {
+    display: grid;
+    gap: 7px;
+}
+
+.latest-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    gap: 8px;
+}
+
+.estado-mini,
+.estado-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    padding: 6px 10px;
+    font-size: 0.68rem;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.estado-pendiente,
+.estado-mini.estado-pendiente {
+    background: #fff0bd;
+    color: #835d00;
+}
+
+.estado-confirmada,
+.estado-mini.estado-confirmada {
+    background: #dff6df;
+    color: #166534;
+}
+
+.estado-cancelada,
+.estado-mini.estado-cancelada {
+    background: #fee0dc;
+    color: #aa261c;
+}
+
+.estado-finalizada,
+.estado-mini.estado-finalizada {
+    background: #e6eee8;
+    color: #425348;
+}
+
+.estado-pagado {
+    background: #dff6df;
+    color: #166534;
+}
+
+.estado-enrevision {
+    background: #fff4db;
+    color: #8f5e11;
+}
+
+.estado-rechazado {
+    background: #fde8e8;
+    color: #9b1d20;
+}
+
+.estado-transferencia,
+.estado-payphone {
+    background: #e8f2ff;
+    color: #1d4ed8;
+}
+
+.estado-anulado {
+    background: #fee0dc;
+    color: #aa261c;
+}
+
+.guest-payment-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.payment-status-detail-box {
+    background: rgba(255, 255, 255, 0.88);
+    border: 1px solid rgba(22, 48, 36, 0.12);
+    border-radius: 22px;
+    padding: 20px;
+    margin-top: 18px;
+}
+
+.payment-status-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+    color: var(--ar-verde-900);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.payment-status-list {
+    display: grid;
+    gap: 14px;
+}
+
+.payment-status-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 16px;
+    border-radius: 18px;
+    background: rgba(217, 170, 56, 0.08);
+    border: 1px solid rgba(217, 170, 56, 0.14);
+}
+
+.payment-status-item > div {
+    display: grid;
+    gap: 8px;
+}
+
+.payment-method-label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: rgba(22, 48, 36, 0.08);
+    color: var(--ar-verde-900);
+    font-size: 0.78rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.payment-status-item strong {
+    display: block;
+    color: var(--ar-verde-950);
+    font-size: 0.95rem;
+}
+
+.payment-status-item small {
+    display: block;
+    color: var(--ar-muted);
+    font-size: 0.82rem;
+}
+
+.mini-payment-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 6px;
+    color: var(--ar-verde-950);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.payment-state-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    padding: 8px 12px;
+    font-size: 0.75rem;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.payment-state-pendiente {
+    background: #fff7db;
+    color: #9a6a0a;
+}
+
+.payment-state-en-revision {
+    background: #fff4db;
+    color: #8f5e11;
+}
+
+.payment-state-pagado {
+    background: #dff6df;
+    color: #166534;
+}
+
+.payment-state-rechazado {
+    background: #fde8e8;
+    color: #9b1d20;
+}
+
+.payment-state-cancelado {
+    background: #fee0dc;
+    color: #aa261c;
+}
+
+.payment-empty-state {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    color: var(--ar-muted);
+    background: rgba(22, 48, 36, 0.05);
+    border-radius: 18px;
+    border: 1px solid rgba(22, 48, 36, 0.08);
+}
+
+.payment-empty-state i {
+    font-size: 1.1rem;
+}
+
+.guest-empty-card {
+    padding: 30px;
+    border-radius: 24px;
+    background: var(--ar-card);
+    border: 1px solid var(--ar-borde);
+    box-shadow: var(--ar-shadow);
+
+/* =========================================================
+   ESTADO DETALLADO DEL PAGO EN MIS RESERVAS
+   ========================================================= */
+
+.payment-status-detail-box {
+    margin-top: 18px;
+    padding: 18px;
+    border-radius: 20px;
+    background: rgba(255, 251, 242, 0.92);
+    border: 1px solid rgba(11, 75, 54, 0.12);
+}
+
+.payment-status-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--ar-verde-900);
+    margin-bottom: 14px;
+}
+
+.payment-status-title i {
+    color: var(--ar-dorado);
+}
+
+.payment-status-list {
+    display: grid;
+    gap: 12px;
+}
+
+.payment-status-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 16px;
+    border-radius: 18px;
+    background: rgba(11, 75, 54, 0.06);
+    border: 1px solid rgba(11, 75, 54, 0.10);
+}
+
+.payment-status-item div {
+    display: grid;
+    gap: 5px;
+}
+
+.payment-method-label {
+    width: fit-content;
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: rgba(217, 170, 56, 0.16);
+    color: var(--ar-verde-900);
+    font-size: 0.74rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.payment-status-item strong {
+    color: var(--ar-texto);
+}
+
+.payment-status-item small {
+    color: var(--ar-muted);
+    line-height: 1.45;
+}
+
+.payment-state-pill {
+    height: fit-content;
+    white-space: nowrap;
+    padding: 8px 12px;
+    border-radius: 999px;
+    font-size: 0.76rem;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.payment-state-pendiente {
+    background: #fff7ed;
+    color: #9a3412;
+}
+
+.payment-state-en-revision {
+    background: #eff6ff;
+    color: #1d4ed8;
+}
+
+.payment-state-pagado {
+    background: #ecfdf5;
+    color: #047857;
+}
+
+.payment-state-rechazado {
+    background: #fef2f2;
+    color: #b91c1c;
+}
+
+.payment-state-cancelado {
+    background: #f3f4f6;
+    color: #374151;
+}
+
+.payment-empty-state {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 14px;
+    border-radius: 16px;
+    background: rgba(217, 170, 56, 0.10);
+    color: var(--ar-muted);
+    font-weight: 700;
+}
+
+.payment-empty-state i {
+    color: var(--ar-dorado);
+    margin-top: 3px;
+}
+
+.mini-payment-link {
+    width: fit-content;
+    margin-top: 6px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: var(--ar-verde-900);
+    color: var(--ar-crema);
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 900;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.mini-payment-link:hover {
+    background: var(--ar-verde-800);
+    color: var(--ar-crema);
+}
+
+@media (max-width: 640px) {
+    .payment-status-item {
+        flex-direction: column;
+    }
+
+    .payment-state-pill {
+        width: fit-content;
+    }
+}
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+/* ================= MIS RESERVAS ================= */
+
+.guest-reservas-page {
+    padding-bottom: 72px;
+}
+
+.guest-reservas-hero {
+    background:
+        linear-gradient(90deg, rgba(255, 246, 228, 0.98), rgba(255, 246, 228, 0.84)),
+        url("../../img/fondo.jpg") right center/cover;
+    padding: 64px 0;
+    border-bottom: 1px solid rgba(22, 48, 36, 0.08);
+}
+
+.guest-reservas-hero-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 22px;
+}
+
+.guest-reservas-hero h1 {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(2.8rem, 5vw, 4.8rem);
+    color: var(--ar-texto);
+    line-height: 1;
+}
+
+.guest-reservas-hero p {
+    color: var(--ar-muted);
+    max-width: 560px;
+}
+
+.guest-reservas-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.reservas-filter-bar {
+    margin: 26px 0 18px;
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.reserva-filter-pills {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.filter-pill {
+    padding: 10px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--ar-borde);
+    background: rgba(255, 246, 228, 0.85);
+    color: var(--ar-texto);
+    font-weight: 900;
+}
+
+.filter-pill.active {
+    background: var(--ar-verde-900);
+    color: var(--ar-crema);
+}
+
+.guest-reservas-list {
+    display: grid;
+    gap: 18px;
+}
+
+.guest-reserva-card {
+    display: grid;
+    grid-template-columns: 200px 1fr 220px;
+    gap: 22px;
+    align-items: start;
+    padding: 20px;
+}
+
+.guest-reserva-media {
+    height: 160px;
+    border-radius: 18px;
+    overflow: hidden;
+    position: relative;
+}
+
+.guest-reserva-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.guest-reserva-media span {
+    position: absolute;
+    left: 12px;
+    bottom: 12px;
+    width: 42px;
+    height: 42px;
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
+    background: var(--ar-verde-900);
+    color: var(--ar-dorado-2);
+}
+
+.guest-reserva-content {
+    display: grid;
+    gap: 12px;
+}
+
+.guest-reserva-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    align-items: start;
+}
+
+.guest-status-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.guest-reserva-info-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.guest-reserva-info-grid div {
+    padding: 11px 12px;
+    border-radius: 14px;
+    background: rgba(7, 53, 31, 0.06);
+    border: 1px solid var(--ar-borde);
+}
+
+.guest-reserva-info-grid span {
+    display: block;
+    font-size: 0.72rem;
+    color: var(--ar-muted);
+}
+
+.guest-reserva-info-grid strong {
+    color: var(--ar-texto);
+}
+
+.guest-services-box,
+.guest-note {
+    padding: 14px;
+    border-radius: 16px;
+    background: rgba(255, 246, 228, 0.68);
+    border: 1px solid rgba(217, 170, 56, 0.25);
+}
+
+.guest-services-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    color: var(--ar-verde-900);
+}
+
+.guest-service-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 9px 0;
+    border-top: 1px solid rgba(22, 48, 36, 0.08);
+}
+
+.guest-service-item:first-of-type {
+    border-top: 0;
+}
+
+.guest-service-item span {
+    display: block;
+    color: var(--ar-muted);
+    font-size: 0.82rem;
+}
+
+.guest-reserva-actions {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+    align-items: stretch !important;
+    width: 100% !important;
+}
+
+.guest-reserva-actions form {
+    width: 100% !important;
+    margin: 0 !important;
+}
+
+.guest-reserva-actions .ar-btn,
+.guest-reserva-actions .cancel-reserva-btn {
+    width: 100% !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    padding: 11px 14px !important;
+    font-size: 0.85rem !important;
+    font-weight: 700 !important;
+    border-radius: 12px !important;
+    white-space: nowrap !important;
+    box-sizing: border-box !important;
+}
+
+.guest-total {
+    width: 100% !important;
+    text-align: right !important;
+    margin-bottom: 2px !important;
+}
+
+.guest-total span {
+    display: block !important;
+    color: var(--ar-muted) !important;
+    font-size: 0.76rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+}
+
+.guest-total strong {
+    font-family: Georgia, "Times New Roman", serif !important;
+    font-size: 1.8rem !important;
+    color: var(--ar-verde-900) !important;
+    line-height: 1.1 !important;
+    display: block !important;
+}
+
+.guest-payment-mini {
+    background: rgba(246, 200, 91, 0.15) !important;
+    border: 1px solid rgba(217, 170, 56, 0.35) !important;
+    border-radius: 12px !important;
+    padding: 8px 12px !important;
+    text-align: right !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    margin-bottom: 4px !important;
+}
+
+.guest-payment-mini span {
+    display: block !important;
+    font-size: 0.7rem !important;
+    color: var(--ar-muted) !important;
+    text-transform: uppercase !important;
+}
+
+.guest-payment-mini strong {
+    font-size: 1.1rem !important;
+    color: var(--ar-verde-900) !important;
+}
+
+.cancel-reserva-btn {
+    color: #aa261c !important;
+    background: #fff3f1 !important;
+    border: 1px solid rgba(170, 38, 28, 0.22) !important;
+    box-shadow: none !important;
+}
+
+.support-card {
+    margin-top: 24px;
+    padding: 22px;
+    border-radius: 22px;
+    background: rgba(255, 246, 228, 0.82);
+    border: 1px solid var(--ar-borde);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 18px;
+}
+
