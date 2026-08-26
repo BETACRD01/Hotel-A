@@ -233,19 +233,19 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # DATOS BANCARIOS DEL HOTEL
 # ============================================================
 
-BANCO_1_NOMBRE = os.getenv("BANCO_1_NOMBRE", "Produbanco")
-BANCO_1_TIPO = os.getenv("BANCO_1_TIPO", "Cuenta Corriente")
-BANCO_1_CUENTA = os.getenv("BANCO_1_CUENTA", "2216065613")
-BANCO_1_TITULAR = os.getenv("BANCO_1_TITULAR", "JHELMY TAPUY")
-BANCO_1_IDENTIFICACION = os.getenv("BANCO_1_IDENTIFICACION", "1501005043")
-BANCO_1_CORREO = os.getenv("BANCO_1_CORREO", "jhelmytapuy29@gmail.com")
+BANCO_1_NOMBRE = os.getenv("BANCO_1_NOMBRE", "Banco principal")
+BANCO_1_TIPO = os.getenv("BANCO_1_TIPO", "Cuenta")
+BANCO_1_CUENTA = os.getenv("BANCO_1_CUENTA", "")
+BANCO_1_TITULAR = os.getenv("BANCO_1_TITULAR", "")
+BANCO_1_IDENTIFICACION = os.getenv("BANCO_1_IDENTIFICACION", "")
+BANCO_1_CORREO = os.getenv("BANCO_1_CORREO", "")
 
-BANCO_2_NOMBRE = os.getenv("BANCO_2_NOMBRE", "Banco del Austro")
-BANCO_2_TIPO = os.getenv("BANCO_2_TIPO", "Cuenta Corriente")
-BANCO_2_CUENTA = os.getenv("BANCO_2_CUENTA", "15900539")
-BANCO_2_TITULAR = os.getenv("BANCO_2_TITULAR", "Marjorie Grefa")
-BANCO_2_IDENTIFICACION = os.getenv("BANCO_2_IDENTIFICACION", "1710806157")
-BANCO_2_CORREO = os.getenv("BANCO_2_CORREO", "marjoriegrefa@gmail.com")
+BANCO_2_NOMBRE = os.getenv("BANCO_2_NOMBRE", "Banco secundario")
+BANCO_2_TIPO = os.getenv("BANCO_2_TIPO", "Cuenta")
+BANCO_2_CUENTA = os.getenv("BANCO_2_CUENTA", "")
+BANCO_2_TITULAR = os.getenv("BANCO_2_TITULAR", "")
+BANCO_2_IDENTIFICACION = os.getenv("BANCO_2_IDENTIFICACION", "")
+BANCO_2_CORREO = os.getenv("BANCO_2_CORREO", "")
 
 # CORS Configuration
 CORS_ALLOWED_ORIGINS = [

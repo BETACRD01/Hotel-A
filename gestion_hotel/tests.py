@@ -46,7 +46,7 @@ class DocumentoEcuadorValidatorTests(TestCase):
     def test_numero_documento_duplicado_no_puede_registrarse(self):
         Cliente.objects.create(
             tipo_documento='Cédula',
-            numero_documento='1501005043',
+            numero_documento='1710034065',
             nombres='Test',
             apellidos='Usuario',
             telefono_celular='0992123116',

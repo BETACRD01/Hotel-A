@@ -190,52 +190,7 @@
         </footer>
     </div>
 
-    <script>
-        const sidebar = document.getElementById('sidebar');
-        const sidebarToggle = document.getElementById('sidebarToggle');
-        const sidebarClose = document.getElementById('sidebarClose');
-        const mainContent = document.getElementById('mainContent');
-        const userToggle = document.getElementById('userToggle');
-        const userDropdown = document.getElementById('userDropdown');
-
-        if (sidebarToggle) {
-            sidebarToggle.addEventListener('click', function() {
-                sidebar.classList.toggle('activo');
-                mainContent.classList.toggle('sidebar-open');
-            });
-        }
-
-        if (sidebarClose) {
-            sidebarClose.addEventListener('click', function() {
-                sidebar.classList.remove('activo');
-                mainContent.classList.remove('sidebar-open');
-            });
-        }
-
-        if (userToggle && userDropdown) {
-            userToggle.addEventListener('click', function(e) {
-                e.stopPropagation();
-                userDropdown.classList.toggle('activo');
-            });
-            document.addEventListener('click', function(e) {
-                if (!e.target.closest('.user-menu-gerente')) {
-                    userDropdown.classList.remove('activo');
-                }
-            });
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const toasts = document.querySelectorAll('.toast-gerente');
-            toasts.forEach(function(toast) {
-                setTimeout(function() {
-                    toast.style.opacity = '0';
-                    toast.style.transform = 'translateY(-10px)';
-                    setTimeout(function() { toast.remove(); }, 300);
-                }, 4500);
-            });
-        });
-    </script>
-
+    <script src="{% static 'js/gerente_ui.js' %}?v=1"></script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>

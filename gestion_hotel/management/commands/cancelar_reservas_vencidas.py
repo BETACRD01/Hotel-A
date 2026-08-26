@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from gestion_hotel.views import cancelar_reservas_vencidas
+from gestion_hotel.services.reservations import cancelar_reservas_vencidas
 
 
 class Command(BaseCommand):
