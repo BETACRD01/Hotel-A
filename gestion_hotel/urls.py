@@ -8,9 +8,8 @@ app_name = "gestion"
 urlpatterns = [
     path("", views.index, name="inicio"),
 
-    # Autenticacion cliente
+    # Autenticación cliente
     path("login/", views.login_view, name="login"),
-    path("login-staff/", views.login_staff_view, name="login_staff"),
     path("registro/", views.registro_view, name="registro"),
     path("logout/", views.logout_view, name="logout"),
 
