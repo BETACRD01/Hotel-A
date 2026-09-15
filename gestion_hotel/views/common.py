@@ -11,7 +11,7 @@ import uuid
 from django import forms
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth import get_user_model, login as auth_login
+from django.contrib.auth import authenticate, get_user_model, login as auth_login, login
 from django.contrib.auth.hashers import check_password, make_password
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail

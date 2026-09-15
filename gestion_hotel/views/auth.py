@@ -313,15 +313,39 @@ def nueva_password(request):
 
     return render(request, "auth/nueva_password.html")
 
+def login_staff_view(request):
+    """
+    Login dedicado para admin y gerente (Panel de Gestion).
+    """
+    if request.user.is_authenticated and request.user.is_staff:
+        return redirect("/admin/")
+
+    if request.method == "POST":
+        username = request.POST.get("username", "").strip()
+        password = request.POST.get("password", "")
+
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None and user.is_active and (user.is_staff or user.is_superuser):
+            login(request, user)
+            if user.is_superuser:
+                return redirect("/admin/")
+            return redirect("gestion:gerente_dashboard")
+        else:
+            messages.error(request, "Credenciales incorrectas o no tienes acceso al panel de gestion.")
+
+    return render(request, "auth/login_staff.html")
+
+
 def logout_view(request):
     """
-    Cierra la sesiÃ³n del usuario.
+    Cierra la sesion del usuario.
     """
     request.session.flush()
 
     messages.info(
         request,
-        "La sesiÃ³n se cerrÃ³ correctamente."
+        "La sesion se cerro correctamente."
     )
 
     return redirect("gestion:inicio")

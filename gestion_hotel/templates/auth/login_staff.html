@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Panel de Gestion | Arahuana Eco-Resort & Spa{% endblock %}
+{% block body_class %}pagina-auth auth-login-body{% endblock %}
+
+{% block content %}
+
+<section class="auth-split-page">
+    <div class="auth-split-visual">
+        <div class="auth-split-logo">
+            <img src="{% static 'img/logo.jpg' %}" alt="Arahuana">
+            <div>
+                <strong>Arahuana</strong>
+                <span>Eco-Resort & Spa</span>
+            </div>
+        </div>
+
+        <div class="auth-split-copy">
+            <h1>Panel de Gestion <i class="fa-solid fa-lock"></i></h1>
+
+            <p>
+                Acceso exclusivo para administradores y gerentes
+                del Sistema Hotelero Arahuana.
+            </p>
+
+            <div class="auth-feature-list">
+                <div class="auth-feature-item">
+                    <i class="fa-solid fa-gauge-high"></i>
+                    <div>
+                        <strong>Dashboard gerencial</strong>
+                        <span>Control total de la operacion hotelera.</span>
+                    </div>
+                </div>
+
+                <div class="auth-feature-item">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <div>
+                        <strong>Informes y metricas</strong>
+                        <span>Reportes de ocupacion, reservas e ingresos.</span>
+                    </div>
+                </div>
+
+                <div class="auth-feature-item">
+                    <i class="fa-solid fa-users-gear"></i>
+                    <div>
+                        <strong>Gestion de personal</strong>
+                        <span>Administra habitaciones, cabanas y servicios.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="auth-split-panel">
+        <div class="auth-split-card auth-login-card">
+            <h2>Panel de Gestion <i class="fa-solid fa-key"></i></h2>
+
+            <p class="auth-split-subtitle">
+                Ingresa tus credenciales de administrador o gerente
+            </p>
+
+            {% if messages %}
+                <div class="auth-messages">
+                    {% for message in messages %}
+                        <div class="mensaje-auth mensaje-{{ message.tags }}">
+                            <i class="fa-solid fa-circle-info"></i>
+                            <span>{{ message }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <form method="POST" action="{% url 'gestion:login_staff' %}" class="auth-clean-form">
+                {% csrf_token %}
+
+                <div class="auth-clean-group">
+                    <label for="username">Usuario</label>
+                    <div class="auth-clean-input">
+                        <i class="fa-solid fa-user-shield"></i>
+                        <input
+                            type="text"
+                            id="username"
+                            name="username"
+                            placeholder="Ingresa tu usuario"
+                            required
+                            autocomplete="username"
+                        >
+                    </div>
+                </div>
+
+                <div class="auth-clean-group">
+                    <label for="password">Contrasena</label>
+                    <div class="auth-clean-input">
+                        <i class="fa-solid fa-lock"></i>
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Ingresa tu contrasena"
+                            required
+                            autocomplete="current-password"
+                        >
+                        <button type="button" class="auth-eye-btn">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="auth-clean-submit">
+                    <i class="fa-solid fa-right-to-bracket"></i>
+                    Ingresar al Panel
+                </button>
+            </form>
+
+            <div class="auth-clean-footer">
+                <a href="{% url 'gestion:login' %}">
+                    <i class="fa-solid fa-arrow-left"></i> Volver al login de clientes
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".auth-eye-btn").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+            const input = btn.parentElement.querySelector("input");
+            const icon = btn.querySelector("i");
+
+            if (input.type === "password") {
+                input.type = "text";
+                icon.className = "fa-solid fa-eye-slash";
+            } else {
+                input.type = "password";
+                icon.className = "fa-solid fa-eye";
+            }
+        });
+    });
+});
+</script>
+{% endblock %}
