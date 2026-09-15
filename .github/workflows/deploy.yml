@@ -1,0 +1,74 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run Django check
+      run: |
+        python manage.py check
+      env:
+        SECRET_KEY: test-secret-key-for-check
+        DEBUG: True
+        DB_NAME: test_db
+        DB_USER: test_user
+        DB_PASSWORD: test_password
+        DB_HOST: localhost
+        DB_PORT: 5432
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Deploy via SSH
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.VM_HOST }}
+        username: ${{ secrets.VM_USER }}
+        key: ${{ secrets.VM_SSH_KEY }}
+        script: |
+          cd /var/www/hoteleroarahuana
+          
+          # Pull latest code
+          sudo -u deployer git pull origin main
+          
+          # Activate virtual environment and install deps
+          sudo -u deployer bash -c "cd /var/www/hoteleroarahuana && source venv/bin/activate && pip install -r requirements.txt"
+          
+          # Run migrations
+          sudo -u deployer bash -c "cd /var/www/hoteleroarahuana && source venv/bin/activate && python manage.py migrate --noinput"
+          
+          # Collect static files
+          sudo -u deployer bash -c "cd /var/www/hoteleroarahuana && source venv/bin/activate && python manage.py collectstatic --noinput"
+          
+          # Restart services
+          sudo systemctl restart hotel
+          sudo systemctl restart nginx
+
+    - name: Deploy complete
+      run: echo "Deployment completed successfully!"
