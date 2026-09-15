@@ -45,30 +45,29 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Deploy via SSH
-      uses: appleboy/ssh-action@v1.0.0
+    - name: Authenticate to Google Cloud
+      uses: google-github-actions/auth@v2
       with:
-        host: ${{ secrets.VM_HOST }}
-        username: ${{ secrets.VM_USER }}
-        key: ${{ secrets.VM_SSH_KEY }}
-        script: |
-          cd /var/www/hoteleroarahuana
-          
-          # Pull latest code
-          sudo -u deployer git pull origin main
-          
-          # Activate virtual environment and install deps
-          sudo -u deployer bash -c "cd /var/www/hoteleroarahuana && source venv/bin/activate && pip install -r requirements.txt"
-          
-          # Run migrations
-          sudo -u deployer bash -c "cd /var/www/hoteleroarahuana && source venv/bin/activate && python manage.py migrate --noinput"
-          
-          # Collect static files
-          sudo -u deployer bash -c "cd /var/www/hoteleroarahuana && source venv/bin/activate && python manage.py collectstatic --noinput"
-          
-          # Restart services
-          sudo systemctl restart hotel
-          sudo systemctl restart nginx
+        credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v2
+
+    - name: Deploy via IAP tunnel
+      run: |
+        gcloud compute ssh free-ubuntu-vm \
+          --zone=us-central1-a \
+          --project=delivery-109f4 \
+          --tunnel-through-iap \
+          --command='
+            cd /var/www/hoteleroarahuana && \
+            sudo -u deployer git pull origin main && \
+            sudo -u deployer bash -c "cd /var/www/hoteleroarahuana && source venv/bin/activate && pip install -r requirements.txt" && \
+            sudo -u deployer bash -c "cd /var/www/hoteleroarahuana && source venv/bin/activate && python manage.py migrate --noinput" && \
+            sudo -u deployer bash -c "cd /var/www/hoteleroarahuana && source venv/bin/activate && python manage.py collectstatic --noinput" && \
+            sudo systemctl restart hotel && \
+            sudo systemctl restart nginx
+          '
 
     - name: Deploy complete
       run: echo "Deployment completed successfully!"
