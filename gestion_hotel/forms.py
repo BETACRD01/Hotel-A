@@ -21,7 +21,7 @@ class ClienteRegistroForm(forms.Form):
 
     tipo_documento = forms.ChoiceField(
         choices=[
-            ('Cédula', 'Cédula'),
+            ('Cedula', 'Cédula'),
             ('RUC', 'RUC'),
             ('Pasaporte', 'Pasaporte'),
         ],

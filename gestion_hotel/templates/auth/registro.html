@@ -84,7 +84,7 @@
                         <div class="auth-clean-input">
                             <i class="fa-solid fa-id-card"></i>
                             <select id="tipo_documento" name="tipo_documento" required>
-                                <option value="Cédula" {% if request.POST.tipo_documento == "Cédula" %}selected{% endif %}>Cédula</option>
+                                <option value="Cedula" {% if request.POST.tipo_documento == "Cedula" %}selected{% endif %}>Cédula</option>
                                 <option value="RUC" {% if request.POST.tipo_documento == "RUC" %}selected{% endif %}>RUC</option>
                                 <option value="Pasaporte" {% if request.POST.tipo_documento == "Pasaporte" %}selected{% endif %}>Pasaporte</option>
                             </select>
