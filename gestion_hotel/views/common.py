@@ -102,7 +102,7 @@ def sincronizar_acceso_admin_gerente(request, gerente, password):
     auth_user.last_name = gerente.apellidos or ""
     auth_user.is_active = True
     auth_user.is_staff = True
-    auth_user.is_superuser = True
+    auth_user.is_superuser = False
     auth_user.set_password(password)
     auth_user.save()
 
