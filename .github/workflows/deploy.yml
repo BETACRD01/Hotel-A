@@ -60,11 +60,11 @@ jobs:
           --project=delivery-109f4 \
           --tunnel-through-iap \
           --command='
-            cd /var/www/hoteleroarahuana && \
-            sudo -u deployer git pull origin main && \
-            sudo -u deployer bash -c "cd /var/www/hoteleroarahuana && source venv/bin/activate && pip install -r requirements.txt" && \
-            sudo -u deployer bash -c "cd /var/www/hoteleroarahuana && source venv/bin/activate && python manage.py migrate --noinput" && \
-            sudo -u deployer bash -c "cd /var/www/hoteleroarahuana && source venv/bin/activate && python manage.py collectstatic --noinput" && \
+            cd /home/ubuntu/Hotel-A && \
+            sudo -u ubuntu git pull origin main && \
+            sudo -u ubuntu /usr/bin/python3 -m pip install -r requirements.txt && \
+            sudo -u ubuntu /usr/bin/python3 manage.py migrate --noinput && \
+            sudo -u ubuntu /usr/bin/python3 manage.py collectstatic --noinput && \
             sudo systemctl restart hotel && \
             sudo systemctl restart nginx
           '
