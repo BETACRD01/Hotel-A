@@ -11,19 +11,11 @@ class GerenteAdminRedirectMiddleware:
         if (
             request.user.is_authenticated
             and request.user.is_staff
+            and not request.user.is_superuser
             and request.path.startswith("/admin/")
             and request.path != "/admin/logout/"
         ):
-            from gestion_hotel.models import Cliente
-
-            cliente = Cliente.objects.filter(
-                correo_electronico__iexact=request.user.email,
-                rol="gerente",
-                activo=True,
-            ).first()
-
-            if cliente:
-                from django.shortcuts import redirect
-                return redirect("/gerente/")
+            from django.shortcuts import redirect
+            return redirect("/gerente/")
 
         return self.get_response(request)
