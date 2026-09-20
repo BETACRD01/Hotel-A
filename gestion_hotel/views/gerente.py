@@ -13,7 +13,7 @@ def requiere_gerente(request):
         return usuario
 
     auth_user = getattr(request, "user", None)
-    if auth_user and auth_user.is_authenticated and auth_user.is_active and (auth_user.is_staff or auth_user.is_superuser):
+    if auth_user and auth_user.is_authenticated and auth_user.is_active and auth_user.is_staff and not auth_user.is_superuser:
         return SimpleNamespace(
             nombres=(auth_user.first_name or auth_user.username or "Gerente").strip(),
             apellidos=(auth_user.last_name or "").strip(),

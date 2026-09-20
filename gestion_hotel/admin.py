@@ -2,6 +2,8 @@
 
 from django import forms
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
 from django.core.exceptions import ValidationError, PermissionDenied
 from django.utils.html import format_html
@@ -21,8 +23,35 @@ from .models import (
     ConfiguracionInicio,
 )
 
+User = get_user_model()
+
+
 # ============================================================
-# PANEL DE USUARIOS DEL ADMINISTRADOR 
+# PROTECCION: Los gerentes NUNCA deben ser superusuarios
+# ============================================================
+
+
+class SafeUserAdmin(UserAdmin):
+    """UserAdmin que impide marcar is_superuser en usuarios gerente."""
+
+    def save_model(self, request, obj, form, change):
+        from gestion_hotel.models import Cliente
+        tiene_gerente = Cliente.objects.filter(
+            correo_electronico__iexact=obj.email,
+            rol='gerente',
+            activo=True,
+        ).exists()
+        if tiene_gerente:
+            obj.is_superuser = False
+        super().save_model(request, obj, form, change)
+
+
+admin.site.unregister(User)
+admin.site.register(User, SafeUserAdmin)
+
+
+# ============================================================
+# PANEL DE USUARIOS DEL ADMINISTRADOR
 # ============================================================
 
 
