@@ -645,6 +645,24 @@ def gerente_sobre_nosotros_view(request):
         return redirect("gestion:login")
 
     config = ConfiguracionInicio.objects.first()
+    if not config:
+        config = ConfiguracionInicio.objects.create()
+
+    campos_bancarios = [
+        "banco_1_nombre",
+        "banco_1_tipo",
+        "banco_1_cuenta",
+        "banco_1_titular",
+        "banco_1_identificacion",
+        "banco_1_correo",
+    ]
+
+    if request.method == "POST":
+        for campo in campos_bancarios:
+            setattr(config, campo, request.POST.get(campo, "").strip())
+        config.save(update_fields=campos_bancarios)
+        messages.success(request, "Datos bancarios actualizados correctamente.")
+        return redirect("gestion:gerente_sobre_nosotros")
 
     contexto = {
         "usuario": usuario,

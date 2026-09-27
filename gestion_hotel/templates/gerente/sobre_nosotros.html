@@ -45,4 +45,62 @@
         {% endif %}
     </div>
 </div>
+
+<div class="gerente-card" style="margin-top: 24px;">
+    <div class="gerente-card-header">
+        <h3><i class="fa-solid fa-building-columns" style="margin-right: 8px; color: var(--gerente-primary);"></i> Datos Bancarios para Transferencias</h3>
+        <p style="margin-top: 4px; color: var(--gerente-text-muted); font-size: 13px;">
+            Estos datos se mostrarán a los clientes en la pantalla de pago al elegir transferencia o depósito bancario.
+        </p>
+    </div>
+    <div class="gerente-card-body">
+        <form method="post" class="gerente-form">
+            {% csrf_token %}
+            <div class="gerente-form-grid">
+                <div class="gerente-form-field">
+                    <label for="banco_1_nombre">Banco:</label>
+                    <input type="text" id="banco_1_nombre" name="banco_1_nombre" class="gerente-input"
+                           value="{{ config.banco_1_nombre|default:'' }}" placeholder="Ej: Banco Pichincha">
+                </div>
+
+                <div class="gerente-form-field">
+                    <label for="banco_1_tipo">Tipo de cuenta:</label>
+                    <input type="text" id="banco_1_tipo" name="banco_1_tipo" class="gerente-input"
+                           value="{{ config.banco_1_tipo|default:'' }}" placeholder="Ej: Corriente / Ahorros">
+                </div>
+
+                <div class="gerente-form-field">
+                    <label for="banco_1_cuenta">Número de cuenta:</label>
+                    <input type="text" id="banco_1_cuenta" name="banco_1_cuenta" class="gerente-input"
+                           value="{{ config.banco_1_cuenta|default:'' }}" placeholder="Ej: 2100xxxxxx">
+                </div>
+
+                <div class="gerente-form-field">
+                    <label for="banco_1_titular">Titular:</label>
+                    <input type="text" id="banco_1_titular" name="banco_1_titular" class="gerente-input"
+                           value="{{ config.banco_1_titular|default:'' }}" placeholder="Ej: Arahuana Eco-Resort CIA. LTDA.">
+                </div>
+
+                <div class="gerente-form-field">
+                    <label for="banco_1_identificacion">RUC / C.I.:</label>
+                    <input type="text" id="banco_1_identificacion" name="banco_1_identificacion" class="gerente-input"
+                           value="{{ config.banco_1_identificacion|default:'' }}" placeholder="Ej: 1792xxxxxxxxx">
+                </div>
+
+                <div class="gerente-form-field">
+                    <label for="banco_1_correo">Correo:</label>
+                    <input type="email" id="banco_1_correo" name="banco_1_correo" class="gerente-input"
+                           value="{{ config.banco_1_correo|default:'' }}" placeholder="Ej: pagos@arahuana.com">
+                </div>
+            </div>
+
+            <div class="gerente-form-actions">
+                <button type="submit" class="badge badge-success gerente-action-button">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    Guardar datos bancarios
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
 {% endblock %}

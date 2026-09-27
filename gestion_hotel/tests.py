@@ -5,11 +5,12 @@ from django.test import SimpleTestCase, TestCase
 from django.urls import reverse
 from urllib.parse import quote_plus
 
-from .models import Cabanas, Cine, Cliente, DetalleHabitaciones, DetalleResort, Habitaciones, ResortDia
+from .models import Cabanas, Cine, Cliente, ConfiguracionInicio, DetalleHabitaciones, DetalleResort, Habitaciones, ResortDia
 
 from .models import Reservas
 from django.contrib.auth.models import User
 from .forms import ClienteRegistroForm
+from .views.payments import datos_bancarios_contexto
 from django.utils import timezone
 from datetime import date, timedelta
 
@@ -928,4 +929,149 @@ class InvalidDatesReservationTests(TestCase):
         self.assertEqual(Reservas.objects.filter(id_cliente=self.cliente).count(), 0)
         self.assertContains(response, "La fecha de ingreso no puede ser anterior a la fecha actual.")
 
-    
+
+class DatosBancariosTests(TestCase):
+    def setUp(self):
+        self.gerente_user = User.objects.create_user(
+            username="gerente_admin",
+            password="GerentePassword123!",
+            is_staff=True,
+            is_superuser=False,
+        )
+        self.cliente = Cliente.objects.create(
+            tipo_documento="Cedula",
+            numero_documento="0100000009",
+            nombres="Carlos",
+            apellidos="Test",
+            telefono_celular="0999999999",
+            correo_electronico="carlos@test.com",
+            password=make_password("Test1234!"),
+            rol="cliente",
+            activo=True,
+            direccion="Quito",
+        )
+        self.reserva = Reservas.objects.create(
+            id_cliente=self.cliente,
+            fecha_ingreso=date.today(),
+            fecha_salida=date.today() + timedelta(days=1),
+            estado_reserva="Pendiente",
+            estado_pago="Pendiente",
+            metodo_pago="Pendiente",
+            total=100.00,
+            subtotal=100.00,
+            porcentaje_anticipo=50,
+            anticipo_minimo=50.00,
+            saldo_pendiente=50.00,
+        )
+
+    def test_datos_bancarios_fallback_a_settings(self):
+        ConfiguracionInicio.objects.all().delete()
+        bancos = datos_bancarios_contexto()
+        self.assertEqual(len(bancos), 1)
+        self.assertEqual(bancos[0]["nombre"], settings.BANCO_1_NOMBRE)
+        self.assertEqual(bancos[0]["tipo"], settings.BANCO_1_TIPO)
+
+    def test_datos_bancarios_usa_configuracion_inicio(self):
+        config, _ = ConfiguracionInicio.objects.get_or_create(id=1)
+        config.banco_1_nombre = "Banco Pichincha"
+        config.banco_1_tipo = "Corriente"
+        config.banco_1_cuenta = "2100123456"
+        config.banco_1_titular = "Arahuana Eco-Resort"
+        config.banco_1_identificacion = "1790011223001"
+        config.banco_1_correo = "pagos@arahuana.com"
+        config.save()
+
+        bancos = datos_bancarios_contexto()
+        self.assertEqual(len(bancos), 1)
+        self.assertEqual(bancos[0]["nombre"], "Banco Pichincha")
+        self.assertEqual(bancos[0]["tipo"], "Corriente")
+        self.assertEqual(bancos[0]["cuenta"], "2100123456")
+        self.assertEqual(bancos[0]["titular"], "Arahuana Eco-Resort")
+        self.assertEqual(bancos[0]["identificacion"], "1790011223001")
+        self.assertEqual(bancos[0]["correo"], "pagos@arahuana.com")
+
+    def test_gerente_sobre_nosotros_requiere_login(self):
+        response = self.client.get(reverse("gestion:gerente_sobre_nosotros"))
+        self.assertRedirects(response, reverse("gestion:login"))
+
+    def test_gerente_sobre_nosotros_get_muestra_formulario(self):
+        self.client.force_login(self.gerente_user)
+        response = self.client.get(reverse("gestion:gerente_sobre_nosotros"))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Datos Bancarios para Transferencias")
+        self.assertContains(response, 'name="banco_1_nombre"')
+        self.assertContains(response, 'name="banco_1_tipo"')
+        self.assertContains(response, 'name="banco_1_cuenta"')
+        self.assertContains(response, 'name="banco_1_titular"')
+        self.assertContains(response, 'name="banco_1_identificacion"')
+        self.assertContains(response, 'name="banco_1_correo"')
+
+    def test_gerente_sobre_nosotros_post_actualiza_datos_bancarios(self):
+        self.client.force_login(self.gerente_user)
+        payload = {
+            "banco_1_nombre": "Banco Guayaquil",
+            "banco_1_tipo": "Ahorros",
+            "banco_1_cuenta": "9988776655",
+            "banco_1_titular": "Resort Arahuana Cia",
+            "banco_1_identificacion": "1799998888001",
+            "banco_1_correo": "cobros@arahuana.com",
+        }
+        response = self.client.post(reverse("gestion:gerente_sobre_nosotros"), payload, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Datos bancarios actualizados correctamente.")
+
+        config = ConfiguracionInicio.objects.first()
+        self.assertIsNotNone(config)
+        self.assertEqual(config.banco_1_nombre, "Banco Guayaquil")
+        self.assertEqual(config.banco_1_tipo, "Ahorros")
+        self.assertEqual(config.banco_1_cuenta, "9988776655")
+        self.assertEqual(config.banco_1_titular, "Resort Arahuana Cia")
+        self.assertEqual(config.banco_1_identificacion, "1799998888001")
+        self.assertEqual(config.banco_1_correo, "cobros@arahuana.com")
+
+    def test_pantalla_transferencia_muestra_datos_bancarios(self):
+        config, _ = ConfiguracionInicio.objects.get_or_create(id=1)
+        config.banco_1_nombre = "Banco del Austro"
+        config.banco_1_tipo = "Corriente"
+        config.banco_1_cuenta = "5544332211"
+        config.banco_1_titular = "Arahuana Spa"
+        config.banco_1_identificacion = "1795554444001"
+        config.banco_1_correo = "spa@arahuana.com"
+        config.save()
+
+        session = self.client.session
+        session["cliente_id"] = self.cliente.id_cliente
+        session["usuario_rol"] = "cliente"
+        session["cliente_nombre"] = "Carlos Test"
+        session.save()
+
+        response = self.client.get(
+            reverse("gestion:pago_transferencia", kwargs={"id_reserva": self.reserva.id_reserva})
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Banco del Austro")
+        self.assertContains(response, "5544332211")
+        self.assertContains(response, "Arahuana Spa")
+        self.assertContains(response, "1795554444001")
+        self.assertContains(response, "spa@arahuana.com")
+
+    def test_admin_muestra_y_edita_datos_bancarios(self):
+        admin_user = User.objects.create_superuser(
+            username="super_admin",
+            password="SuperPassword123!",
+            email="admin@arahuana.com",
+        )
+        config, _ = ConfiguracionInicio.objects.get_or_create(id=1)
+        self.client.force_login(admin_user)
+
+        change_url = reverse("admin:gestion_hotel_configuracioninicio_change", args=[config.id])
+        response = self.client.get(change_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Datos bancarios para transferencias")
+        self.assertContains(response, "banco_1_nombre")
+        self.assertContains(response, "banco_1_tipo")
+        self.assertContains(response, "banco_1_cuenta")
+        self.assertContains(response, "banco_1_titular")
+        self.assertContains(response, "banco_1_identificacion")
+        self.assertContains(response, "banco_1_correo")
+

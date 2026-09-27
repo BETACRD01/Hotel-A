@@ -781,6 +781,16 @@ class ConfiguracionInicioAdmin(admin.ModelAdmin):
                 "sn_cta_parrafo",
             ),
         }),
+        ("Datos bancarios para transferencias", {
+            "fields": (
+                "banco_1_nombre",
+                "banco_1_tipo",
+                "banco_1_cuenta",
+                "banco_1_titular",
+                "banco_1_identificacion",
+                "banco_1_correo",
+            ),
+        }),
         ("Imágenes de las tarjetas del inicio", {
             "fields": (
                 "imagen_habitaciones",

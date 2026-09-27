@@ -54,14 +54,22 @@ def obtener_monto_anticipo(reserva):
 def datos_bancarios_contexto():
     """Construye los datos bancarios mostrados en la pantalla de transferencia."""
 
+    config = ConfiguracionInicio.objects.first()
+
+    def valor_config(campo, valor_entorno):
+        if config is None:
+            return valor_entorno
+        valor = getattr(config, campo, "") or ""
+        return valor.strip() or valor_entorno
+
     return [
         {
-            "nombre": settings.BANCO_1_NOMBRE,
-            "tipo": settings.BANCO_1_TIPO,
-            "cuenta": settings.BANCO_1_CUENTA,
-            "titular": settings.BANCO_1_TITULAR,
-            "identificacion": settings.BANCO_1_IDENTIFICACION,
-            "correo": settings.BANCO_1_CORREO,
+            "nombre": valor_config("banco_1_nombre", settings.BANCO_1_NOMBRE),
+            "tipo": valor_config("banco_1_tipo", settings.BANCO_1_TIPO),
+            "cuenta": valor_config("banco_1_cuenta", settings.BANCO_1_CUENTA),
+            "titular": valor_config("banco_1_titular", settings.BANCO_1_TITULAR),
+            "identificacion": valor_config("banco_1_identificacion", settings.BANCO_1_IDENTIFICACION),
+            "correo": valor_config("banco_1_correo", settings.BANCO_1_CORREO),
         },
     ]
 

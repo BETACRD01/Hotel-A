@@ -1213,6 +1213,42 @@ class ConfiguracionInicio(models.Model):
         blank=True, null=True, verbose_name='CTA: párrafo',
     )
 
+    banco_1_nombre = models.CharField(
+        max_length=120,
+        blank=True,
+        null=True,
+        verbose_name='Banco principal: nombre',
+    )
+    banco_1_tipo = models.CharField(
+        max_length=80,
+        blank=True,
+        null=True,
+        verbose_name='Banco principal: tipo de cuenta',
+    )
+    banco_1_cuenta = models.CharField(
+        max_length=50,
+        blank=True,
+        null=True,
+        verbose_name='Banco principal: número de cuenta',
+    )
+    banco_1_titular = models.CharField(
+        max_length=160,
+        blank=True,
+        null=True,
+        verbose_name='Banco principal: titular',
+    )
+    banco_1_identificacion = models.CharField(
+        max_length=30,
+        blank=True,
+        null=True,
+        verbose_name='Banco principal: RUC / C.I.',
+    )
+    banco_1_correo = models.EmailField(
+        blank=True,
+        null=True,
+        verbose_name='Banco principal: correo',
+    )
+
     class Meta:
         verbose_name = 'Sobre nosotros'
         verbose_name_plural = 'Sobre nosotros'
