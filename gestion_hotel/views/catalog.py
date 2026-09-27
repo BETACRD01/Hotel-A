@@ -22,7 +22,7 @@ def habitaciones_view(request):
 
         id_habitacion = request.POST.get("id_habitacion")
         programa = request.POST.get("programa")
-        tipo_ocupacion = request.POST.get("tipo_ocupacion", "Total")
+        tipo_ocupacion = "Total"
         fecha_ingreso = request.POST.get("fecha_ingreso")
         cantidad_personas = request.POST.get("cantidad_personas")
         observaciones = request.POST.get("observaciones", "")
@@ -50,7 +50,11 @@ def habitaciones_view(request):
             activo=True
         )
 
-        cantidad_personas_int = convertir_entero(cantidad_personas, 1)
+        try:
+            cantidad_personas_int = obtener_entero_positivo(cantidad_personas, "personas", minimo=5)
+        except ValueError as error:
+            messages.error(request, str(error))
+            return redirect("gestion:habitaciones")
 
         if cantidad_personas_int > habitacion.capacidad:
             messages.error(
@@ -140,7 +144,7 @@ def cabanas_view(request):
 
         id_cabana = request.POST.get("id_cabana")
         programa = request.POST.get("programa")
-        tipo_ocupacion = request.POST.get("tipo_ocupacion", "Total")
+        tipo_ocupacion = "Total"
         fecha_ingreso = request.POST.get("fecha_ingreso")
         cantidad_personas = request.POST.get("cantidad_personas")
         observaciones = request.POST.get("observaciones", "")
@@ -168,7 +172,11 @@ def cabanas_view(request):
             activo=True
         )
 
-        cantidad_personas_int = convertir_entero(cantidad_personas, 1)
+        try:
+            cantidad_personas_int = obtener_entero_positivo(cantidad_personas, "personas", minimo=5)
+        except ValueError as error:
+            messages.error(request, str(error))
+            return redirect("gestion:cabanas")
 
         if cantidad_personas_int > cabana.capacidad:
             messages.error(

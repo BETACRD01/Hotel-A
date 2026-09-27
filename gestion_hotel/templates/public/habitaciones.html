@@ -263,20 +263,23 @@
 
                 <div class="public-form-group">
                     <label for="modalTipoOcupacion">Tipo de ocupación</label>
-                    <select id="modalTipoOcupacion" name="tipo_ocupacion" required>
-                        <option value="Total">Ocupación total</option>
-                        <option value="Secundaria" id="opcionSecundaria">Ocupación secundaria</option>
-                    </select>
+                    <input type="text" id="modalTipoOcupacionTexto" value="Ocupación total" readonly>
+                    <input type="hidden" id="modalTipoOcupacion" name="tipo_ocupacion" value="Total">
                 </div>
 
                 <div class="public-form-group">
                     <label for="modalCantidadPersonas">Cantidad de personas</label>
-                    <input type="number" id="modalCantidadPersonas" name="cantidad_personas" min="1" value="1" required>
+                    <input type="number" id="modalCantidadPersonas" name="cantidad_personas" min="5" value="5" required>
                 </div>
 
                 <div class="public-form-group">
                     <label for="modalFechaIngreso">Fecha de ingreso</label>
                     <input type="date" id="modalFechaIngreso" name="fecha_ingreso" required>
+                </div>
+
+                <div class="public-form-group">
+                    <label for="modalFechaSalida">Fecha de salida</label>
+                    <input type="date" id="modalFechaSalida" name="fecha_salida" readonly>
                 </div>
 
                 <div class="public-form-group public-form-full">
@@ -329,34 +332,66 @@
         const habitacionTipo = document.getElementById('modalHabitacionTipo');
         const programaSelect = document.getElementById('modalPrograma');
         const tipoOcupacionSelect = document.getElementById('modalTipoOcupacion');
-        const opcionSecundaria = document.getElementById('opcionSecundaria');
+        const cantidadPersonasInput = document.getElementById('modalCantidadPersonas');
+        const fechaIngresoInput = document.getElementById('modalFechaIngreso');
+        const fechaSalidaInput = document.getElementById('modalFechaSalida');
         const resumenTarifa = document.getElementById('resumenTarifa');
 
         let preciosServicio = {};
-        let secundariaLabel = 'Ocupación secundaria';
+
+        function obtenerNochesPrograma(programa) {
+            const nochesPorPrograma = {
+                '2D1N': 1,
+                '3D2N': 2,
+                '4D3N': 3,
+            };
+            return nochesPorPrograma[programa] || 0;
+        }
+
+        function actualizarFechaSalida() {
+            const programa = programaSelect.value;
+            const fechaIngreso = fechaIngresoInput.value;
+            const noches = obtenerNochesPrograma(programa);
+
+            if (!fechaIngreso || !noches) {
+                fechaSalidaInput.value = '';
+                return;
+            }
+
+            const fecha = new Date(fechaIngreso + 'T00:00:00');
+            fecha.setDate(fecha.getDate() + noches);
+            fechaSalidaInput.value = fecha.toISOString().slice(0, 10);
+        }
+
+        function formatearPrecio(valor) {
+            const numero = Number.parseFloat(valor);
+            if (!Number.isFinite(numero) || numero <= 0) {
+                return null;
+            }
+            return numero.toFixed(2);
+        }
 
         function actualizarResumenTarifa() {
             const programa = programaSelect.value;
-            const tipo = tipoOcupacionSelect.value;
+            actualizarFechaSalida();
 
             if (!programa || !preciosServicio[programa]) {
                 resumenTarifa.innerHTML = 'Selecciona un programa para ver el precio.';
                 return;
             }
 
-            const precio = tipo === 'Total'
-                ? preciosServicio[programa].total
-                : preciosServicio[programa].secundaria;
+            const precio = formatearPrecio(preciosServicio[programa].total);
 
-            const tipoTexto = tipo === 'Total'
-                ? 'Ocupación total'
-                : secundariaLabel;
+            if (!precio) {
+                resumenTarifa.innerHTML = 'No hay precio configurado para este programa.';
+                return;
+            }
 
-            const anticipo = (parseFloat(precio || 0) / 2).toFixed(2);
+            const anticipo = (Number.parseFloat(precio) / 2).toFixed(2);
 
             resumenTarifa.innerHTML =
                 '<strong>Programa:</strong> ' + programa + '<br>' +
-                '<strong>Tipo:</strong> ' + tipoTexto + '<br>' +
+                '<strong>Tipo:</strong> Ocupación total<br>' +
                 '<strong>Total:</strong> $' + precio + '<br>' +
                 '<strong>Anticipo mínimo 50%:</strong> $' + anticipo;
         }
@@ -381,18 +416,25 @@
                 },
             };
 
-            secundariaLabel = data.secundariaLabel || 'Ocupación secundaria';
-
-            if (opcionSecundaria) {
-                opcionSecundaria.textContent = secundariaLabel;
-            }
-
             if (programaSelect) {
                 programaSelect.value = '';
             }
 
             if (tipoOcupacionSelect) {
                 tipoOcupacionSelect.value = 'Total';
+            }
+
+            if (cantidadPersonasInput) {
+                cantidadPersonasInput.value = '5';
+                cantidadPersonasInput.min = '5';
+            }
+
+            if (fechaIngresoInput) {
+                fechaIngresoInput.value = '';
+            }
+
+            if (fechaSalidaInput) {
+                fechaSalidaInput.value = '';
             }
 
             actualizarResumenTarifa();
@@ -414,13 +456,12 @@
                     id: boton.dataset.id,
                     numero: boton.dataset.numero,
                     tipo: boton.dataset.tipo,
-                    secundariaLabel: boton.dataset.secundariaLabel,
-                    precio2d1nTotal: boton.dataset.precio2d1nTotal,
-                    precio2d1nSecundaria: boton.dataset.precio2d1nSecundaria,
-                    precio3d2nTotal: boton.dataset.precio3d2nTotal,
-                    precio3d2nSecundaria: boton.dataset.precio3d2nSecundaria,
-                    precio4d3nTotal: boton.dataset.precio4d3nTotal,
-                    precio4d3nSecundaria: boton.dataset.precio4d3nSecundaria,
+                    precio2d1nTotal: boton.getAttribute('data-precio-2d1n-total'),
+                    precio2d1nSecundaria: boton.getAttribute('data-precio-2d1n-secundaria'),
+                    precio3d2nTotal: boton.getAttribute('data-precio-3d2n-total'),
+                    precio3d2nSecundaria: boton.getAttribute('data-precio-3d2n-secundaria'),
+                    precio4d3nTotal: boton.getAttribute('data-precio-4d3n-total'),
+                    precio4d3nSecundaria: boton.getAttribute('data-precio-4d3n-secundaria'),
                 });
             });
         });
@@ -431,6 +472,10 @@
 
         if (tipoOcupacionSelect) {
             tipoOcupacionSelect.addEventListener('change', actualizarResumenTarifa);
+        }
+
+        if (fechaIngresoInput) {
+            fechaIngresoInput.addEventListener('change', actualizarResumenTarifa);
         }
 
         if (cerrarBoton) {
