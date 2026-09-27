@@ -1075,3 +1075,16 @@ class DatosBancariosTests(TestCase):
         self.assertContains(response, "banco_1_identificacion")
         self.assertContains(response, "banco_1_correo")
 
+    def test_login_con_username_o_email(self):
+        from django.contrib.auth import authenticate
+        user_by_name = authenticate(username="gerente_admin", password="GerentePassword123!")
+        self.assertIsNotNone(user_by_name)
+        self.assertEqual(user_by_name.username, "gerente_admin")
+
+        self.gerente_user.email = "gerente_admin@hotel.com"
+        self.gerente_user.save()
+
+        user_by_email = authenticate(username="gerente_admin@hotel.com", password="GerentePassword123!")
+        self.assertIsNotNone(user_by_email)
+        self.assertEqual(user_by_email.email, "gerente_admin@hotel.com")
+
