@@ -109,16 +109,40 @@
 
                         <div class="guest-reserva-media">
                             {% if reserva.detallecine_set.all %}
-                                <img src="{% static 'img/fondo.jpg' %}" alt="Reserva de cine" onerror="this.onerror=null; this.src='{% static 'img/logo.jpg' %}';">
+                                {% with detalle=reserva.detallecine_set.all|first %}
+                                    {% if detalle.id_funcion.imagen %}
+                                        <img src="{{ detalle.id_funcion.imagen.url }}" alt="{{ detalle.id_funcion.titulo_pelicula|default:'Reserva de cine' }}" onerror="this.onerror=null; this.src='{% static 'img/fondo.jpg' %}';">
+                                    {% else %}
+                                        <img src="{% static 'img/fondo.jpg' %}" alt="Reserva de cine" onerror="this.onerror=null; this.src='{% static 'img/logo.jpg' %}';">
+                                    {% endif %}
+                                {% endwith %}
                                 <span><i class="fa-solid fa-film"></i></span>
                             {% elif reserva.detalleresort_set.all %}
-                                <img src="{% static 'img/cancha.jpg' %}" alt="Reserva de resort del día" onerror="this.onerror=null; this.src='{% static 'img/logo.jpg' %}';">
+                                {% with detalle=reserva.detalleresort_set.all|first %}
+                                    {% if detalle.id_resort_dia.imagen %}
+                                        <img src="{{ detalle.id_resort_dia.imagen.url }}" alt="{{ detalle.id_resort_dia.nombre|default:'Reserva de resort del día' }}" onerror="this.onerror=null; this.src='{% static 'img/cancha.jpg' %}';">
+                                    {% else %}
+                                        <img src="{% static 'img/cancha.jpg' %}" alt="Reserva de resort del día" onerror="this.onerror=null; this.src='{% static 'img/logo.jpg' %}';">
+                                    {% endif %}
+                                {% endwith %}
                                 <span><i class="fa-solid fa-umbrella-beach"></i></span>
                             {% elif reserva.detallecabanas_set.all %}
-                                <img src="{% static 'img/cancha.jpg' %}" alt="Reserva de cabaña" onerror="this.onerror=null; this.src='{% static 'img/logo.jpg' %}';">
+                                {% with detalle=reserva.detallecabanas_set.all|first %}
+                                    {% if detalle.id_cabana.imagen %}
+                                        <img src="{{ detalle.id_cabana.imagen.url }}" alt="Cabaña {{ detalle.id_cabana.numero_cabana }}" onerror="this.onerror=null; this.src='{% static 'img/cancha.jpg' %}';">
+                                    {% else %}
+                                        <img src="{% static 'img/cancha.jpg' %}" alt="Reserva de cabaña" onerror="this.onerror=null; this.src='{% static 'img/logo.jpg' %}';">
+                                    {% endif %}
+                                {% endwith %}
                                 <span><i class="fa-solid fa-house-chimney"></i></span>
                             {% else %}
-                                <img src="{% static 'img/hotel_arahuana.jpg' %}" alt="Reserva de habitación" onerror="this.onerror=null; this.src='{% static 'img/logo.jpg' %}';">
+                                {% with detalle=reserva.detallehabitaciones_set.all|first %}
+                                    {% if detalle.id_habitacion.imagen %}
+                                        <img src="{{ detalle.id_habitacion.imagen.url }}" alt="Habitación {{ detalle.id_habitacion.numero_habitacion }}" onerror="this.onerror=null; this.src='{% static 'img/hotel_arahuana.jpg' %}';">
+                                    {% else %}
+                                        <img src="{% static 'img/hotel_arahuana.jpg' %}" alt="Reserva de habitación" onerror="this.onerror=null; this.src='{% static 'img/logo.jpg' %}';">
+                                    {% endif %}
+                                {% endwith %}
                                 <span><i class="fa-solid fa-bed"></i></span>
                             {% endif %}
                         </div>
@@ -467,4 +491,3 @@
 </section>
 
 {% endblock %}
-

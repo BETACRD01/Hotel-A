@@ -5,7 +5,7 @@ from django.test import SimpleTestCase, TestCase
 from django.urls import reverse
 from urllib.parse import quote_plus
 
-from .models import Cabanas, Cine, Cliente, DetalleResort, Habitaciones, ResortDia
+from .models import Cabanas, Cine, Cliente, DetalleHabitaciones, DetalleResort, Habitaciones, ResortDia
 
 from .models import Reservas
 from django.contrib.auth.models import User
@@ -755,6 +755,50 @@ class PanelMisReservasAccessTests(TestCase):
         reservas_context = response.context.get('reservas')
         self.assertIsNotNone(reservas_context)
         self.assertTrue(all(r.id_cliente == self.cliente for r in reservas_context))
+
+    def test_mis_reservas_usa_imagen_de_habitacion_reservada(self):
+        habitacion = Habitaciones.objects.create(
+            numero_habitacion="103",
+            tipo_habitacion="Familiar",
+            precio_noche=80.00,
+            estado="Disponible",
+            capacidad=5,
+            descripcion="Habitación familiar de prueba",
+            imagen="habitaciones/r103.jpg",
+        )
+        reserva = Reservas.objects.create(
+            id_cliente=self.cliente,
+            fecha_ingreso=date.fromisoformat("2030-01-10"),
+            fecha_salida=date.fromisoformat("2030-01-12"),
+            estado_reserva="Pendiente",
+            estado_pago="Pendiente",
+            metodo_pago="Pendiente",
+            total=100,
+        )
+        DetalleHabitaciones.objects.create(
+            id_reserva=reserva,
+            id_habitacion=habitacion,
+            cantidad_noches=2,
+            subtotal=100,
+            fecha_entrada=date.fromisoformat("2030-01-10"),
+            fecha_salida=date.fromisoformat("2030-01-12"),
+            precio_unitario=100,
+            programa="3D2N",
+            tipo_ocupacion="Total",
+            precio_programa=100,
+            cantidad_personas=5,
+        )
+
+        session = self.client.session
+        session["usuario_id"] = self.cliente.id_usuario
+        session["usuario_rol"] = self.cliente.rol
+        session["cliente_id"] = self.cliente.id_cliente
+        session.save()
+
+        response = self.client.get(reverse("gestion:mis_reservas"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "/media/habitaciones/r103.jpg")
 
 
 class CancelReservationTests(TestCase):
