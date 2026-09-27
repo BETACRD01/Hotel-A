@@ -59,16 +59,6 @@ def login_view(request):
 
         nombre_formateado = f"{usuario.nombres} {usuario.apellidos}".strip().title()
 
-        if usuario.rol == 'gerente':
-            sincronizar_acceso_admin_gerente(request, usuario, password)
-            request.session["usuario_id"] = usuario.id_cliente
-            request.session["usuario_nombre"] = nombre_formateado
-            request.session["usuario_rol"] = "gerente"
-            request.session["cliente_id"] = usuario.id_cliente
-            request.session["cliente_nombre"] = nombre_formateado
-            messages.success(request, f"Bienvenido, {usuario.nombres.strip().title()}.")
-            return redirect("gestion:gerente_dashboard")
-
         if usuario.rol != 'cliente':
             messages.error(
                 request,

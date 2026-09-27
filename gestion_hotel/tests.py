@@ -353,6 +353,29 @@ class PanelClienteTests(TestCase):
         self.assertEqual(self.client.session["usuario_rol"], "cliente")
         self.assertEqual(self.client.session["usuario_id"], self.cliente.id_usuario)
 
+    def test_public_login_rejects_gerente_users(self):
+        gerente = Cliente.objects.create(
+            numero_documento="1712345679",
+            nombres="Gerente",
+            apellidos="Prueba",
+            telefono_celular="0987654321",
+            correo_electronico="gerente@test.com",
+            password=make_password("Password123!"),
+            rol="gerente",
+            activo=True,
+            direccion="Tena",
+        )
+
+        response = self.client.post(
+            reverse("gestion:login"),
+            {"correo_electronico": gerente.correo_electronico, "password": "Password123!"},
+            follow=True,
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Este acceso es solo para clientes.")
+        self.assertNotIn("usuario_rol", self.client.session)
+
 
 class PagoManualTests(TestCase):
     def setUp(self):
