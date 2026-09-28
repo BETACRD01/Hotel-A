@@ -48,6 +48,7 @@ from ..utils.validaciones import (
     validar_correo_cliente,
 )
 from ..services.reservations import (
+    actualizar_estados_hospedaje,
     calcular_precio_estadia,
     calcular_valores_reserva,
     cancelar_reservas_vencidas,

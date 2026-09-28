@@ -126,7 +126,7 @@
                             <img src="{% static 'img/hotel_arahuana.jpg' %}" alt="Habitacion {{ hab.numero_habitacion }}" onerror="this.onerror=null; this.src='{% static 'img/logo.jpg' %}';">
                         {% endif %}
 
-                        <span class="catalog-status">
+                        <span class="catalog-status status-{{ hab.estado|lower }}">
                             {{ hab.estado }}
                         </span>
                     </div>

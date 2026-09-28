@@ -163,4 +163,41 @@ def cancelar_reservas_vencidas():
             fecha_cancelacion=timezone.now(),
             motivo_cancelacion="Cancelada automaticamente por vencer el plazo de pago de 24 horas.",
         )
+        actualizar_estados_hospedaje()
     return total
+
+
+def actualizar_estados_hospedaje():
+    """
+    Sincroniza el estado (Disponible / Reservada) de Habitaciones y Cabanas
+    segun tengan reservas activas (Pendiente o Confirmada).
+    Conserva estados manuales como Mantenimiento o Inactiva.
+    """
+    from gestion_hotel.models import Habitaciones, Cabanas, DetalleHabitaciones, DetalleCabanas
+
+    for hab in Habitaciones.objects.filter(activo=True):
+        if hab.estado in ["Mantenimiento", "Inactiva"]:
+            continue
+        tiene_reserva = DetalleHabitaciones.objects.filter(
+            id_habitacion=hab,
+            id_reserva__estado_reserva__in=["Pendiente", "Confirmada"],
+        ).exists()
+
+        nuevo_estado = "Reservada" if tiene_reserva else "Disponible"
+        if hab.estado != nuevo_estado:
+            hab.estado = nuevo_estado
+            hab.save(update_fields=["estado"])
+
+    for cab in Cabanas.objects.filter(activo=True):
+        if cab.estado in ["Mantenimiento", "Inactiva"]:
+            continue
+        tiene_reserva = DetalleCabanas.objects.filter(
+            id_cabana=cab,
+            id_reserva__estado_reserva__in=["Pendiente", "Confirmada"],
+        ).exists()
+
+        nuevo_estado = "Reservada" if tiene_reserva else "Disponible"
+        if cab.estado != nuevo_estado:
+            cab.estado = nuevo_estado
+            cab.save(update_fields=["estado"])
+

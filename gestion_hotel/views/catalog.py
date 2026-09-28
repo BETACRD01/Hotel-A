@@ -8,6 +8,7 @@ def habitaciones_view(request):
     """Muestra habitaciones disponibles y procesa reservas de hospedaje."""
 
     cancelar_reservas_vencidas()
+    actualizar_estados_hospedaje()
 
     habitaciones = Habitaciones.objects.filter(
         activo=True
@@ -17,7 +18,7 @@ def habitaciones_view(request):
         cliente_id = request.session.get("cliente_id")
 
         if not cliente_id:
-            messages.warning(request, "Debes iniciar sesiÃ³n para reservar.")
+            messages.warning(request, "Debes iniciar sesión para reservar.")
             return redirect("gestion:login")
 
         id_habitacion = request.POST.get("id_habitacion")
@@ -56,6 +57,13 @@ def habitaciones_view(request):
             activo=True
         )
 
+        if habitacion.estado != "Disponible":
+            messages.error(
+                request,
+                f"La habitación {habitacion.numero_habitacion} no está disponible para reservar (estado: {habitacion.estado})."
+            )
+            return redirect("gestion:habitaciones")
+
         cliente = get_object_or_404(
             Cliente,
             id_cliente=cliente_id,
@@ -79,6 +87,21 @@ def habitaciones_view(request):
         programa_codigo, programa_guardar, noches, fecha_salida_obj = resolver_programa_y_noches(
             programa, fecha_ingreso_obj, fecha_salida_obj
         )
+
+        # Restricción contra doble reserva: verificar si ya existe reserva activa solapada
+        solapamiento = DetalleHabitaciones.objects.filter(
+            id_habitacion=habitacion,
+            id_reserva__estado_reserva__in=["Pendiente", "Confirmada"],
+            fecha_entrada__lt=fecha_salida_obj,
+            fecha_salida__gt=fecha_ingreso_obj,
+        ).exists()
+
+        if solapamiento:
+            messages.error(
+                request,
+                f"La habitación {habitacion.numero_habitacion} ya se encuentra reservada para las fechas seleccionadas."
+            )
+            return redirect("gestion:habitaciones")
 
         precio_programa = calcular_precio_estadia(
             habitacion, programa_codigo, tipo_ocupacion_final, noches
@@ -118,6 +141,9 @@ def habitaciones_view(request):
                 cantidad_personas=cantidad_personas_int,
             )
 
+            habitacion.estado = "Reservada"
+            habitacion.save(update_fields=["estado"])
+
             calcular_valores_reserva(reserva)
 
         messages.success(
@@ -147,6 +173,7 @@ def cabanas_view(request):
     """Muestra cabanas disponibles y procesa reservas de hospedaje."""
 
     cancelar_reservas_vencidas()
+    actualizar_estados_hospedaje()
 
     cabanas = Cabanas.objects.filter(
         activo=True
@@ -195,6 +222,13 @@ def cabanas_view(request):
             activo=True
         )
 
+        if cabana.estado != "Disponible":
+            messages.error(
+                request,
+                f"La cabaña {cabana.numero_cabana} no está disponible para reservar (estado: {cabana.estado})."
+            )
+            return redirect("gestion:cabanas")
+
         cliente = get_object_or_404(
             Cliente,
             id_cliente=cliente_id,
@@ -218,6 +252,21 @@ def cabanas_view(request):
         programa_codigo, programa_guardar, noches, fecha_salida_obj = resolver_programa_y_noches(
             programa, fecha_ingreso_obj, fecha_salida_obj
         )
+
+        # Restricción contra doble reserva: verificar si ya existe reserva activa solapada
+        solapamiento = DetalleCabanas.objects.filter(
+            id_cabana=cabana,
+            id_reserva__estado_reserva__in=["Pendiente", "Confirmada"],
+            fecha_entrada__lt=fecha_salida_obj,
+            fecha_salida__gt=fecha_ingreso_obj,
+        ).exists()
+
+        if solapamiento:
+            messages.error(
+                request,
+                f"La cabaña {cabana.numero_cabana} ya se encuentra reservada para las fechas seleccionadas."
+            )
+            return redirect("gestion:cabanas")
 
         precio_programa = calcular_precio_estadia(
             cabana, programa_codigo, tipo_ocupacion_final, noches
@@ -256,6 +305,9 @@ def cabanas_view(request):
                 precio_programa=precio_programa,
                 cantidad_personas=cantidad_personas_int,
             )
+
+            cabana.estado = "Reservada"
+            cabana.save(update_fields=["estado"])
 
             calcular_valores_reserva(reserva)
 

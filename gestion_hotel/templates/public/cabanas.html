@@ -120,7 +120,7 @@
                             <img src="{% static 'img/cancha.jpg' %}" alt="Cabaña {{ cabana.numero_cabana }}" onerror="this.onerror=null; this.src='{% static 'img/logo.jpg' %}';">
                         {% endif %}
 
-                        <span class="catalog-status">
+                        <span class="catalog-status status-{{ cabana.estado|lower }}">
                             {{ cabana.estado }}
                         </span>
                     </div>

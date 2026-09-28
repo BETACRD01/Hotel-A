@@ -98,6 +98,21 @@
     text-transform: uppercase;
 }
 
+.catalog-status.status-disponible {
+    background: rgba(16, 75, 45, 0.92) !important;
+    color: #ffffff !important;
+    border-color: rgba(16, 75, 45, 0.2) !important;
+}
+
+.catalog-status.status-reservada,
+.catalog-status.status-ocupada,
+.catalog-status.status-mantenimiento,
+.catalog-status.status-inactiva {
+    background: rgba(185, 28, 28, 0.92) !important;
+    color: #ffffff !important;
+    border-color: rgba(185, 28, 28, 0.2) !important;
+}
+
 /* ================= MODAL RESERVA ================= */
 
 .reserva-modal {

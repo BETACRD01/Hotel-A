@@ -82,6 +82,7 @@ def cancelar_reserva_view(request, id_reserva):
     reserva.fecha_cancelacion = timezone.now()
     reserva.motivo_cancelacion = "Cancelada por el cliente desde el sistema."
     reserva.save(update_fields=["estado_reserva", "estado_pago", "fecha_cancelacion", "motivo_cancelacion"])
+    actualizar_estados_hospedaje()
 
     messages.success(request, "Reserva cancelada correctamente.")
     return redirect("gestion:mis_reservas")
