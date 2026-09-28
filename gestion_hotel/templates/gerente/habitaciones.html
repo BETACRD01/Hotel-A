@@ -21,6 +21,7 @@
                     <th>Número</th>
                     <th>Tipo</th>
                     <th>Capacidad</th>
+                    <th>Precio/Día</th>
                     <th>Precio/Noche</th>
                     <th>Estado</th>
                     <th>Acciones</th>
@@ -32,13 +33,14 @@
                     <td><strong>{{ h.numero_habitacion }}</strong></td>
                     <td>{{ h.tipo_habitacion }}</td>
                     <td>{{ h.capacidad }} persona(s)</td>
+                    <td>${{ h.precio_dia }}</td>
                     <td>${{ h.precio_noche }}</td>
                     <td><span class="estado-badge estado-{{ h.estado|lower }}">{{ h.estado }}</span></td>
                     <td><a href="{% url 'gestion:gerente_modelo_editar' 'habitaciones' h.id_habitacion %}" class="badge badge-info" style="text-decoration:none;">Editar</a></td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="6" class="empty-state">
+                    <td colspan="7" class="empty-state">
                         <i class="fa-solid fa-bed"></i>
                         <h3>No hay habitaciones</h3>
                         <p>No se encontraron habitaciones registradas.</p>

@@ -213,6 +213,13 @@ class Habitaciones(models.Model):
     numero_habitacion = models.CharField(max_length=10, unique=True, verbose_name='Numero de habitacion')
     tipo_habitacion = models.CharField(max_length=50, verbose_name='Tipo de habitacion')
     precio_noche = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0.01)], verbose_name='Precio por noche')
+    precio_dia = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=0,
+        validators=[MinValueValidator(0)],
+        verbose_name='Precio por día'
+    )
     tipo_ocupacion_secundaria = models.CharField(
         max_length=20,
         choices=[
@@ -320,6 +327,8 @@ class Habitaciones(models.Model):
             self.precio_3d2n_secundaria,
             self.precio_4d3n_total,
             self.precio_4d3n_secundaria,
+            self.precio_dia,
+            self.precio_noche,
         ]
 
         precios_validos = [precio for precio in precios if precio and precio > 0]
@@ -340,6 +349,13 @@ class Cabanas(models.Model):
     numero_cabana = models.CharField(max_length=50, unique=True, verbose_name='Número de cabaña')
     capacidad = models.IntegerField(validators=[MinValueValidator(1)], verbose_name='Capacidad')
     precio_noche = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0.01)], verbose_name='Precio por noche')
+    precio_dia = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=0,
+        validators=[MinValueValidator(0)],
+        verbose_name='Precio por día'
+    )
     tipo_ocupacion_secundaria = models.CharField(
         max_length=20,
         choices=[
@@ -442,6 +458,8 @@ class Cabanas(models.Model):
             self.precio_3d2n_secundaria,
             self.precio_4d3n_total,
             self.precio_4d3n_secundaria,
+            self.precio_dia,
+            self.precio_noche,
         ]
 
         precios_validos = [precio for precio in precios if precio and precio > 0]

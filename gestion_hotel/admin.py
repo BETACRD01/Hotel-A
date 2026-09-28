@@ -219,6 +219,7 @@ class CabanasAdmin(RoleBasedAdminMixin, admin.ModelAdmin):
                 'precio_4d3n_total',
                 'precio_4d3n_secundaria',
 
+                'precio_dia',
                 'precio_noche',
                 'descripcion',
                 'servicios_incluidos',
@@ -407,6 +408,7 @@ class HabitacionesAdmin(RoleBasedAdminMixin, admin.ModelAdmin):
                 'precio_4d3n_total',
                 'precio_4d3n_secundaria',
 
+                'precio_dia',
                 'precio_noche',
                 'descripcion',
                 'imagen',

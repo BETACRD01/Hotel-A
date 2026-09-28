@@ -98,6 +98,7 @@ GERENTE_FORM_CONFIG = {
         "fields": [
             "numero_habitacion",
             "tipo_habitacion",
+            "precio_dia",
             "precio_noche",
             "tipo_ocupacion_secundaria",
             "precio_2d1n_total",
@@ -121,6 +122,7 @@ GERENTE_FORM_CONFIG = {
             "numero_cabana",
             "tipo_cabana",
             "capacidad",
+            "precio_dia",
             "precio_noche",
             "tipo_ocupacion_secundaria",
             "precio_2d1n_total",
