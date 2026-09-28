@@ -657,11 +657,81 @@ def gerente_sobre_nosotros_view(request):
         "banco_1_correo",
     ]
 
+    campos_sobre_nosotros = [
+        "sn_hero_kicker",
+        "sn_hero_titulo",
+        "sn_hero_parrafo",
+        "sn_stat_1_numero",
+        "sn_stat_1_etiqueta",
+        "sn_stat_2_numero",
+        "sn_stat_2_etiqueta",
+        "sn_stat_3_numero",
+        "sn_stat_3_etiqueta",
+        "sn_stat_4_numero",
+        "sn_stat_4_etiqueta",
+        "sn_historia_kicker",
+        "sn_historia_titulo",
+        "sn_historia_parrafo_1",
+        "sn_historia_parrafo_2",
+        "sn_mv_kicker",
+        "sn_mv_titulo",
+        "sn_mv_subtitulo",
+        "mision",
+        "vision",
+        "sn_valores_kicker",
+        "sn_valores_titulo",
+        "sn_valores_subtitulo",
+        "sn_valor_1_titulo",
+        "sn_valor_1_texto",
+        "sn_valor_2_titulo",
+        "sn_valor_2_texto",
+        "sn_valor_3_titulo",
+        "sn_valor_3_texto",
+        "sn_valor_4_titulo",
+        "sn_valor_4_texto",
+        "sn_compromiso_kicker",
+        "sn_compromiso_titulo",
+        "sn_compromiso_parrafo",
+        "sn_cta_kicker",
+        "sn_cta_titulo",
+        "sn_cta_parrafo",
+    ]
+
+    campos_portadas_catalogo = [
+        "habitaciones_hero_kicker",
+        "habitaciones_hero_titulo",
+        "habitaciones_hero_parrafo",
+        "cabanas_hero_kicker",
+        "cabanas_hero_titulo",
+        "cabanas_hero_parrafo",
+        "cine_hero_kicker",
+        "cine_hero_titulo",
+        "cine_hero_parrafo",
+        "resort_hero_kicker",
+        "resort_hero_titulo",
+        "resort_hero_parrafo",
+    ]
+
     if request.method == "POST":
-        for campo in campos_bancarios:
-            setattr(config, campo, request.POST.get(campo, "").strip())
-        config.save(update_fields=campos_bancarios)
-        messages.success(request, "Datos bancarios actualizados correctamente.")
+        seccion = request.POST.get("seccion", "bancarios")
+        if seccion == "sobre_nosotros":
+            for campo in campos_sobre_nosotros:
+                if campo in request.POST:
+                    setattr(config, campo, request.POST.get(campo, "").strip())
+            config.save(update_fields=campos_sobre_nosotros)
+            messages.success(request, "Contenido de 'Sobre nosotros' actualizado correctamente.")
+        elif seccion == "portadas":
+            for campo in campos_portadas_catalogo:
+                if campo in request.POST:
+                    setattr(config, campo, request.POST.get(campo, "").strip())
+            config.save(update_fields=campos_portadas_catalogo)
+            messages.success(request, "Portadas del catálogo actualizadas correctamente.")
+        else:
+            for campo in campos_bancarios:
+                if campo in request.POST:
+                    setattr(config, campo, request.POST.get(campo, "").strip())
+            config.save(update_fields=campos_bancarios)
+            messages.success(request, "Datos bancarios actualizados correctamente.")
         return redirect("gestion:gerente_sobre_nosotros")
 
     contexto = {

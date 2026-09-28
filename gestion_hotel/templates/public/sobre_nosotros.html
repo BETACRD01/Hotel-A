@@ -10,7 +10,7 @@
         <div class="about-hero-copy">
             <span class="ar-kicker">
                 <i class="fa-solid fa-leaf"></i>
-                Sobre nosotros
+                {{ hero_kicker|default:"Sobre nosotros" }}
             </span>
 
             <h1>{{ hero_titulo }}</h1>
@@ -83,7 +83,7 @@
         <div>
             <span class="ar-kicker">
                 <i class="fa-solid fa-book-open"></i>
-                Nuestra historia
+                {{ historia_kicker|default:"Nuestra historia" }}
             </span>
 
             <h2 class="ar-title">{{ historia_titulo }}</h2>
@@ -112,13 +112,13 @@
         <div class="section-header">
             <span class="ar-kicker">
                 <i class="fa-solid fa-compass"></i>
-                Misión y Visión
+                {{ mv_kicker|default:"Misión y Visión" }}
             </span>
 
-            <h2 class="ar-title">Lo que nos impulsa</h2>
+            <h2 class="ar-title">{{ mv_titulo|default:"Lo que nos impulsa" }}</h2>
 
             <p class="ar-subtitle">
-                Nuestros propósitos guían cada experiencia que compartimos contigo.
+                {{ mv_subtitulo|default:"Nuestros propósitos guían cada experiencia que compartimos contigo." }}
             </p>
         </div>
 
@@ -147,14 +147,13 @@
         <div class="section-header">
             <span class="ar-kicker">
                 <i class="fa-solid fa-seedling"></i>
-                Nuestros valores
+                {{ valores_kicker|default:"Nuestros valores" }}
             </span>
 
-            <h2 class="ar-title">Lo que nos define</h2>
+            <h2 class="ar-title">{{ valores_titulo|default:"Lo que nos define" }}</h2>
 
             <p class="ar-subtitle">
-                Trabajamos con principios que fortalecen la atención,
-                la organización y la experiencia del visitante.
+                {{ valores_subtitulo|default:"Trabajamos con principios que fortalecen la atención, la organización y la experiencia del visitante." }}
             </p>
         </div>
 
@@ -199,7 +198,7 @@
         <div>
             <span class="ar-kicker">
                 <i class="fa-solid fa-handshake-angle"></i>
-                Nuestro compromiso
+                {{ compromiso_kicker|default:"Nuestro compromiso" }}
             </span>
 
             <h2 class="ar-title">{{ compromiso_titulo }}</h2>
@@ -236,7 +235,7 @@
             <div>
                 <span class="ar-kicker">
                     <i class="fa-solid fa-leaf"></i>
-                    Arahuana te espera
+                    {{ cta_kicker|default:"Arahuana te espera" }}
                 </span>
 
                 <h2>{{ cta_titulo }}</h2>

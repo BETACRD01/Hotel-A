@@ -126,29 +126,29 @@ def normalizar_combo_cabana(valor, cabana=None):
     """Convierte la seleccion de cabana del formulario en un texto consistente para guardar."""
 
     if cabana is not None:
-        return f"CabaÃ±a {cabana.numero_cabana}"
+        return f"Cabaña {cabana.numero_cabana}"
 
     texto = (valor or "").strip()
     if not texto:
-        return "Sin selecciÃ³n"
+        return "Sin selección"
 
-    match = re.search(r"c(?:abaÃ±a|abaÃ±as)?\s*([A-Za-z0-9]+)", texto, flags=re.IGNORECASE)
+    match = re.search(r"c(?:abaña|abañas|abana|abanas)?\s*([A-Za-z0-9]+)", texto, flags=re.IGNORECASE)
     if match:
-        return f"CabaÃ±a {match.group(1)}"
+        return f"Cabaña {match.group(1)}"
 
     return texto
 
 
 def validar_acceso(request):
     """
-    Verifica si existe una sesiÃ³n activa para clientes.
+    Verifica si existe una sesión activa para clientes.
     """
     usuario = obtener_usuario_sesion(request)
 
     if usuario is None:
         messages.error(
             request,
-            "Debes iniciar sesiÃ³n como cliente para acceder a esta pÃ¡gina."
+            "Debes iniciar sesión como cliente para acceder a esta página."
         )
 
     return usuario
@@ -167,19 +167,19 @@ def convertir_entero(valor, predeterminado=1):
 
 def obtener_entero_positivo(valor, campo, minimo=1, permitir_cero=False):
     """
-    Intenta convertir `valor` a entero validando reglas bÃ¡sicas.
+    Intenta convertir `valor` a entero validando reglas básicas.
 
     Args:
         valor: valor recibido (string, number, etc.).
         campo: nombre del campo usado en mensajes de error.
-        minimo: mÃ­nimo aceptable (por defecto 1).
-        permitir_cero: si True permite 0 como valor vÃ¡lido.
+        minimo: mínimo aceptable (por defecto 1).
+        permitir_cero: si True permite 0 como valor válido.
 
     Returns:
-        int: valor convertido si es vÃ¡lido.
+        int: valor convertido si es válido.
 
     Raises:
-        ValueError: con mensaje apropiado si el valor no es vÃ¡lido.
+        ValueError: con mensaje apropiado si el valor no es válido.
     """
     if valor is None:
         raise ValueError(f"La cantidad para {campo} es requerida.")
@@ -188,9 +188,9 @@ def obtener_entero_positivo(valor, campo, minimo=1, permitir_cero=False):
     if valor_str == "":
         raise ValueError(f"La cantidad para {campo} es requerida.")
 
-    # Reject decimals (como '1.0' o '2.5') y cualquier texto no numÃ©rico
+    # Reject decimals (como '1.0' o '2.5') y cualquier texto no numérico
     if not valor_str.isdigit():
-        raise ValueError(f"La cantidad de {campo} debe ser un nÃºmero entero vÃ¡lido.")
+        raise ValueError(f"La cantidad de {campo} debe ser un número entero válido.")
 
     numero = int(valor_str)
 
@@ -201,20 +201,20 @@ def obtener_entero_positivo(valor, campo, minimo=1, permitir_cero=False):
         if numero < minimo:
             if minimo == 1:
                 raise ValueError(f"La cantidad de {campo} debe ser mayor o igual a 1.")
-            raise ValueError(f"La cantidad de {campo} debe ser vÃ¡lida y al menos {minimo}.")
+            raise ValueError(f"La cantidad de {campo} debe ser válida y al menos {minimo}.")
 
     return numero
 
 
 def generar_codigo_reserva():
-    """Genera un cÃ³digo ARH Ãºnico para una reserva."""
+    """Genera un código ARH único para una reserva."""
     while True:
         codigo = f"ARH-{uuid.uuid4().hex[:6].upper()}"
         if not Reservas.objects.filter(codigo_reserva=codigo).exists():
             return codigo
 
 
-def requiere_rol(request, roles, mensaje="No tienes permisos para realizar esta acciÃ³n."):
+def requiere_rol(request, roles, mensaje="No tienes permisos para realizar esta acción."):
     """Devuelve el usuario de sesion solo si su rol pertenece a los roles permitidos."""
 
     usuario = obtener_usuario_sesion(request)
@@ -241,10 +241,10 @@ def convertir_fecha_formulario(valor, nombre_campo="fecha"):
     try:
         return datetime.strptime(valor, "%Y-%m-%d").date()
     except (TypeError, ValueError):
-        raise ValueError(f"La {nombre_campo} es obligatoria o no tiene un formato vÃ¡lido.")
+        raise ValueError(f"La {nombre_campo} es obligatoria o no tiene un formato válido.")
 
 
 
 # ============================================================
-# PÃGINA PÃšBLICA
+# PÁGINA PÚBLICA
 # ============================================================

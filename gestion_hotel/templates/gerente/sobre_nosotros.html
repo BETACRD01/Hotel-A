@@ -1,52 +1,404 @@
 {% extends 'gerente/base_gerente.html' %}
 
-{% block title %}Sobre Nosotros | Panel Gerencial{% endblock %}
-{% block breadcrumb %}Gerencia / Sobre Nosotros{% endblock %}
+{% block title %}Contenido del Sitio y Portadas | Panel Gerencial{% endblock %}
+{% block breadcrumb %}Gerencia / Contenido del Sitio{% endblock %}
 
 {% block content %}
 <div class="page-header-gerente">
-    <h1>Configuracion Sobre Nosotros</h1>
-    <p>Contenido configurado para la pagina publica.</p>
+    <h1>Contenido del Sitio y Portadas</h1>
+    <p>Administra las portadas de los servicios, los textos de Sobre Nosotros y los datos bancarios.</p>
 </div>
 
-<div class="gerente-card">
+<!-- ========================================== -->
+<!-- 1. PORTADAS DEL CATÁLOGO                   -->
+<!-- ========================================== -->
+<div class="gerente-card" style="margin-bottom: 24px;">
     <div class="gerente-card-header">
-        <h3>Informacion General</h3>
+        <h3><i class="fa-solid fa-layer-group" style="margin-right: 8px; color: var(--gerente-primary);"></i> Portadas del Catálogo (Habitaciones, Cabañas, Cine, Resort)</h3>
+        <p style="margin-top: 4px; color: var(--gerente-text-muted); font-size: 13px;">
+            Personaliza las etiquetas resaltadas (color naranja), títulos y descripciones de las cabeceras de cada catálogo público.
+        </p>
     </div>
     <div class="gerente-card-body">
-        {% if config %}
-        <div class="grid-2">
-            <div>
-                <strong>Mision:</strong>
-                <p style="margin-top:4px; color:var(--gerente-text-muted);">{{ config.mision|default:"No configurada" }}</p>
+        <form method="post" class="gerente-form">
+            {% csrf_token %}
+            <input type="hidden" name="seccion" value="portadas">
+
+            <!-- HABITACIONES -->
+            <h4 style="margin: 0 0 12px; color: var(--gerente-primary); font-size: 15px;">
+                <i class="fa-solid fa-bed" style="margin-right: 6px;"></i> Habitaciones
+            </h4>
+            <div class="gerente-form-grid" style="margin-bottom: 20px;">
+                <div class="gerente-form-field">
+                    <label for="habitaciones_hero_kicker">Etiqueta (kicker resaltado naranja):</label>
+                    <input type="text" id="habitaciones_hero_kicker" name="habitaciones_hero_kicker" class="gerente-input"
+                           value="{{ config.habitaciones_hero_kicker|default:'Habitaciones' }}" placeholder="Ej: Habitaciones">
+                </div>
+                <div class="gerente-form-field">
+                    <label for="habitaciones_hero_titulo">Título principal:</label>
+                    <input type="text" id="habitaciones_hero_titulo" name="habitaciones_hero_titulo" class="gerente-input"
+                           value="{{ config.habitaciones_hero_titulo|default:'Confort y descanso en plena naturaleza' }}">
+                </div>
+                <div class="gerente-form-field" style="grid-column: 1 / -1;">
+                    <label for="habitaciones_hero_parrafo">Descripción / Párrafo:</label>
+                    <textarea id="habitaciones_hero_parrafo" name="habitaciones_hero_parrafo" class="gerente-input" rows="2">{{ config.habitaciones_hero_parrafo|default:'Espacios diseñados para tu bienestar, donde cada detalle te conecta con la tranquilidad de la Amazonía.' }}</textarea>
+                </div>
             </div>
-            <div>
-                <strong>Vision:</strong>
-                <p style="margin-top:4px; color:var(--gerente-text-muted);">{{ config.vision|default:"No configurada" }}</p>
+
+            <hr style="margin: 20px 0; border-color: var(--gerente-border);">
+
+            <!-- CABAÑAS -->
+            <h4 style="margin: 0 0 12px; color: var(--gerente-primary); font-size: 15px;">
+                <i class="fa-solid fa-house-chimney" style="margin-right: 6px;"></i> Cabañas
+            </h4>
+            <div class="gerente-form-grid" style="margin-bottom: 20px;">
+                <div class="gerente-form-field">
+                    <label for="cabanas_hero_kicker">Etiqueta (kicker resaltado naranja):</label>
+                    <input type="text" id="cabanas_hero_kicker" name="cabanas_hero_kicker" class="gerente-input"
+                           value="{{ config.cabanas_hero_kicker|default:'Cabañas' }}" placeholder="Ej: Cabañas">
+                </div>
+                <div class="gerente-form-field">
+                    <label for="cabanas_hero_titulo">Título principal:</label>
+                    <input type="text" id="cabanas_hero_titulo" name="cabanas_hero_titulo" class="gerente-input"
+                           value="{{ config.cabanas_hero_titulo|default:'Vive la experiencia de la Amazonía con privacidad' }}">
+                </div>
+                <div class="gerente-form-field" style="grid-column: 1 / -1;">
+                    <label for="cabanas_hero_parrafo">Descripción / Párrafo:</label>
+                    <textarea id="cabanas_hero_parrafo" name="cabanas_hero_parrafo" class="gerente-input" rows="2">{{ config.cabanas_hero_parrafo|default:'Cabañas rodeadas de naturaleza para disfrutar paz, comodidad y una conexión especial con el entorno.' }}</textarea>
+                </div>
             </div>
-        </div>
-        <hr style="margin:20px 0; border-color:var(--gerente-border);">
-        <div class="grid-2">
-            <div>
-                <strong>Hero Titulo:</strong>
-                <p style="margin-top:4px; color:var(--gerente-text-muted);">{{ config.sn_hero_titulo|default:"No configurado" }}</p>
+
+            <hr style="margin: 20px 0; border-color: var(--gerente-border);">
+
+            <!-- CINE -->
+            <h4 style="margin: 0 0 12px; color: var(--gerente-primary); font-size: 15px;">
+                <i class="fa-solid fa-film" style="margin-right: 6px;"></i> Cine Arahuana
+            </h4>
+            <div class="gerente-form-grid" style="margin-bottom: 20px;">
+                <div class="gerente-form-field">
+                    <label for="cine_hero_kicker">Etiqueta (kicker resaltado naranja):</label>
+                    <input type="text" id="cine_hero_kicker" name="cine_hero_kicker" class="gerente-input"
+                           value="{{ config.cine_hero_kicker|default:'Cine Arahuana' }}">
+                </div>
+                <div class="gerente-form-field">
+                    <label for="cine_hero_titulo">Título principal:</label>
+                    <input type="text" id="cine_hero_titulo" name="cine_hero_titulo" class="gerente-input"
+                           value="{{ config.cine_hero_titulo|default:'Noches de cine bajo las estrellas' }}">
+                </div>
+                <div class="gerente-form-field" style="grid-column: 1 / -1;">
+                    <label for="cine_hero_parrafo">Descripción / Párrafo:</label>
+                    <textarea id="cine_hero_parrafo" name="cine_hero_parrafo" class="gerente-input" rows="2">{{ config.cine_hero_parrafo|default:'Disfruta de películas en un ambiente acogedor, rodeado de naturaleza, buena compañía y momentos especiales.' }}</textarea>
+                </div>
             </div>
-            <div>
-                <strong>CTA Titulo:</strong>
-                <p style="margin-top:4px; color:var(--gerente-text-muted);">{{ config.sn_cta_titulo|default:"No configurado" }}</p>
+
+            <hr style="margin: 20px 0; border-color: var(--gerente-border);">
+
+            <!-- RESORT DEL DÍA -->
+            <h4 style="margin: 0 0 12px; color: var(--gerente-primary); font-size: 15px;">
+                <i class="fa-solid fa-sun" style="margin-right: 6px;"></i> Resort del Día
+            </h4>
+            <div class="gerente-form-grid" style="margin-bottom: 20px;">
+                <div class="gerente-form-field">
+                    <label for="resort_hero_kicker">Etiqueta (kicker resaltado naranja):</label>
+                    <input type="text" id="resort_hero_kicker" name="resort_hero_kicker" class="gerente-input"
+                           value="{{ config.resort_hero_kicker|default:'Resort del día' }}">
+                </div>
+                <div class="gerente-form-field">
+                    <label for="resort_hero_titulo">Título principal:</label>
+                    <input type="text" id="resort_hero_titulo" name="resort_hero_titulo" class="gerente-input"
+                           value="{{ config.resort_hero_titulo|default:'Relájate y disfruta de un día perfecto' }}">
+                </div>
+                <div class="gerente-form-field" style="grid-column: 1 / -1;">
+                    <label for="resort_hero_parrafo">Descripción / Párrafo:</label>
+                    <textarea id="resort_hero_parrafo" name="resort_hero_parrafo" class="gerente-input" rows="2">{{ config.resort_hero_parrafo|default:'Accede a las áreas del resort para vivir bienestar, naturaleza, descanso y diversión en un solo lugar.' }}</textarea>
+                </div>
             </div>
-        </div>
-        {% else %}
-        <div class="empty-state">
-            <i class="fa-solid fa-circle-info"></i>
-            <h3>Sin configuracion</h3>
-            <p>No hay registros de configuracion de inicio.</p>
-        </div>
-        {% endif %}
+
+            <div class="gerente-form-actions">
+                <button type="submit" class="badge badge-success gerente-action-button">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    Guardar portadas del catálogo
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 
-<div class="gerente-card" style="margin-top: 24px;">
+<!-- ========================================== -->
+<!-- 2. SOBRE NOSOTROS                          -->
+<!-- ========================================== -->
+<div class="gerente-card" style="margin-bottom: 24px;">
+    <div class="gerente-card-header">
+        <h3><i class="fa-solid fa-leaf" style="margin-right: 8px; color: var(--gerente-primary);"></i> Sobre Nosotros - Textos Institucionales</h3>
+        <p style="margin-top: 4px; color: var(--gerente-text-muted); font-size: 13px;">
+            Gestiona todos los títulos, párrafos y etiquetas naranja de la página pública "Sobre Nosotros".
+        </p>
+    </div>
+    <div class="gerente-card-body">
+        <form method="post" class="gerente-form">
+            {% csrf_token %}
+            <input type="hidden" name="seccion" value="sobre_nosotros">
+
+            <!-- PORTADA / HERO -->
+            <h4 style="margin: 0 0 12px; color: var(--gerente-primary); font-size: 15px;">
+                <i class="fa-solid fa-star" style="margin-right: 6px;"></i> Portada / Hero
+            </h4>
+            <div class="gerente-form-grid" style="margin-bottom: 20px;">
+                <div class="gerente-form-field">
+                    <label for="sn_hero_kicker">Etiqueta naranja (kicker):</label>
+                    <input type="text" id="sn_hero_kicker" name="sn_hero_kicker" class="gerente-input"
+                           value="{{ config.sn_hero_kicker|default:'Sobre nosotros' }}">
+                </div>
+                <div class="gerente-form-field">
+                    <label for="sn_hero_titulo">Título principal:</label>
+                    <input type="text" id="sn_hero_titulo" name="sn_hero_titulo" class="gerente-input"
+                           value="{{ config.sn_hero_titulo|default:'Conoce la esencia de Arahuana' }}">
+                </div>
+                <div class="gerente-form-field" style="grid-column: 1 / -1;">
+                    <label for="sn_hero_parrafo">Párrafo de presentación:</label>
+                    <textarea id="sn_hero_parrafo" name="sn_hero_parrafo" class="gerente-input" rows="3">{{ config.sn_hero_parrafo|default:'Somos más que un resort. Somos un espacio donde la naturaleza, el confort y la cultura se unen para ofrecer experiencias inolvidables en la Amazonía ecuatoriana.' }}</textarea>
+                </div>
+            </div>
+
+            <hr style="margin: 20px 0; border-color: var(--gerente-border);">
+
+            <!-- NUESTRA HISTORIA -->
+            <h4 style="margin: 0 0 12px; color: var(--gerente-primary); font-size: 15px;">
+                <i class="fa-solid fa-book-open" style="margin-right: 6px;"></i> Nuestra Historia
+            </h4>
+            <div class="gerente-form-grid" style="margin-bottom: 20px;">
+                <div class="gerente-form-field">
+                    <label for="sn_historia_kicker">Etiqueta naranja (kicker):</label>
+                    <input type="text" id="sn_historia_kicker" name="sn_historia_kicker" class="gerente-input"
+                           value="{{ config.sn_historia_kicker|default:'Nuestra historia' }}">
+                </div>
+                <div class="gerente-form-field">
+                    <label for="sn_historia_titulo">Título de la sección:</label>
+                    <input type="text" id="sn_historia_titulo" name="sn_historia_titulo" class="gerente-input"
+                           value="{{ config.sn_historia_titulo|default:'Un lugar para reconectar con la naturaleza' }}">
+                </div>
+                <div class="gerente-form-field" style="grid-column: 1 / -1;">
+                    <label for="sn_historia_parrafo_1">Párrafo 1:</label>
+                    <textarea id="sn_historia_parrafo_1" name="sn_historia_parrafo_1" class="gerente-input" rows="2">{{ config.sn_historia_parrafo_1|default:'Arahuana Eco-Resort & Spa nació con el propósito de compartir la belleza de la Amazonía ecuatoriana, ofreciendo un lugar donde cada huésped pueda descansar, disfrutar y vivir experiencias memorables.' }}</textarea>
+                </div>
+                <div class="gerente-form-field" style="grid-column: 1 / -1;">
+                    <label for="sn_historia_parrafo_2">Párrafo 2:</label>
+                    <textarea id="sn_historia_parrafo_2" name="sn_historia_parrafo_2" class="gerente-input" rows="2">{{ config.sn_historia_parrafo_2|default:'Nuestra propuesta combina hospedaje cómodo, espacios recreativos, cine, cabañas y resort del día en un entorno natural pensado para familias, parejas y visitantes.' }}</textarea>
+                </div>
+            </div>
+
+            <hr style="margin: 20px 0; border-color: var(--gerente-border);">
+
+            <!-- MISIÓN Y VISIÓN -->
+            <h4 style="margin: 0 0 12px; color: var(--gerente-primary); font-size: 15px;">
+                <i class="fa-solid fa-compass" style="margin-right: 6px;"></i> Misión y Visión
+            </h4>
+            <div class="gerente-form-grid" style="margin-bottom: 20px;">
+                <div class="gerente-form-field">
+                    <label for="sn_mv_kicker">Etiqueta naranja (kicker):</label>
+                    <input type="text" id="sn_mv_kicker" name="sn_mv_kicker" class="gerente-input"
+                           value="{{ config.sn_mv_kicker|default:'Misión y Visión' }}">
+                </div>
+                <div class="gerente-form-field">
+                    <label for="sn_mv_titulo">Título de la sección:</label>
+                    <input type="text" id="sn_mv_titulo" name="sn_mv_titulo" class="gerente-input"
+                           value="{{ config.sn_mv_titulo|default:'Lo que nos impulsa' }}">
+                </div>
+                <div class="gerente-form-field" style="grid-column: 1 / -1;">
+                    <label for="sn_mv_subtitulo">Subtítulo explicativo:</label>
+                    <input type="text" id="sn_mv_subtitulo" name="sn_mv_subtitulo" class="gerente-input"
+                           value="{{ config.sn_mv_subtitulo|default:'Nuestros propósitos guían cada experiencia que compartimos contigo.' }}">
+                </div>
+                <div class="gerente-form-field">
+                    <label for="mision">Texto de Misión:</label>
+                    <textarea id="mision" name="mision" class="gerente-input" rows="3">{{ config.mision|default:'Ofrecer experiencias memorables de descanso, recreación y contacto con la naturaleza en la Amazonía ecuatoriana, brindando un servicio cálido, responsable y de calidad.' }}</textarea>
+                </div>
+                <div class="gerente-form-field">
+                    <label for="vision">Texto de Visión:</label>
+                    <textarea id="vision" name="vision" class="gerente-input" rows="3">{{ config.vision|default:'Convertirnos en el eco-resort de referencia en la Amazonía ecuatoriana, reconocido por su hospitalidad, sostenibilidad y por ser el destino ideal para el bienestar y la autenticidad.' }}</textarea>
+                </div>
+            </div>
+
+            <hr style="margin: 20px 0; border-color: var(--gerente-border);">
+
+            <!-- NUESTROS VALORES -->
+            <h4 style="margin: 0 0 12px; color: var(--gerente-primary); font-size: 15px;">
+                <i class="fa-solid fa-seedling" style="margin-right: 6px;"></i> Nuestros Valores
+            </h4>
+            <div class="gerente-form-grid" style="margin-bottom: 20px;">
+                <div class="gerente-form-field">
+                    <label for="sn_valores_kicker">Etiqueta naranja (kicker):</label>
+                    <input type="text" id="sn_valores_kicker" name="sn_valores_kicker" class="gerente-input"
+                           value="{{ config.sn_valores_kicker|default:'Nuestros valores' }}">
+                </div>
+                <div class="gerente-form-field">
+                    <label for="sn_valores_titulo">Título de la sección:</label>
+                    <input type="text" id="sn_valores_titulo" name="sn_valores_titulo" class="gerente-input"
+                           value="{{ config.sn_valores_titulo|default:'Lo que nos define' }}">
+                </div>
+                <div class="gerente-form-field" style="grid-column: 1 / -1;">
+                    <label for="sn_valores_subtitulo">Subtítulo explicativo:</label>
+                    <input type="text" id="sn_valores_subtitulo" name="sn_valores_subtitulo" class="gerente-input"
+                           value="{{ config.sn_valores_subtitulo|default:'Trabajamos con principios que fortalecen la atención, la organización y la experiencia del visitante.' }}">
+                </div>
+                <!-- Valor 1 -->
+                <div class="gerente-form-field">
+                    <label for="sn_valor_1_titulo">Valor 1: Título</label>
+                    <input type="text" id="sn_valor_1_titulo" name="sn_valor_1_titulo" class="gerente-input"
+                           value="{{ config.sn_valor_1_titulo|default:'Sostenibilidad' }}">
+                </div>
+                <div class="gerente-form-field">
+                    <label for="sn_valor_1_texto">Valor 1: Descripción</label>
+                    <input type="text" id="sn_valor_1_texto" name="sn_valor_1_texto" class="gerente-input"
+                           value="{{ config.sn_valor_1_texto|default:'Cuidamos nuestro entorno natural y promovemos una experiencia responsable.' }}">
+                </div>
+                <!-- Valor 2 -->
+                <div class="gerente-form-field">
+                    <label for="sn_valor_2_titulo">Valor 2: Título</label>
+                    <input type="text" id="sn_valor_2_titulo" name="sn_valor_2_titulo" class="gerente-input"
+                           value="{{ config.sn_valor_2_titulo|default:'Hospitalidad' }}">
+                </div>
+                <div class="gerente-form-field">
+                    <label for="sn_valor_2_texto">Valor 2: Descripción</label>
+                    <input type="text" id="sn_valor_2_texto" name="sn_valor_2_texto" class="gerente-input"
+                           value="{{ config.sn_valor_2_texto|default:'Brindamos atención cálida, cercana y personalizada para cada huésped.' }}">
+                </div>
+                <!-- Valor 3 -->
+                <div class="gerente-form-field">
+                    <label for="sn_valor_3_titulo">Valor 3: Título</label>
+                    <input type="text" id="sn_valor_3_titulo" name="sn_valor_3_titulo" class="gerente-input"
+                           value="{{ config.sn_valor_3_titulo|default:'Autenticidad' }}">
+                </div>
+                <div class="gerente-form-field">
+                    <label for="sn_valor_3_texto">Valor 3: Descripción</label>
+                    <input type="text" id="sn_valor_3_texto" name="sn_valor_3_texto" class="gerente-input"
+                           value="{{ config.sn_valor_3_texto|default:'Resaltamos la cultura amazónica y la riqueza natural de nuestro entorno.' }}">
+                </div>
+                <!-- Valor 4 -->
+                <div class="gerente-form-field">
+                    <label for="sn_valor_4_titulo">Valor 4: Título</label>
+                    <input type="text" id="sn_valor_4_titulo" name="sn_valor_4_titulo" class="gerente-input"
+                           value="{{ config.sn_valor_4_titulo|default:'Bienestar' }}">
+                </div>
+                <div class="gerente-form-field">
+                    <label for="sn_valor_4_texto">Valor 4: Descripción</label>
+                    <input type="text" id="sn_valor_4_texto" name="sn_valor_4_texto" class="gerente-input"
+                           value="{{ config.sn_valor_4_texto|default:'Creamos experiencias que renuevan el cuerpo, la mente y el espíritu.' }}">
+                </div>
+            </div>
+
+            <hr style="margin: 20px 0; border-color: var(--gerente-border);">
+
+            <!-- NUESTRO COMPROMISO -->
+            <h4 style="margin: 0 0 12px; color: var(--gerente-primary); font-size: 15px;">
+                <i class="fa-solid fa-handshake-angle" style="margin-right: 6px;"></i> Nuestro Compromiso
+            </h4>
+            <div class="gerente-form-grid" style="margin-bottom: 20px;">
+                <div class="gerente-form-field">
+                    <label for="sn_compromiso_kicker">Etiqueta naranja (kicker):</label>
+                    <input type="text" id="sn_compromiso_kicker" name="sn_compromiso_kicker" class="gerente-input"
+                           value="{{ config.sn_compromiso_kicker|default:'Nuestro compromiso' }}">
+                </div>
+                <div class="gerente-form-field">
+                    <label for="sn_compromiso_titulo">Título de la sección:</label>
+                    <input type="text" id="sn_compromiso_titulo" name="sn_compromiso_titulo" class="gerente-input"
+                           value="{{ config.sn_compromiso_titulo|default:'Una experiencia pensada para ti' }}">
+                </div>
+                <div class="gerente-form-field" style="grid-column: 1 / -1;">
+                    <label for="sn_compromiso_parrafo">Párrafo de compromiso:</label>
+                    <textarea id="sn_compromiso_parrafo" name="sn_compromiso_parrafo" class="gerente-input" rows="2">{{ config.sn_compromiso_parrafo|default:'Trabajamos día a día para que cada visita sea especial, cuidando cada detalle del servicio y ofreciendo espacios seguros, cómodos y conectados con la naturaleza.' }}</textarea>
+                </div>
+            </div>
+
+            <hr style="margin: 20px 0; border-color: var(--gerente-border);">
+
+            <!-- LLAMADA A LA ACCIÓN (CTA FINAL) -->
+            <h4 style="margin: 0 0 12px; color: var(--gerente-primary); font-size: 15px;">
+                <i class="fa-solid fa-bullhorn" style="margin-right: 6px;"></i> Llamada a la Acción Final (CTA)
+            </h4>
+            <div class="gerente-form-grid" style="margin-bottom: 20px;">
+                <div class="gerente-form-field">
+                    <label for="sn_cta_kicker">Etiqueta naranja (kicker):</label>
+                    <input type="text" id="sn_cta_kicker" name="sn_cta_kicker" class="gerente-input"
+                           value="{{ config.sn_cta_kicker|default:'Arahuana te espera' }}">
+                </div>
+                <div class="gerente-form-field">
+                    <label for="sn_cta_titulo">Título final:</label>
+                    <input type="text" id="sn_cta_titulo" name="sn_cta_titulo" class="gerente-input"
+                           value="{{ config.sn_cta_titulo|default:'Vive la experiencia de la Amazonía' }}">
+                </div>
+                <div class="gerente-form-field" style="grid-column: 1 / -1;">
+                    <label for="sn_cta_parrafo">Párrafo de invitación:</label>
+                    <textarea id="sn_cta_parrafo" name="sn_cta_parrafo" class="gerente-input" rows="2">{{ config.sn_cta_parrafo|default:'Reserva tu próxima visita y disfruta descanso, naturaleza y bienestar en un solo lugar.' }}</textarea>
+                </div>
+            </div>
+
+            <hr style="margin: 20px 0; border-color: var(--gerente-border);">
+
+            <!-- ESTADÍSTICAS -->
+            <h4 style="margin: 0 0 12px; color: var(--gerente-primary); font-size: 15px;">
+                <i class="fa-solid fa-chart-simple" style="margin-right: 6px;"></i> Cifras y Estadísticas
+            </h4>
+            <div class="gerente-form-grid" style="margin-bottom: 20px;">
+                <div class="gerente-form-field">
+                    <label for="sn_stat_1_numero">Estadística 1: Cifra</label>
+                    <input type="text" id="sn_stat_1_numero" name="sn_stat_1_numero" class="gerente-input"
+                           value="{{ config.sn_stat_1_numero|default:'5+' }}">
+                </div>
+                <div class="gerente-form-field">
+                    <label for="sn_stat_1_etiqueta">Estadística 1: Etiqueta</label>
+                    <input type="text" id="sn_stat_1_etiqueta" name="sn_stat_1_etiqueta" class="gerente-input"
+                           value="{{ config.sn_stat_1_etiqueta|default:'Años de experiencia' }}">
+                </div>
+
+                <div class="gerente-form-field">
+                    <label for="sn_stat_2_numero">Estadística 2: Cifra</label>
+                    <input type="text" id="sn_stat_2_numero" name="sn_stat_2_numero" class="gerente-input"
+                           value="{{ config.sn_stat_2_numero|default:'Miles' }}">
+                </div>
+                <div class="gerente-form-field">
+                    <label for="sn_stat_2_etiqueta">Estadística 2: Etiqueta</label>
+                    <input type="text" id="sn_stat_2_etiqueta" name="sn_stat_2_etiqueta" class="gerente-input"
+                           value="{{ config.sn_stat_2_etiqueta|default:'Huéspedes felices' }}">
+                </div>
+
+                <div class="gerente-form-field">
+                    <label for="sn_stat_3_numero">Estadística 3: Cifra</label>
+                    <input type="text" id="sn_stat_3_numero" name="sn_stat_3_numero" class="gerente-input"
+                           value="{{ config.sn_stat_3_numero|default:'4.8' }}">
+                </div>
+                <div class="gerente-form-field">
+                    <label for="sn_stat_3_etiqueta">Estadística 3: Etiqueta</label>
+                    <input type="text" id="sn_stat_3_etiqueta" name="sn_stat_3_etiqueta" class="gerente-input"
+                           value="{{ config.sn_stat_3_etiqueta|default:'Calificación promedio' }}">
+                </div>
+
+                <div class="gerente-form-field">
+                    <label for="sn_stat_4_numero">Estadística 4: Cifra</label>
+                    <input type="text" id="sn_stat_4_numero" name="sn_stat_4_numero" class="gerente-input"
+                           value="{{ config.sn_stat_4_numero|default:'Tena, Napo' }}">
+                </div>
+                <div class="gerente-form-field">
+                    <label for="sn_stat_4_etiqueta">Estadística 4: Etiqueta</label>
+                    <input type="text" id="sn_stat_4_etiqueta" name="sn_stat_4_etiqueta" class="gerente-input"
+                           value="{{ config.sn_stat_4_etiqueta|default:'Ecuador' }}">
+                </div>
+            </div>
+
+            <div class="gerente-form-actions">
+                <button type="submit" class="badge badge-success gerente-action-button">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    Guardar contenido de Sobre Nosotros
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ========================================== -->
+<!-- 3. DATOS BANCARIOS                         -->
+<!-- ========================================== -->
+<div class="gerente-card">
     <div class="gerente-card-header">
         <h3><i class="fa-solid fa-building-columns" style="margin-right: 8px; color: var(--gerente-primary);"></i> Datos Bancarios para Transferencias</h3>
         <p style="margin-top: 4px; color: var(--gerente-text-muted); font-size: 13px;">
@@ -56,6 +408,7 @@
     <div class="gerente-card-body">
         <form method="post" class="gerente-form">
             {% csrf_token %}
+            <input type="hidden" name="seccion" value="bancarios">
             <div class="gerente-form-grid">
                 <div class="gerente-form-field">
                     <label for="banco_1_nombre">Banco:</label>

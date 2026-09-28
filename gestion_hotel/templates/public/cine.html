@@ -28,14 +28,13 @@
     <div class="contenedor catalog-hero-content">
         <span class="ar-kicker">
             <i class="fa-solid fa-leaf"></i>
-            Cine Arahuana
+            {{ hero_kicker|default:"Cine Arahuana" }}
         </span>
 
-        <h1>Noches de cine bajo las estrellas</h1>
+        <h1>{{ hero_titulo|default:"Noches de cine bajo las estrellas" }}</h1>
 
         <p>
-            Disfruta de películas en un ambiente acogedor, rodeado de naturaleza,
-            buena compañía y momentos especiales.
+            {{ hero_parrafo|default:"Disfruta de películas en un ambiente acogedor, rodeado de naturaleza, buena compañía y momentos especiales." }}
         </p>
 
         <div class="hero-actions">

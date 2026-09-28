@@ -1088,3 +1088,118 @@ class DatosBancariosTests(TestCase):
         self.assertIsNotNone(user_by_email)
         self.assertEqual(user_by_email.email, "gerente_admin@hotel.com")
 
+
+class SobreNosotrosYPortadasTests(TestCase):
+    def setUp(self):
+        ConfiguracionInicio.objects.all().delete()
+        self.config, _ = ConfiguracionInicio.objects.get_or_create(id=1)
+        self.gerente_user = User.objects.create_user(
+            username="gerente_editor",
+            password="GerentePassword123!",
+            is_staff=True,
+        )
+
+    def test_sobre_nosotros_renders_clean_text_no_mojibake(self):
+        response = self.client.get(reverse("gestion:sobre_nosotros"))
+        self.assertEqual(response.status_code, 200)
+
+        contenido = response.content.decode("utf-8")
+        # Ensure there is no UTF-8 double-encoding mojibake
+        self.assertNotIn("Ã¡", contenido)
+        self.assertNotIn("Ã³", contenido)
+        self.assertNotIn("Ã±", contenido)
+        self.assertNotIn("Ã­", contenido)
+        self.assertNotIn("Ã©", contenido)
+        self.assertNotIn("Ãº", contenido)
+
+        # Check default kickers (badges)
+        self.assertContains(response, "Sobre nosotros")
+        self.assertContains(response, "Nuestra historia")
+        self.assertContains(response, "Misión y Visión")
+        self.assertContains(response, "Nuestros valores")
+        self.assertContains(response, "Nuestro compromiso")
+        self.assertContains(response, "Arahuana te espera")
+
+    def test_sobre_nosotros_renders_custom_kickers_and_subtitles(self):
+        self.config.sn_hero_kicker = "Conócenos Más"
+        self.config.sn_historia_kicker = "Nuestros Orígenes"
+        self.config.sn_mv_kicker = "Propósito e Inspiración"
+        self.config.sn_mv_titulo = "Nuestra Razón de Ser"
+        self.config.sn_valores_kicker = "Principios Clave"
+        self.config.sn_compromiso_kicker = "Promesa Arahuana"
+        self.config.sn_cta_kicker = "Te Esperamos Pronto"
+        self.config.save()
+
+        response = self.client.get(reverse("gestion:sobre_nosotros"))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Conócenos Más")
+        self.assertContains(response, "Nuestros Orígenes")
+        self.assertContains(response, "Propósito e Inspiración")
+        self.assertContains(response, "Nuestra Razón de Ser")
+        self.assertContains(response, "Principios Clave")
+        self.assertContains(response, "Promesa Arahuana")
+        self.assertContains(response, "Te Esperamos Pronto")
+
+    def test_habitaciones_and_cabanas_render_custom_hero(self):
+        self.config.habitaciones_hero_kicker = "Suites y Cuartos"
+        self.config.habitaciones_hero_titulo = "Descanso Supremo en la Selva"
+        self.config.cabanas_hero_kicker = "Cabañas Privadas"
+        self.config.cabanas_hero_titulo = "Paz Total en la Amazonía"
+        self.config.save()
+
+        resp_hab = self.client.get(reverse("gestion:habitaciones"))
+        self.assertEqual(resp_hab.status_code, 200)
+        self.assertContains(resp_hab, "Suites y Cuartos")
+        self.assertContains(resp_hab, "Descanso Supremo en la Selva")
+
+        resp_cab = self.client.get(reverse("gestion:cabanas"))
+        self.assertEqual(resp_cab.status_code, 200)
+        self.assertContains(resp_cab, "Cabañas Privadas")
+        self.assertContains(resp_cab, "Paz Total en la Amazonía")
+
+    def test_gerente_edits_portadas_and_sobre_nosotros(self):
+        self.client.force_login(self.gerente_user)
+
+        # 1. Edit portadas
+        post_portadas = {
+            "seccion": "portadas",
+            "habitaciones_hero_kicker": "Habitaciones Deluxe",
+            "habitaciones_hero_titulo": "Título Habitaciones Actualizado",
+            "habitaciones_hero_parrafo": "Párrafo Habitaciones Actualizado",
+            "cabanas_hero_kicker": "Cabañas Rústicas",
+            "cabanas_hero_titulo": "Título Cabañas Actualizado",
+            "cabanas_hero_parrafo": "Párrafo Cabañas Actualizado",
+        }
+        res_portadas = self.client.post(reverse("gestion:gerente_sobre_nosotros"), post_portadas)
+        self.assertRedirects(res_portadas, reverse("gestion:gerente_sobre_nosotros"))
+
+        self.config.refresh_from_db()
+        self.assertEqual(self.config.habitaciones_hero_kicker, "Habitaciones Deluxe")
+        self.assertEqual(self.config.habitaciones_hero_titulo, "Título Habitaciones Actualizado")
+        self.assertEqual(self.config.cabanas_hero_kicker, "Cabañas Rústicas")
+
+        # 2. Edit sobre nosotros
+        post_sn = {
+            "seccion": "sobre_nosotros",
+            "sn_hero_kicker": "Kicker SN Actualizado",
+            "sn_hero_titulo": "Hero Título SN",
+            "sn_hero_parrafo": "Hero Párrafo SN",
+            "sn_historia_kicker": "Historia Kicker Actualizado",
+            "sn_historia_titulo": "Historia Título Actualizado",
+            "sn_mv_kicker": "Misión Visión Kicker",
+            "sn_valores_kicker": "Valores Kicker Actualizado",
+            "sn_compromiso_kicker": "Compromiso Kicker Actualizado",
+            "sn_cta_kicker": "CTA Kicker Actualizado",
+        }
+        res_sn = self.client.post(reverse("gestion:gerente_sobre_nosotros"), post_sn)
+        self.assertRedirects(res_sn, reverse("gestion:gerente_sobre_nosotros"))
+
+        self.config.refresh_from_db()
+        self.assertEqual(self.config.sn_hero_kicker, "Kicker SN Actualizado")
+        self.assertEqual(self.config.sn_hero_titulo, "Hero Título SN")
+        self.assertEqual(self.config.sn_historia_kicker, "Historia Kicker Actualizado")
+        self.assertEqual(self.config.sn_mv_kicker, "Misión Visión Kicker")
+        self.assertEqual(self.config.sn_valores_kicker, "Valores Kicker Actualizado")
+        self.assertEqual(self.config.sn_compromiso_kicker, "Compromiso Kicker Actualizado")
+        self.assertEqual(self.config.sn_cta_kicker, "CTA Kicker Actualizado")
+

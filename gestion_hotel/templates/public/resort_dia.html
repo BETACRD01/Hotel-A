@@ -30,14 +30,13 @@
     <div class="contenedor catalog-hero-content">
         <span class="ar-kicker">
             <i class="fa-solid fa-leaf"></i>
-            Resort del día
+            {{ hero_kicker|default:"Resort del día" }}
         </span>
 
-        <h1>Relájate y disfruta de un día perfecto</h1>
+        <h1>{{ hero_titulo|default:"Relájate y disfruta de un día perfecto" }}</h1>
 
         <p>
-            Accede a las áreas del resort para vivir bienestar, naturaleza,
-            descanso y diversión en un solo lugar.
+            {{ hero_parrafo|default:"Accede a las áreas del resort para vivir bienestar, naturaleza, descanso y diversión en un solo lugar." }}
         </p>
     </div>
 </section>

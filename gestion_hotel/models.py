@@ -1052,6 +1052,30 @@ class ConfiguracionInicio(models.Model):
         help_text='Imagen de la portada de la página "Sobre nosotros".',
     )
 
+    sn_mv_kicker = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        default='Misión y Visión',
+        verbose_name='Misión/Visión: etiqueta (kicker)',
+        help_text='Etiqueta superior en color resaltado de Misión y Visión.',
+    )
+    sn_mv_titulo = models.CharField(
+        max_length=200,
+        blank=True,
+        null=True,
+        default='Lo que nos impulsa',
+        verbose_name='Misión/Visión: título',
+        help_text='Título principal de la sección Misión y Visión.',
+    )
+    sn_mv_subtitulo = models.TextField(
+        blank=True,
+        null=True,
+        default='Nuestros propósitos guían cada experiencia que compartimos contigo.',
+        verbose_name='Misión/Visión: subtítulo',
+        help_text='Texto introductorio de la sección Misión y Visión.',
+    )
+
     mision = models.TextField(
         blank=True,
         null=True,
@@ -1098,6 +1122,15 @@ class ConfiguracionInicio(models.Model):
         help_text='Imagen de fondo de la portada de la página de Resort del Día.',
     )
 
+    sn_hero_kicker = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        default='Sobre nosotros',
+        verbose_name='Hero: etiqueta (kicker)',
+        help_text='Etiqueta superior en color resaltado (ej. "Sobre nosotros").',
+    )
+
     sn_hero_titulo = models.CharField(
         max_length=200,
         blank=True,
@@ -1138,6 +1171,15 @@ class ConfiguracionInicio(models.Model):
         max_length=100, blank=True, null=True, verbose_name='Estadística 4: etiqueta',
     )
 
+    sn_historia_kicker = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        default='Nuestra historia',
+        verbose_name='Historia: etiqueta (kicker)',
+        help_text='Etiqueta superior en color resaltado de Historia.',
+    )
+
     sn_historia_titulo = models.CharField(
         max_length=200,
         blank=True,
@@ -1157,6 +1199,30 @@ class ConfiguracionInicio(models.Model):
         null=True,
         verbose_name='Historia: imagen',
         help_text='Imagen de la sección "Nuestra historia".',
+    )
+
+    sn_valores_kicker = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        default='Nuestros valores',
+        verbose_name='Valores: etiqueta (kicker)',
+        help_text='Etiqueta superior en color resaltado de Valores.',
+    )
+    sn_valores_titulo = models.CharField(
+        max_length=200,
+        blank=True,
+        null=True,
+        default='Lo que nos define',
+        verbose_name='Valores: título',
+        help_text='Título principal de la sección de Valores.',
+    )
+    sn_valores_subtitulo = models.TextField(
+        blank=True,
+        null=True,
+        default='Trabajamos con principios que fortalecen la atención, la organización y la experiencia del visitante.',
+        verbose_name='Valores: subtítulo',
+        help_text='Texto introductorio de la sección de Valores.',
     )
 
     sn_valor_1_titulo = models.CharField(
@@ -1184,6 +1250,14 @@ class ConfiguracionInicio(models.Model):
         blank=True, null=True, verbose_name='Valor 4: descripción',
     )
 
+    sn_compromiso_kicker = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        default='Nuestro compromiso',
+        verbose_name='Compromiso: etiqueta (kicker)',
+        help_text='Etiqueta superior en color resaltado de Compromiso.',
+    )
     sn_compromiso_titulo = models.CharField(
         max_length=200,
         blank=True,
@@ -1202,6 +1276,14 @@ class ConfiguracionInicio(models.Model):
         help_text='Imagen de la sección "Nuestro compromiso".',
     )
 
+    sn_cta_kicker = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        default='Arahuana te espera',
+        verbose_name='CTA: etiqueta (kicker)',
+        help_text='Etiqueta superior en color resaltado del llamado a la acción final.',
+    )
     sn_cta_titulo = models.CharField(
         max_length=200,
         blank=True,
@@ -1211,6 +1293,103 @@ class ConfiguracionInicio(models.Model):
     )
     sn_cta_parrafo = models.TextField(
         blank=True, null=True, verbose_name='CTA: párrafo',
+    )
+
+    # Portadas de Catálogo (Habitaciones, Cabañas, Cine, Resort del Día)
+    habitaciones_hero_kicker = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        default='Habitaciones',
+        verbose_name='Habitaciones hero: etiqueta (kicker)',
+        help_text='Etiqueta superior de la portada de Habitaciones.',
+    )
+    habitaciones_hero_titulo = models.CharField(
+        max_length=200,
+        blank=True,
+        null=True,
+        default='Confort y descanso en plena naturaleza',
+        verbose_name='Habitaciones hero: título',
+        help_text='Título principal de la portada de Habitaciones.',
+    )
+    habitaciones_hero_parrafo = models.TextField(
+        blank=True,
+        null=True,
+        default='Espacios diseñados para tu bienestar, donde cada detalle te conecta con la tranquilidad de la Amazonía.',
+        verbose_name='Habitaciones hero: párrafo',
+        help_text='Descripción de la portada de Habitaciones.',
+    )
+
+    cabanas_hero_kicker = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        default='Cabañas',
+        verbose_name='Cabañas hero: etiqueta (kicker)',
+        help_text='Etiqueta superior de la portada de Cabañas.',
+    )
+    cabanas_hero_titulo = models.CharField(
+        max_length=200,
+        blank=True,
+        null=True,
+        default='Vive la experiencia de la Amazonía con privacidad',
+        verbose_name='Cabañas hero: título',
+        help_text='Título principal de la portada de Cabañas.',
+    )
+    cabanas_hero_parrafo = models.TextField(
+        blank=True,
+        null=True,
+        default='Cabañas rodeadas de naturaleza para disfrutar paz, comodidad y una conexión especial con el entorno.',
+        verbose_name='Cabañas hero: párrafo',
+        help_text='Descripción de la portada de Cabañas.',
+    )
+
+    cine_hero_kicker = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        default='Cine Arahuana',
+        verbose_name='Cine hero: etiqueta (kicker)',
+        help_text='Etiqueta superior de la portada de Cine.',
+    )
+    cine_hero_titulo = models.CharField(
+        max_length=200,
+        blank=True,
+        null=True,
+        default='Noches de cine bajo las estrellas',
+        verbose_name='Cine hero: título',
+        help_text='Título principal de la portada de Cine.',
+    )
+    cine_hero_parrafo = models.TextField(
+        blank=True,
+        null=True,
+        default='Disfruta de películas en un ambiente acogedor, rodeado de naturaleza, buena compañía y momentos especiales.',
+        verbose_name='Cine hero: párrafo',
+        help_text='Descripción de la portada de Cine.',
+    )
+
+    resort_hero_kicker = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        default='Resort del día',
+        verbose_name='Resort hero: etiqueta (kicker)',
+        help_text='Etiqueta superior de la portada de Resort del Día.',
+    )
+    resort_hero_titulo = models.CharField(
+        max_length=200,
+        blank=True,
+        null=True,
+        default='Relájate y disfruta de un día perfecto',
+        verbose_name='Resort hero: título',
+        help_text='Título principal de la portada de Resort del Día.',
+    )
+    resort_hero_parrafo = models.TextField(
+        blank=True,
+        null=True,
+        default='Accede a las áreas del resort para vivir bienestar, naturaleza, descanso y diversión en un solo lugar.',
+        verbose_name='Resort hero: párrafo',
+        help_text='Descripción de la portada de Resort del Día.',
     )
 
     banco_1_nombre = models.CharField(

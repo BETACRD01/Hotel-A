@@ -28,14 +28,13 @@
     <div class="contenedor catalog-hero-content">
         <span class="ar-kicker">
             <i class="fa-solid fa-leaf"></i>
-            Cabañas
+            {{ hero_kicker|default:"Cabañas" }}
         </span>
 
-        <h1>Vive la experiencia de la Amazonía con privacidad</h1>
+        <h1>{{ hero_titulo|default:"Vive la experiencia de la Amazonía con privacidad" }}</h1>
 
         <p>
-            Cabañas rodeadas de naturaleza para disfrutar paz, comodidad
-            y una conexión especial con el entorno.
+            {{ hero_parrafo|default:"Cabañas rodeadas de naturaleza para disfrutar paz, comodidad y una conexión especial con el entorno." }}
         </p>
 
         <div class="hero-actions">

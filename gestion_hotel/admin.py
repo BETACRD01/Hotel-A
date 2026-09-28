@@ -720,10 +720,11 @@ class ConfiguracionInicioAdmin(admin.ModelAdmin):
         'sn_compromiso_imagen_preview',
     )
     fieldsets = (
-        ("Sobre nosotros", {
+        ("Sobre nosotros - Portada", {
             "fields": (
                 "imagen_sobre_nosotros",
                 "imagen_sobre_nosotros_preview",
+                "sn_hero_kicker",
                 "sn_hero_titulo",
                 "sn_hero_parrafo",
             ),
@@ -742,6 +743,7 @@ class ConfiguracionInicioAdmin(admin.ModelAdmin):
         }),
         ("Historia", {
             "fields": (
+                "sn_historia_kicker",
                 "sn_historia_titulo",
                 "sn_historia_parrafo_1",
                 "sn_historia_parrafo_2",
@@ -751,12 +753,18 @@ class ConfiguracionInicioAdmin(admin.ModelAdmin):
         }),
         ("Misión y Visión", {
             "fields": (
+                "sn_mv_kicker",
+                "sn_mv_titulo",
+                "sn_mv_subtitulo",
                 "mision",
                 "vision",
             ),
         }),
         ("Valores", {
             "fields": (
+                "sn_valores_kicker",
+                "sn_valores_titulo",
+                "sn_valores_subtitulo",
                 "sn_valor_1_titulo",
                 "sn_valor_1_texto",
                 "sn_valor_2_titulo",
@@ -769,6 +777,7 @@ class ConfiguracionInicioAdmin(admin.ModelAdmin):
         }),
         ("Compromiso", {
             "fields": (
+                "sn_compromiso_kicker",
                 "sn_compromiso_titulo",
                 "sn_compromiso_parrafo",
                 "sn_compromiso_imagen",
@@ -777,8 +786,25 @@ class ConfiguracionInicioAdmin(admin.ModelAdmin):
         }),
         ("Llamada a la acción final", {
             "fields": (
+                "sn_cta_kicker",
                 "sn_cta_titulo",
                 "sn_cta_parrafo",
+            ),
+        }),
+        ("Portadas del Catálogo (Habitaciones, Cabañas, Cine, Resort)", {
+            "fields": (
+                "habitaciones_hero_kicker",
+                "habitaciones_hero_titulo",
+                "habitaciones_hero_parrafo",
+                "cabanas_hero_kicker",
+                "cabanas_hero_titulo",
+                "cabanas_hero_parrafo",
+                "cine_hero_kicker",
+                "cine_hero_titulo",
+                "cine_hero_parrafo",
+                "resort_hero_kicker",
+                "resort_hero_titulo",
+                "resort_hero_parrafo",
             ),
         }),
         ("Datos bancarios para transferencias", {

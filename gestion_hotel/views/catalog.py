@@ -109,14 +109,18 @@ def habitaciones_view(request):
 
         messages.success(
             request,
-            "Reserva de habitaciÃ³n creada correctamente. Ahora puedes completar el pago."
+            "Reserva de habitación creada correctamente. Ahora puedes completar el pago."
         )
         return redirigir_segun_metodo_pago(reserva, metodo_pago)
 
+    config = ConfiguracionInicio.objects.first()
     contexto = {
         "habitaciones": habitaciones,
         "usuario": request.session.get("cliente_id"),
         "fondo_habitaciones": _config_fondo("fondo_habitaciones"),
+        "hero_kicker": getattr(config, "habitaciones_hero_kicker", None) or "Habitaciones",
+        "hero_titulo": getattr(config, "habitaciones_hero_titulo", None) or "Confort y descanso en plena naturaleza",
+        "hero_parrafo": getattr(config, "habitaciones_hero_parrafo", None) or "Espacios diseñados para tu bienestar, donde cada detalle te conecta con la tranquilidad de la Amazonía.",
     }
 
     return render(request, "public/habitaciones.html", contexto)
@@ -139,7 +143,7 @@ def cabanas_view(request):
         cliente_id = request.session.get("cliente_id")
 
         if not cliente_id:
-            messages.warning(request, "Debes iniciar sesiÃ³n para reservar.")
+            messages.warning(request, "Debes iniciar sesión para reservar.")
             return redirect("gestion:login")
 
         id_cabana = request.POST.get("id_cabana")
@@ -151,7 +155,7 @@ def cabanas_view(request):
         metodo_pago = obtener_metodo_pago_formulario(request)
 
         if programa not in ["2D1N", "3D2N", "4D3N"]:
-            messages.error(request, "Debes seleccionar un programa de hospedaje vÃ¡lido.")
+            messages.error(request, "Debes seleccionar un programa de hospedaje válido.")
             return redirect("gestion:cabanas")
 
         try:
@@ -181,7 +185,7 @@ def cabanas_view(request):
         if cantidad_personas_int > cabana.capacidad:
             messages.error(
                 request,
-                f"La cabaÃ±a seleccionada permite mÃ¡ximo {cabana.capacidad} persona(s)."
+                f"La cabaña seleccionada permite máximo {cabana.capacidad} persona(s)."
             )
             return redirect("gestion:cabanas")
 
@@ -193,7 +197,7 @@ def cabanas_view(request):
         if precio_programa <= 0:
             messages.error(
                 request,
-                "La cabaÃ±a seleccionada no tiene configurado el precio para ese programa."
+                "La cabaña seleccionada no tiene configurado el precio para ese programa."
             )
             return redirect("gestion:cabanas")
 
@@ -231,14 +235,18 @@ def cabanas_view(request):
 
         messages.success(
             request,
-            "Reserva de cabaÃ±a creada correctamente. Ahora puedes completar el pago."
+            "Reserva de cabaña creada correctamente. Ahora puedes completar el pago."
         )
         return redirigir_segun_metodo_pago(reserva, metodo_pago)
 
+    config = ConfiguracionInicio.objects.first()
     contexto = {
         "cabanas": cabanas,
         "usuario": request.session.get("cliente_id"),
         "fondo_cabanas": _config_fondo("fondo_cabanas"),
+        "hero_kicker": getattr(config, "cabanas_hero_kicker", None) or "Cabañas",
+        "hero_titulo": getattr(config, "cabanas_hero_titulo", None) or "Vive la experiencia de la Amazonía con privacidad",
+        "hero_parrafo": getattr(config, "cabanas_hero_parrafo", None) or "Cabañas rodeadas de naturaleza para disfrutar paz, comodidad y una conexión especial con el entorno.",
     }
 
     return render(request, "public/cabanas.html", contexto)
@@ -259,7 +267,7 @@ def cine_view(request):
         cliente_id = request.session.get("cliente_id")
 
         if not cliente_id:
-            messages.warning(request, "Debes iniciar sesiÃ³n para reservar.")
+            messages.warning(request, "Debes iniciar sesión para reservar.")
             return redirect("gestion:login")
 
         id_funcion = request.POST.get("id_funcion")
@@ -303,17 +311,21 @@ def cine_view(request):
         )
         return redirigir_segun_metodo_pago(reserva, metodo_pago)
 
+    config = ConfiguracionInicio.objects.first()
     contexto = {
         "funciones": funciones,
         "usuario": request.session.get("cliente_id"),
         "fondo_cine": _config_fondo("fondo_cine"),
+        "hero_kicker": getattr(config, "cine_hero_kicker", None) or "Cine Arahuana",
+        "hero_titulo": getattr(config, "cine_hero_titulo", None) or "Noches de cine bajo las estrellas",
+        "hero_parrafo": getattr(config, "cine_hero_parrafo", None) or "Disfruta de películas en un ambiente acogedor, rodeado de naturaleza, buena compañía y momentos especiales.",
     }
 
     return render(request, "public/cine.html", contexto)
 
 
 # ============================================================
-# RESORT DEL DÃA
+# RESORT DEL DÍA
 # ============================================================
 
 def resort_dia_view(request):
@@ -327,7 +339,7 @@ def resort_dia_view(request):
         cliente_id = request.session.get("cliente_id")
 
         if not cliente_id:
-            messages.warning(request, "Debes iniciar sesiÃ³n para reservar.")
+            messages.warning(request, "Debes iniciar sesión para reservar.")
             return redirect("gestion:login")
 
         id_resort_dia = request.POST.get("id_resort_dia")
@@ -382,15 +394,19 @@ def resort_dia_view(request):
 
         messages.success(
             request,
-            "Reserva de Resort del DÃ­a creada correctamente. Ahora puedes completar el pago."
+            "Reserva de Resort del Día creada correctamente. Ahora puedes completar el pago."
         )
         return redirigir_segun_metodo_pago(reserva, metodo_pago)
 
+    config = ConfiguracionInicio.objects.first()
     contexto = {
         "areas_resort": areas_resort,
         "paquetes": areas_resort,
         "usuario": request.session.get("cliente_id"),
         "fondo_resort": _config_fondo("fondo_resort"),
+        "hero_kicker": getattr(config, "resort_hero_kicker", None) or "Resort del día",
+        "hero_titulo": getattr(config, "resort_hero_titulo", None) or "Relájate y disfruta de un día perfecto",
+        "hero_parrafo": getattr(config, "resort_hero_parrafo", None) or "Accede a las áreas del resort para vivir bienestar, naturaleza, descanso y diversión en un solo lugar.",
     }
 
     return render(request, "public/resort_dia.html", contexto)

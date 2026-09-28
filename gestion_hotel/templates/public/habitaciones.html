@@ -28,14 +28,13 @@
     <div class="contenedor catalog-hero-content">
         <span class="ar-kicker">
             <i class="fa-solid fa-leaf"></i>
-            Habitaciones
+            {{ hero_kicker|default:"Habitaciones" }}
         </span>
 
-        <h1>Confort y descanso en plena naturaleza</h1>
+        <h1>{{ hero_titulo|default:"Confort y descanso en plena naturaleza" }}</h1>
 
         <p>
-            Espacios diseñados para tu bienestar, donde cada detalle te conecta
-            con la tranquilidad de la Amazonia.
+            {{ hero_parrafo|default:"Espacios diseñados para tu bienestar, donde cada detalle te conecta con la tranquilidad de la Amazonía." }}
         </p>
 
         <div class="hero-actions">
