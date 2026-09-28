@@ -48,6 +48,7 @@ from ..utils.validaciones import (
     validar_correo_cliente,
 )
 from ..services.reservations import (
+    calcular_precio_estadia,
     calcular_valores_reserva,
     cancelar_reservas_vencidas,
     convertir_decimal,
@@ -55,6 +56,7 @@ from ..services.reservations import (
     obtener_noches_por_programa,
     obtener_precio_tarifa,
     obtener_tipo_ocupacion_final,
+    resolver_programa_y_noches,
 )
 
 

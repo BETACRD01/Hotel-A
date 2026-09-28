@@ -13,7 +13,9 @@ PROGRAMA_HOSPEDAJE_CHOICES = [
     ('2D1N', '2 días / 1 noche'),
     ('3D2N', '3 días / 2 noches'),
     ('4D3N', '4 días / 3 noches'),
+    ('Personalizado', 'Personalizado / Otro'),
 ]
+
 
 TIPO_OCUPACION_CHOICES = [
     ('Total', 'Ocupación total'),

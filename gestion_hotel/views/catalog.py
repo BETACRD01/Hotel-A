@@ -24,12 +24,13 @@ def habitaciones_view(request):
         programa = request.POST.get("programa")
         tipo_ocupacion = "Total"
         fecha_ingreso = request.POST.get("fecha_ingreso")
+        fecha_salida = request.POST.get("fecha_salida")
         cantidad_personas = request.POST.get("cantidad_personas")
         observaciones = request.POST.get("observaciones", "")
         metodo_pago = obtener_metodo_pago_formulario(request)
 
-        if programa not in ["2D1N", "3D2N", "4D3N"]:
-            messages.error(request, "Debes seleccionar un programa de hospedaje vÃ¡lido.")
+        if not (programa or "").strip():
+            messages.error(request, "Debes ingresar o seleccionar un programa de hospedaje.")
             return redirect("gestion:habitaciones")
 
         try:
@@ -37,6 +38,17 @@ def habitaciones_view(request):
         except ValueError as error:
             messages.error(request, str(error))
             return redirect("gestion:habitaciones")
+
+        fecha_salida_obj = None
+        if fecha_salida:
+            try:
+                fecha_salida_obj = convertir_fecha_formulario(fecha_salida, "fecha de salida")
+                if fecha_salida_obj <= fecha_ingreso_obj:
+                    messages.error(request, "La fecha de salida debe ser posterior a la fecha de ingreso.")
+                    return redirect("gestion:habitaciones")
+            except ValueError as error:
+                messages.error(request, str(error))
+                return redirect("gestion:habitaciones")
 
         habitacion = get_object_or_404(
             Habitaciones,
@@ -64,19 +76,20 @@ def habitaciones_view(request):
             return redirect("gestion:habitaciones")
 
         tipo_ocupacion_final = obtener_tipo_ocupacion_final(habitacion, tipo_ocupacion)
-        precio_programa = convertir_decimal(
-            habitacion.obtener_precio_programa(programa, tipo_ocupacion)
+        programa_codigo, programa_guardar, noches, fecha_salida_obj = resolver_programa_y_noches(
+            programa, fecha_ingreso_obj, fecha_salida_obj
+        )
+
+        precio_programa = calcular_precio_estadia(
+            habitacion, programa_codigo, tipo_ocupacion_final, noches
         )
 
         if precio_programa <= 0:
             messages.error(
                 request,
-                "La habitación seleccionada no tiene configurado el precio para ese programa."
+                "No se pudo determinar el precio para el programa o las fechas seleccionadas."
             )
             return redirect("gestion:habitaciones")
-
-        noches = obtener_noches_por_programa(programa)
-        fecha_salida_obj = fecha_ingreso_obj + timedelta(days=noches)
 
         with transaction.atomic():
             reserva = Reservas.objects.create(
@@ -99,7 +112,7 @@ def habitaciones_view(request):
                 fecha_entrada=fecha_ingreso_obj,
                 fecha_salida=fecha_salida_obj,
                 precio_unitario=precio_programa,
-                programa=programa,
+                programa=programa_guardar,
                 tipo_ocupacion=tipo_ocupacion_final,
                 precio_programa=precio_programa,
                 cantidad_personas=cantidad_personas_int,
@@ -150,12 +163,13 @@ def cabanas_view(request):
         programa = request.POST.get("programa")
         tipo_ocupacion = "Total"
         fecha_ingreso = request.POST.get("fecha_ingreso")
+        fecha_salida = request.POST.get("fecha_salida")
         cantidad_personas = request.POST.get("cantidad_personas")
         observaciones = request.POST.get("observaciones", "")
         metodo_pago = obtener_metodo_pago_formulario(request)
 
-        if programa not in ["2D1N", "3D2N", "4D3N"]:
-            messages.error(request, "Debes seleccionar un programa de hospedaje válido.")
+        if not (programa or "").strip():
+            messages.error(request, "Debes ingresar o seleccionar un programa de hospedaje.")
             return redirect("gestion:cabanas")
 
         try:
@@ -163,6 +177,17 @@ def cabanas_view(request):
         except ValueError as error:
             messages.error(request, str(error))
             return redirect("gestion:cabanas")
+
+        fecha_salida_obj = None
+        if fecha_salida:
+            try:
+                fecha_salida_obj = convertir_fecha_formulario(fecha_salida, "fecha de salida")
+                if fecha_salida_obj <= fecha_ingreso_obj:
+                    messages.error(request, "La fecha de salida debe ser posterior a la fecha de ingreso.")
+                    return redirect("gestion:cabanas")
+            except ValueError as error:
+                messages.error(request, str(error))
+                return redirect("gestion:cabanas")
 
         cabana = get_object_or_404(
             Cabanas,
@@ -190,19 +215,20 @@ def cabanas_view(request):
             return redirect("gestion:cabanas")
 
         tipo_ocupacion_final = obtener_tipo_ocupacion_final(cabana, tipo_ocupacion)
-        precio_programa = convertir_decimal(
-            cabana.obtener_precio_programa(programa, tipo_ocupacion)
+        programa_codigo, programa_guardar, noches, fecha_salida_obj = resolver_programa_y_noches(
+            programa, fecha_ingreso_obj, fecha_salida_obj
+        )
+
+        precio_programa = calcular_precio_estadia(
+            cabana, programa_codigo, tipo_ocupacion_final, noches
         )
 
         if precio_programa <= 0:
             messages.error(
                 request,
-                "La cabaña seleccionada no tiene configurado el precio para ese programa."
+                "No se pudo determinar el precio para el programa o las fechas seleccionadas."
             )
             return redirect("gestion:cabanas")
-
-        noches = obtener_noches_por_programa(programa)
-        fecha_salida_obj = fecha_ingreso_obj + timedelta(days=noches)
 
         with transaction.atomic():
             reserva = Reservas.objects.create(
@@ -225,7 +251,7 @@ def cabanas_view(request):
                 fecha_entrada=fecha_ingreso_obj,
                 fecha_salida=fecha_salida_obj,
                 precio_unitario=precio_programa,
-                programa=programa,
+                programa=programa_guardar,
                 tipo_ocupacion=tipo_ocupacion_final,
                 precio_programa=precio_programa,
                 cantidad_personas=cantidad_personas_int,

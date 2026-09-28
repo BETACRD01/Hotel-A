@@ -162,6 +162,7 @@
                                         data-nombre="Cabaña {{ cabana.numero_cabana }}"
                                         data-tipo="{{ cabana.tipo_cabana|default:'Cabaña' }}"
                                         data-capacidad="{{ cabana.capacidad }}"
+                                        data-precio-noche="{{ cabana.precio_noche }}"
                                         data-secundaria-label="{{ cabana.get_tipo_ocupacion_secundaria_display }}"
                                         data-precio-2d1n-total="{{ cabana.precio_2d1n_total }}"
                                         data-precio-2d1n-secundaria="{{ cabana.precio_2d1n_secundaria }}"
@@ -251,12 +252,12 @@
 
                 <div class="public-form-group public-form-full">
                     <label for="modalPrograma">Programa de hospedaje</label>
-                    <select id="modalPrograma" name="programa" required>
-                        <option value="">Seleccione un programa</option>
-                        <option value="2D1N">2 días / 1 noche</option>
-                        <option value="3D2N">3 días / 2 noches</option>
-                        <option value="4D3N">4 días / 3 noches</option>
-                    </select>
+                    <input type="text" id="modalPrograma" name="programa" list="listaProgramasCabana" placeholder="Selecciona o escribe un programa (ej. 2 días / 1 noche)" required autocomplete="off">
+                    <datalist id="listaProgramasCabana">
+                        <option value="2 días / 1 noche"></option>
+                        <option value="3 días / 2 noches"></option>
+                        <option value="4 días / 3 noches"></option>
+                    </datalist>
                 </div>
 
                 <div class="public-form-group">
@@ -337,13 +338,29 @@
 
         let preciosServicio = {};
 
+        function normalizarCodigoPrograma(programa) {
+            if (!programa) return '';
+            const p = programa.trim().toUpperCase();
+            if (p.includes('2D1N') || (p.includes('2') && (p.includes('1') || p.includes('NOCHE')))) return '2D1N';
+            if (p.includes('3D2N') || (p.includes('3') && (p.includes('2') || p.includes('NOCHE')))) return '3D2N';
+            if (p.includes('4D3N') || (p.includes('4') && (p.includes('3') || p.includes('NOCHE')))) return '4D3N';
+            return programa.trim();
+        }
+
         function obtenerNochesPrograma(programa) {
-            const nochesPorPrograma = {
-                '2D1N': 1,
-                '3D2N': 2,
-                '4D3N': 3,
-            };
-            return nochesPorPrograma[programa] || 0;
+            if (!programa) return 0;
+            const cod = normalizarCodigoPrograma(programa);
+            if (cod === '2D1N') return 1;
+            if (cod === '3D2N') return 2;
+            if (cod === '4D3N') return 3;
+
+            const matchNoches = programa.match(/(\d+)\s*noche/i);
+            if (matchNoches) return parseInt(matchNoches[1], 10);
+            const matchDias = programa.match(/(\d+)\s*d[ií]a/i);
+            if (matchDias) return Math.max(1, parseInt(matchDias[1], 10) - 1);
+            const num = parseInt(programa, 10);
+            if (!isNaN(num) && num > 0) return num;
+            return 0;
         }
 
         function actualizarFechaSalida() {
@@ -376,11 +393,13 @@
             }
 
             if (diffDias === 1) {
-                programaSelect.value = '2D1N';
+                programaSelect.value = '2 días / 1 noche';
             } else if (diffDias === 2) {
-                programaSelect.value = '3D2N';
-            } else if (diffDias >= 3) {
-                programaSelect.value = '4D3N';
+                programaSelect.value = '3 días / 2 noches';
+            } else if (diffDias === 3) {
+                programaSelect.value = '4 días / 3 noches';
+            } else {
+                programaSelect.value = (diffDias + 1) + ' días / ' + diffDias + ' noches';
             }
             actualizarResumenTarifa();
         }
@@ -395,23 +414,39 @@
 
         function actualizarResumenTarifa() {
             const programa = programaSelect.value;
+            const cod = normalizarCodigoPrograma(programa);
 
-            if (!programa || !preciosServicio[programa]) {
-                resumenTarifa.innerHTML = 'Selecciona un programa o fecha para ver el precio.';
-                return;
+            let noches = obtenerNochesPrograma(programa);
+            if (fechaIngresoInput.value && fechaSalidaInput.value) {
+                const f1 = new Date(fechaIngresoInput.value + 'T00:00:00');
+                const f2 = new Date(fechaSalidaInput.value + 'T00:00:00');
+                const diff = Math.round((f2 - f1) / (1000 * 60 * 60 * 24));
+                if (diff > 0) noches = diff;
             }
 
-            const precio = formatearPrecio(preciosServicio[programa].total);
+            let precio = null;
+            if (preciosServicio[cod] && preciosServicio[cod].total) {
+                precio = formatearPrecio(preciosServicio[cod].total);
+            } else if (noches && preciosServicio.precioNoche && Number.parseFloat(preciosServicio.precioNoche) > 0) {
+                precio = (Number.parseFloat(preciosServicio.precioNoche) * noches).toFixed(2);
+            } else if (preciosServicio['4D3N'] && preciosServicio['4D3N'].total && noches && noches > 3) {
+                const base = Number.parseFloat(preciosServicio['4D3N'].total);
+                precio = ((base / 3) * noches).toFixed(2);
+            }
 
             if (!precio) {
-                resumenTarifa.innerHTML = 'No hay precio configurado para este programa.';
+                if (!programa && !fechaIngresoInput.value) {
+                    resumenTarifa.innerHTML = 'Escribe o selecciona un programa o fechas para ver el precio.';
+                } else {
+                    resumenTarifa.innerHTML = '<strong>Programa:</strong> ' + (programa || 'Personalizado') + '<br><em>Precio a confirmar según fechas seleccionadas.</em>';
+                }
                 return;
             }
 
             const anticipo = (Number.parseFloat(precio) / 2).toFixed(2);
 
             resumenTarifa.innerHTML =
-                '<strong>Programa:</strong> ' + programa + '<br>' +
+                '<strong>Programa:</strong> ' + (programa || cod || 'Personalizado') + '<br>' +
                 '<strong>Tipo:</strong> Ocupación total<br>' +
                 '<strong>Total:</strong> $' + precio + '<br>' +
                 '<strong>Anticipo mínimo 50%:</strong> $' + anticipo;
@@ -435,6 +470,7 @@
                     total: data.precio4d3nTotal,
                     secundaria: data.precio4d3nSecundaria,
                 },
+                precioNoche: data.precioNoche || 0,
             };
 
             if (programaSelect) {
@@ -483,6 +519,7 @@
                     nombre: boton.dataset.nombre,
                     tipo: boton.dataset.tipo,
                     capacidad: boton.dataset.capacidad,
+                    precioNoche: boton.getAttribute('data-precio-noche'),
                     precio2d1nTotal: boton.getAttribute('data-precio-2d1n-total'),
                     precio2d1nSecundaria: boton.getAttribute('data-precio-2d1n-secundaria'),
                     precio3d2nTotal: boton.getAttribute('data-precio-3d2n-total'),
@@ -494,6 +531,10 @@
         });
 
         if (programaSelect) {
+            programaSelect.addEventListener('input', function () {
+                actualizarFechaSalida();
+                actualizarResumenTarifa();
+            });
             programaSelect.addEventListener('change', function () {
                 actualizarFechaSalida();
                 actualizarResumenTarifa();
