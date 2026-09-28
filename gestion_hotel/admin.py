@@ -793,20 +793,54 @@ class ConfiguracionInicioAdmin(admin.ModelAdmin):
                 "sn_cta_parrafo",
             ),
         }),
-        ("Portadas del Catálogo (Habitaciones, Cabañas, Cine, Resort)", {
+        ("Catálogo - Habitaciones", {
             "fields": (
                 "habitaciones_hero_kicker",
                 "habitaciones_hero_titulo",
                 "habitaciones_hero_parrafo",
+                "imagen_habitaciones",
+                "imagen_habitaciones_preview",
+                "fondo_habitaciones",
+                "fondo_habitaciones_preview",
+            ),
+        }),
+        ("Catálogo - Cabañas", {
+            "fields": (
                 "cabanas_hero_kicker",
                 "cabanas_hero_titulo",
                 "cabanas_hero_parrafo",
+                "imagen_cabanas",
+                "imagen_cabanas_preview",
+                "fondo_cabanas",
+                "fondo_cabanas_preview",
+            ),
+        }),
+        ("Catálogo - Cine", {
+            "fields": (
                 "cine_hero_kicker",
                 "cine_hero_titulo",
                 "cine_hero_parrafo",
+                "imagen_cine",
+                "imagen_cine_preview",
+                "fondo_cine",
+                "fondo_cine_preview",
+            ),
+        }),
+        ("Catálogo - Resort del Día", {
+            "fields": (
                 "resort_hero_kicker",
                 "resort_hero_titulo",
                 "resort_hero_parrafo",
+                "imagen_resort",
+                "imagen_resort_preview",
+                "fondo_resort",
+                "fondo_resort_preview",
+            ),
+        }),
+        ("Fondo Principal (Hero de Inicio)", {
+            "fields": (
+                "imagen_hero",
+                "imagen_hero_preview",
             ),
         }),
         ("Datos bancarios para transferencias", {
@@ -817,32 +851,6 @@ class ConfiguracionInicioAdmin(admin.ModelAdmin):
                 "banco_1_titular",
                 "banco_1_identificacion",
                 "banco_1_correo",
-            ),
-        }),
-        ("Imágenes de las tarjetas del inicio", {
-            "fields": (
-                "imagen_habitaciones",
-                "imagen_habitaciones_preview",
-                "imagen_cabanas",
-                "imagen_cabanas_preview",
-                "imagen_cine",
-                "imagen_cine_preview",
-                "imagen_resort",
-                "imagen_resort_preview",
-            ),
-        }),
-        ("Fondos de las páginas", {
-            "fields": (
-                "imagen_hero",
-                "imagen_hero_preview",
-                "fondo_habitaciones",
-                "fondo_habitaciones_preview",
-                "fondo_cabanas",
-                "fondo_cabanas_preview",
-                "fondo_cine",
-                "fondo_cine_preview",
-                "fondo_resort",
-                "fondo_resort_preview",
             ),
         }),
     )

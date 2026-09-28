@@ -12,22 +12,22 @@
 <!-- ========================================== -->
 <!-- 1. PORTADAS DEL CATÁLOGO                   -->
 <!-- ========================================== -->
+<!-- ========================================== -->
+<!-- 1. PORTADAS DEL CATÁLOGO (SEPARADAS)      -->
+<!-- ========================================== -->
+
+<!-- HABITACIONES -->
 <div class="gerente-card" style="margin-bottom: 24px;">
     <div class="gerente-card-header">
-        <h3><i class="fa-solid fa-layer-group" style="margin-right: 8px; color: var(--gerente-primary);"></i> Portadas del Catálogo (Habitaciones, Cabañas, Cine, Resort)</h3>
+        <h3><i class="fa-solid fa-bed" style="margin-right: 8px; color: var(--gerente-primary);"></i> Portada del Catálogo: Habitaciones</h3>
         <p style="margin-top: 4px; color: var(--gerente-text-muted); font-size: 13px;">
-            Personaliza las etiquetas resaltadas (color naranja), títulos y descripciones de las cabeceras de cada catálogo público.
+            Personaliza la etiqueta naranja (kicker), el título principal y la descripción de la cabecera de Habitaciones.
         </p>
     </div>
     <div class="gerente-card-body">
         <form method="post" class="gerente-form">
             {% csrf_token %}
             <input type="hidden" name="seccion" value="portadas">
-
-            <!-- HABITACIONES -->
-            <h4 style="margin: 0 0 12px; color: var(--gerente-primary); font-size: 15px;">
-                <i class="fa-solid fa-bed" style="margin-right: 6px;"></i> Habitaciones
-            </h4>
             <div class="gerente-form-grid" style="margin-bottom: 20px;">
                 <div class="gerente-form-field">
                     <label for="habitaciones_hero_kicker">Etiqueta (kicker resaltado naranja):</label>
@@ -44,13 +44,28 @@
                     <textarea id="habitaciones_hero_parrafo" name="habitaciones_hero_parrafo" class="gerente-input" rows="2">{{ config.habitaciones_hero_parrafo|default:'Espacios diseñados para tu bienestar, donde cada detalle te conecta con la tranquilidad de la Amazonía.' }}</textarea>
                 </div>
             </div>
+            <div class="gerente-form-actions">
+                <button type="submit" class="badge badge-success gerente-action-button">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    Guardar portada de Habitaciones
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
 
-            <hr style="margin: 20px 0; border-color: var(--gerente-border);">
-
-            <!-- CABAÑAS -->
-            <h4 style="margin: 0 0 12px; color: var(--gerente-primary); font-size: 15px;">
-                <i class="fa-solid fa-house-chimney" style="margin-right: 6px;"></i> Cabañas
-            </h4>
+<!-- CABAÑAS -->
+<div class="gerente-card" style="margin-bottom: 24px;">
+    <div class="gerente-card-header">
+        <h3><i class="fa-solid fa-house-chimney" style="margin-right: 8px; color: var(--gerente-primary);"></i> Portada del Catálogo: Cabañas</h3>
+        <p style="margin-top: 4px; color: var(--gerente-text-muted); font-size: 13px;">
+            Personaliza la etiqueta naranja (kicker), el título principal y la descripción de la cabecera de Cabañas.
+        </p>
+    </div>
+    <div class="gerente-card-body">
+        <form method="post" class="gerente-form">
+            {% csrf_token %}
+            <input type="hidden" name="seccion" value="portadas">
             <div class="gerente-form-grid" style="margin-bottom: 20px;">
                 <div class="gerente-form-field">
                     <label for="cabanas_hero_kicker">Etiqueta (kicker resaltado naranja):</label>
@@ -67,13 +82,28 @@
                     <textarea id="cabanas_hero_parrafo" name="cabanas_hero_parrafo" class="gerente-input" rows="2">{{ config.cabanas_hero_parrafo|default:'Cabañas rodeadas de naturaleza para disfrutar paz, comodidad y una conexión especial con el entorno.' }}</textarea>
                 </div>
             </div>
+            <div class="gerente-form-actions">
+                <button type="submit" class="badge badge-success gerente-action-button">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    Guardar portada de Cabañas
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
 
-            <hr style="margin: 20px 0; border-color: var(--gerente-border);">
-
-            <!-- CINE -->
-            <h4 style="margin: 0 0 12px; color: var(--gerente-primary); font-size: 15px;">
-                <i class="fa-solid fa-film" style="margin-right: 6px;"></i> Cine Arahuana
-            </h4>
+<!-- CINE ARAHUANA -->
+<div class="gerente-card" style="margin-bottom: 24px;">
+    <div class="gerente-card-header">
+        <h3><i class="fa-solid fa-film" style="margin-right: 8px; color: var(--gerente-primary);"></i> Portada del Catálogo: Cine Arahuana</h3>
+        <p style="margin-top: 4px; color: var(--gerente-text-muted); font-size: 13px;">
+            Personaliza la etiqueta naranja (kicker), el título principal y la descripción de la cabecera de Cine.
+        </p>
+    </div>
+    <div class="gerente-card-body">
+        <form method="post" class="gerente-form">
+            {% csrf_token %}
+            <input type="hidden" name="seccion" value="portadas">
             <div class="gerente-form-grid" style="margin-bottom: 20px;">
                 <div class="gerente-form-field">
                     <label for="cine_hero_kicker">Etiqueta (kicker resaltado naranja):</label>
@@ -90,13 +120,28 @@
                     <textarea id="cine_hero_parrafo" name="cine_hero_parrafo" class="gerente-input" rows="2">{{ config.cine_hero_parrafo|default:'Disfruta de películas en un ambiente acogedor, rodeado de naturaleza, buena compañía y momentos especiales.' }}</textarea>
                 </div>
             </div>
+            <div class="gerente-form-actions">
+                <button type="submit" class="badge badge-success gerente-action-button">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    Guardar portada de Cine
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
 
-            <hr style="margin: 20px 0; border-color: var(--gerente-border);">
-
-            <!-- RESORT DEL DÍA -->
-            <h4 style="margin: 0 0 12px; color: var(--gerente-primary); font-size: 15px;">
-                <i class="fa-solid fa-sun" style="margin-right: 6px;"></i> Resort del Día
-            </h4>
+<!-- RESORT DEL DÍA -->
+<div class="gerente-card" style="margin-bottom: 24px;">
+    <div class="gerente-card-header">
+        <h3><i class="fa-solid fa-sun" style="margin-right: 8px; color: var(--gerente-primary);"></i> Portada del Catálogo: Resort del Día</h3>
+        <p style="margin-top: 4px; color: var(--gerente-text-muted); font-size: 13px;">
+            Personaliza la etiqueta naranja (kicker), el título principal y la descripción de la cabecera de Resort del Día.
+        </p>
+    </div>
+    <div class="gerente-card-body">
+        <form method="post" class="gerente-form">
+            {% csrf_token %}
+            <input type="hidden" name="seccion" value="portadas">
             <div class="gerente-form-grid" style="margin-bottom: 20px;">
                 <div class="gerente-form-field">
                     <label for="resort_hero_kicker">Etiqueta (kicker resaltado naranja):</label>
@@ -113,11 +158,10 @@
                     <textarea id="resort_hero_parrafo" name="resort_hero_parrafo" class="gerente-input" rows="2">{{ config.resort_hero_parrafo|default:'Accede a las áreas del resort para vivir bienestar, naturaleza, descanso y diversión en un solo lugar.' }}</textarea>
                 </div>
             </div>
-
             <div class="gerente-form-actions">
                 <button type="submit" class="badge badge-success gerente-action-button">
                     <i class="fa-solid fa-floppy-disk"></i>
-                    Guardar portadas del catálogo
+                    Guardar portada de Resort del Día
                 </button>
             </div>
         </form>

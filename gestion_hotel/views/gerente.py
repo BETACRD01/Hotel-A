@@ -727,12 +727,15 @@ def gerente_sobre_nosotros_view(request):
                     setattr(config, campo, request.POST.get(campo, "").strip())
             config.save(update_fields=campos_sobre_nosotros)
             messages.success(request, "Contenido de 'Sobre nosotros' actualizado correctamente.")
-        elif seccion == "portadas":
+        elif seccion.startswith("portadas"):
+            campos_modificados = []
             for campo in campos_portadas_catalogo:
                 if campo in request.POST:
                     setattr(config, campo, request.POST.get(campo, "").strip())
-            config.save(update_fields=campos_portadas_catalogo)
-            messages.success(request, "Portadas del catálogo actualizadas correctamente.")
+                    campos_modificados.append(campo)
+            if campos_modificados:
+                config.save(update_fields=campos_modificados)
+            messages.success(request, "Portada del catálogo actualizada correctamente.")
         else:
             for campo in campos_bancarios:
                 if campo in request.POST:

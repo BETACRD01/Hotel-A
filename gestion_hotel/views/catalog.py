@@ -51,7 +51,7 @@ def habitaciones_view(request):
         )
 
         try:
-            cantidad_personas_int = obtener_entero_positivo(cantidad_personas, "personas", minimo=5)
+            cantidad_personas_int = obtener_entero_positivo(cantidad_personas, "personas", minimo=1)
         except ValueError as error:
             messages.error(request, str(error))
             return redirect("gestion:habitaciones")
@@ -59,7 +59,7 @@ def habitaciones_view(request):
         if cantidad_personas_int > habitacion.capacidad:
             messages.error(
                 request,
-                f"La habitaciÃ³n seleccionada permite mÃ¡ximo {habitacion.capacidad} persona(s)."
+                f"La habitación seleccionada permite máximo {habitacion.capacidad} persona(s)."
             )
             return redirect("gestion:habitaciones")
 
@@ -71,7 +71,7 @@ def habitaciones_view(request):
         if precio_programa <= 0:
             messages.error(
                 request,
-                "La habitaciÃ³n seleccionada no tiene configurado el precio para ese programa."
+                "La habitación seleccionada no tiene configurado el precio para ese programa."
             )
             return redirect("gestion:habitaciones")
 
@@ -177,7 +177,7 @@ def cabanas_view(request):
         )
 
         try:
-            cantidad_personas_int = obtener_entero_positivo(cantidad_personas, "personas", minimo=5)
+            cantidad_personas_int = obtener_entero_positivo(cantidad_personas, "personas", minimo=1)
         except ValueError as error:
             messages.error(request, str(error))
             return redirect("gestion:cabanas")

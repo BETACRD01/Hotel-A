@@ -161,6 +161,7 @@
                                         data-id="{{ cabana.id_cabana }}"
                                         data-nombre="Cabaña {{ cabana.numero_cabana }}"
                                         data-tipo="{{ cabana.tipo_cabana|default:'Cabaña' }}"
+                                        data-capacidad="{{ cabana.capacidad }}"
                                         data-secundaria-label="{{ cabana.get_tipo_ocupacion_secundaria_display }}"
                                         data-precio-2d1n-total="{{ cabana.precio_2d1n_total }}"
                                         data-precio-2d1n-secundaria="{{ cabana.precio_2d1n_secundaria }}"
@@ -266,7 +267,7 @@
 
                 <div class="public-form-group">
                     <label for="modalCantidadPersonas">Cantidad de personas</label>
-                    <input type="number" id="modalCantidadPersonas" name="cantidad_personas" min="5" value="5" required>
+                    <input type="number" id="modalCantidadPersonas" name="cantidad_personas" min="1" value="1" required>
                 </div>
 
                 <div class="public-form-group">
@@ -276,7 +277,7 @@
 
                 <div class="public-form-group">
                     <label for="modalFechaSalida">Fecha de salida</label>
-                    <input type="date" id="modalFechaSalida" name="fecha_salida" readonly>
+                    <input type="date" id="modalFechaSalida" name="fecha_salida" required>
                 </div>
 
                 <div class="public-form-group public-form-full">
@@ -351,13 +352,37 @@
             const noches = obtenerNochesPrograma(programa);
 
             if (!fechaIngreso || !noches) {
-                fechaSalidaInput.value = '';
                 return;
             }
 
             const fecha = new Date(fechaIngreso + 'T00:00:00');
             fecha.setDate(fecha.getDate() + noches);
             fechaSalidaInput.value = fecha.toISOString().slice(0, 10);
+        }
+
+        function sincronizarDesdeFechaSalida() {
+            const fechaIngreso = fechaIngresoInput.value;
+            const fechaSalida = fechaSalidaInput.value;
+            if (!fechaIngreso || !fechaSalida) return;
+
+            const f1 = new Date(fechaIngreso + 'T00:00:00');
+            const f2 = new Date(fechaSalida + 'T00:00:00');
+            const diffDias = Math.round((f2 - f1) / (1000 * 60 * 60 * 24));
+
+            if (diffDias <= 0) {
+                alert('La fecha de salida debe ser posterior a la fecha de ingreso.');
+                actualizarFechaSalida();
+                return;
+            }
+
+            if (diffDias === 1) {
+                programaSelect.value = '2D1N';
+            } else if (diffDias === 2) {
+                programaSelect.value = '3D2N';
+            } else if (diffDias >= 3) {
+                programaSelect.value = '4D3N';
+            }
+            actualizarResumenTarifa();
         }
 
         function formatearPrecio(valor) {
@@ -370,10 +395,9 @@
 
         function actualizarResumenTarifa() {
             const programa = programaSelect.value;
-            actualizarFechaSalida();
 
             if (!programa || !preciosServicio[programa]) {
-                resumenTarifa.innerHTML = 'Selecciona un programa para ver el precio.';
+                resumenTarifa.innerHTML = 'Selecciona un programa o fecha para ver el precio.';
                 return;
             }
 
@@ -421,17 +445,22 @@
                 tipoOcupacionSelect.value = 'Total';
             }
 
+            const maxCap = parseInt(data.capacidad, 10) || 10;
             if (cantidadPersonasInput) {
-                cantidadPersonasInput.value = '5';
-                cantidadPersonasInput.min = '5';
+                cantidadPersonasInput.value = '1';
+                cantidadPersonasInput.min = '1';
+                cantidadPersonasInput.max = String(maxCap);
             }
 
+            const hoy = new Date().toISOString().slice(0, 10);
             if (fechaIngresoInput) {
                 fechaIngresoInput.value = '';
+                fechaIngresoInput.min = hoy;
             }
 
             if (fechaSalidaInput) {
                 fechaSalidaInput.value = '';
+                fechaSalidaInput.min = hoy;
             }
 
             actualizarResumenTarifa();
@@ -453,6 +482,7 @@
                     id: boton.dataset.id,
                     nombre: boton.dataset.nombre,
                     tipo: boton.dataset.tipo,
+                    capacidad: boton.dataset.capacidad,
                     precio2d1nTotal: boton.getAttribute('data-precio-2d1n-total'),
                     precio2d1nSecundaria: boton.getAttribute('data-precio-2d1n-secundaria'),
                     precio3d2nTotal: boton.getAttribute('data-precio-3d2n-total'),
@@ -464,7 +494,10 @@
         });
 
         if (programaSelect) {
-            programaSelect.addEventListener('change', actualizarResumenTarifa);
+            programaSelect.addEventListener('change', function () {
+                actualizarFechaSalida();
+                actualizarResumenTarifa();
+            });
         }
 
         if (tipoOcupacionSelect) {
@@ -472,7 +505,19 @@
         }
 
         if (fechaIngresoInput) {
-            fechaIngresoInput.addEventListener('change', actualizarResumenTarifa);
+            fechaIngresoInput.addEventListener('change', function () {
+                if (fechaIngresoInput.value) {
+                    const f = new Date(fechaIngresoInput.value + 'T00:00:00');
+                    f.setDate(f.getDate() + 1);
+                    fechaSalidaInput.min = f.toISOString().slice(0, 10);
+                }
+                actualizarFechaSalida();
+                actualizarResumenTarifa();
+            });
+        }
+
+        if (fechaSalidaInput) {
+            fechaSalidaInput.addEventListener('change', sincronizarDesdeFechaSalida);
         }
 
         if (cerrarBoton) {
