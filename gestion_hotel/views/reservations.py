@@ -3,14 +3,21 @@
 from .common import *
 
 def mis_reservas_view(request):
-    """Lista las reservas activas del cliente y resume las que quedaron ocultas por cancelacion."""
-
+    """
+    Lista las reservas del cliente autenticado y resume pagos pendientes.
+    
+    ¿Qué hace esta vista?
+    1. Ejecuta cancelar_reservas_vencidas() para limpiar automáticamente reservas con > 24h sin pago.
+    2. Valida que el cliente esté autenticado en la sesión.
+    3. Carga todas las reservas del cliente con sus relaciones optimizadas (prefetch_related).
+    4. Separa las reservas con pago pendiente para avisarle al usuario su fecha límite.
+    """
     cancelar_reservas_vencidas()
 
     cliente_id = request.session.get("cliente_id")
 
     if not cliente_id:
-        messages.warning(request, "Debes iniciar sesiÃ³n para ver tus reservas.")
+        messages.warning(request, "Debes iniciar sesión para ver tus reservas.")
         return redirect("gestion:login")
 
     reservas_base = Reservas.objects.filter(
@@ -43,13 +50,20 @@ def mis_reservas_view(request):
 
 def cancelar_reserva_view(request, id_reserva):
     """
-    Cancela una reserva propia del cliente autenticado mediante POST.
+    Cancela una reserva a petición del cliente y LIBERA inmediatamente la habitación o cabaña.
+    
+    Flujo:
+    1. Verifica que la solicitud sea POST y provenga del cliente dueño de la reserva.
+    2. Comprueba que la reserva esté en estado cancelable ('Pendiente' o 'Confirmada').
+    3. Cambia su estado a 'Cancelada' y anula el pago pendiente.
+    4. Invoca `actualizar_estados_hospedaje()`, lo cual regresa la habitación/cabaña
+       al estado 'Disponible' para que otros usuarios puedan reservarla.
     """
     cliente_id = request.session.get("cliente_id") or request.session.get("usuario_id")
     usuario_rol = request.session.get("usuario_rol")
 
     if not cliente_id or not usuario_rol:
-        messages.error(request, "Debe iniciar sesiÃ³n para continuar.")
+        messages.error(request, "Debe iniciar sesión para continuar.")
         return redirect("gestion:login")
 
     if usuario_rol != "cliente":
@@ -60,7 +74,7 @@ def cancelar_reserva_view(request, id_reserva):
         cliente = Cliente.objects.get(id_cliente=cliente_id, activo=True)
     except Cliente.DoesNotExist:
         request.session.flush()
-        messages.error(request, "Debe iniciar sesiÃ³n para continuar.")
+        messages.error(request, "Debe iniciar sesión para continuar.")
         return redirect("gestion:login")
 
     if request.method != "POST":
@@ -77,11 +91,14 @@ def cancelar_reserva_view(request, id_reserva):
         messages.error(request, "No puede cancelar esta reserva.")
         return redirect("gestion:mis_reservas")
 
+    # Cancelación de la reserva y anulación de pago
     reserva.estado_reserva = "Cancelada"
     reserva.estado_pago = "Anulado"
     reserva.fecha_cancelacion = timezone.now()
     reserva.motivo_cancelacion = "Cancelada por el cliente desde el sistema."
     reserva.save(update_fields=["estado_reserva", "estado_pago", "fecha_cancelacion", "motivo_cancelacion"])
+
+    # LIBERACIÓN AUTOMÁTICA: La habitación o cabaña vuelve a estar Disponible
     actualizar_estados_hospedaje()
 
     messages.success(request, "Reserva cancelada correctamente.")

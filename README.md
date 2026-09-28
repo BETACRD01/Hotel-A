@@ -11,54 +11,35 @@ Sistema web en Django para gestionar la operacion del hotel Arahuana Eco-Resort 
 - Django REST Framework
 - HTML, CSS y JavaScript
 
-## Arquitectura
+## 📖 Manual del Sistema y Documentación
 
-El proyecto conserva una estructura Django simple y progresiva:
+Para una explicación exhaustiva paso a paso de cada módulo, flujo de reservas, base de datos y comandos de despliegue, consulta el:
+👉 **[MANUAL_DEL_SISTEMA.md](MANUAL_DEL_SISTEMA.md)**
 
-```text
-arahuana_resort/
-  settings.py          Configuracion principal por variables de entorno
-  urls.py              URL raiz del proyecto
-  wsgi.py / asgi.py
+### ¿Qué hace cada parte del sistema?
 
-gestion_hotel/
-  admin.py             Configuracion del admin/Jazzmin
-  forms.py             Formularios de registro, login y admin
-  middleware.py        Redirecciones del gerente/admin
-  models.py            Entidades del dominio hotelero
-  services/            Logica de negocio reutilizable
-    reservations.py    Calculos y cancelacion automatica de reservas
-  urls.py              Rutas publicas, cliente, pagos y gerente
-  validators.py        Validaciones de contrasena
-  utils/               Validaciones reutilizables
-  views/
-    common.py          Imports y utilidades compartidas por vistas
-    public.py          Inicio y sobre nosotros
-    catalog.py         Catalogos y reservas publicas
-    auth.py            Login, registro y recuperacion de contrasena
-    client.py          Panel del cliente y mis reservas
-    reservations.py    Mis reservas y cancelacion de reservas
-    payments.py        Seleccion y registro de pagos
-    gerente.py         Panel gerencial y formularios de gestion
-  templates/
-    base.html          Layout publico base
-    auth/              Login, registro y recuperacion de contrasena
-    client/            Panel del cliente, dashboard y mis reservas
-    payments/          Seleccion de pago y comprobantes de transferencia
-    public/            Inicio, catalogos y paginas publicas
-    gerente/           Layout y pantallas del panel gerencial
-    admin/             Overrides puntuales del admin Django
-  static/
-    css/               Estilos publicos, gerente y admin
-    js/                Comportamiento global de UI
-    img/               Imagenes estaticas del sistema
-  management/commands/ Comandos operativos
-  tests.py             Pruebas existentes
-
-media/                 Imagenes y archivos cargados por el sistema
-```
-
-La refactorizacion mantiene la interfaz publica `gestion_hotel.views`, por lo que las URLs existentes siguen importando las vistas de la misma forma.
+- **`arahuana_resort/` (Configuración central):** Controla la configuración global de Django (`settings.py`), conexiones a PostgreSQL, variables de entorno y enrutamiento principal de URLs (`urls.py`).
+- **`gestion_hotel/models.py` (Base de datos):** Define las tablas del sistema:
+  - `Cliente`: Registro de clientes, administradores y validación de Cédula/RUC.
+  - `Habitaciones` y `Cabanas`: Inventario físico con precios por programa (2D1N, 3D2N, 4D3N), precios por noche y estado (`Disponible`, `Reservada`, `Mantenimiento`, `Inactiva`).
+  - `Reservas`: Cabecera de la transacción con fechas, estados (`Pendiente`, `Confirmada`, `Cancelada`) y estados de pago (`Pendiente`, `En revision`, `Pagado`).
+  - `DetalleHabitaciones` / `DetalleCabanas`: Fechas específicas de estancia por unidad, programa contratado y subtotal.
+  - `PagoReserva`: Registro de transferencias bancarias y subida del comprobante.
+- **`gestion_hotel/services/reservations.py` (Lógica de negocio):**
+  - `resolver_programa_y_noches`: Interpreta programas estándar (2D1N, 3D2N, 4D3N) o personalizados escritos libremente por el usuario.
+  - `calcular_precio_estadia`: Calcula la tarifa según el programa o la cantidad de noches.
+  - `actualizar_estados_hospedaje`: **Sincronizador automático** que pasa a `'Reservada'` cualquier habitación o cabaña con reservas activas, y la regresa a `'Disponible'` cuando concluye o se cancela.
+  - `cancelar_reservas_vencidas`: Tarea que cancela automáticamente reservas que superen 24 horas sin pago y libera las unidades.
+- **`gestion_hotel/views/` (Controladores y vistas):**
+  - `catalog.py`: Presenta los catálogos públicos y procesa reservas de habitaciones y cabañas, bloqueando solicitudes duplicadas o solapadas.
+  - `reservations.py`: Panel "Mis Reservas" del cliente y cancelación con liberación inmediata de habitación.
+  - `payments.py`: Formulario para registrar el comprobante de transferencia y enviarlo a revisión.
+  - `gerente.py`: Panel gerencial para validar pagos, ver reportes e inventario.
+  - `auth.py`: Autenticación, registro, login y restablecimiento de contraseña.
+- **`gestion_hotel/templates/` y `static/` (Interfaz visual):**
+  - Catálogo con insignias dinámicas (`status-disponible` en verde, `status-reservada` en rojo).
+  - Bloqueo visual con botón desactivado `"No disponible"` para evitar reservas duplicadas.
+  - Modal con `<input list="datalist">` para elegir o escribir libremente el programa de hospedaje.
 
 ## Modulos Funcionales
 

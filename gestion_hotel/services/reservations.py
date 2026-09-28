@@ -43,12 +43,23 @@ def obtener_noches_por_programa(programa):
 def resolver_programa_y_noches(programa, fecha_ingreso_obj, fecha_salida_obj=None):
     """
     Normaliza el programa escrito o seleccionado y resuelve la cantidad de noches y fecha de salida.
-    Retorna (programa_codigo, programa_guardar, noches, fecha_salida_obj).
+    
+    ¿Qué hace esta función?
+    1. Si el usuario eligió o escribió un programa clásico ('2D1N', '3D2N', '4D3N'),
+       identifica las noches base (1, 2 o 3 noches).
+    2. Si el usuario escribió un texto libre (ej: '5 noches', 'Plan Romántico 3 días'),
+       extrae la cantidad de noches o deja 'Personalizado'.
+    3. Si el usuario proporcionó una fecha de salida posterior a la de ingreso,
+       calcula las noches reales por diferencia de fechas.
+    4. Si no proporcionó fecha de salida, la calcula sumando las noches base a la fecha de ingreso.
+    
+    Retorna: (programa_codigo, programa_guardar, noches, fecha_salida_obj)
     """
 
     p = (programa or "").strip()
     p_upper = p.upper()
 
+    # Detección de programas oficiales
     programa_codigo = None
     if p_upper == "2D1N" or ("2" in p_upper and ("1" in p_upper or "NOCHE" in p_upper)):
         programa_codigo = "2D1N"
@@ -63,10 +74,12 @@ def resolver_programa_y_noches(programa, fecha_ingreso_obj, fecha_salida_obj=Non
         programa_guardar = "4D3N"
         noches_base = 3
     else:
+        # Texto libre / programa personalizado escrito por el usuario
         programa_codigo = None
         programa_guardar = p[:20] if p else "Personalizado"
         noches_base = obtener_noches_por_programa(p)
 
+    # Cálculo dinámico de fecha de salida y noches
     if fecha_salida_obj and fecha_salida_obj > fecha_ingreso_obj:
         noches = (fecha_salida_obj - fecha_ingreso_obj).days
     else:
@@ -77,7 +90,14 @@ def resolver_programa_y_noches(programa, fecha_ingreso_obj, fecha_salida_obj=Non
 
 
 def calcular_precio_estadia(servicio, programa_codigo, tipo_ocupacion, noches):
-    """Calcula el precio del hospedaje segun el programa o noches personalizadas."""
+    """
+    Calcula el precio del hospedaje según el programa o noches personalizadas.
+    
+    Orden de prioridad para determinar la tarifa:
+    1. Si es un programa fijo (2D1N, 3D2N, 4D3N), usa el precio configurado en la habitación/cabaña.
+    2. Si tiene precio por noche configurado, multiplica precio_noche * cantidad de noches.
+    3. Si no tiene precio por noche pero sí tarifa de programa, prorratea proporcionalmente.
+    """
 
     if programa_codigo:
         precio = convertir_decimal(servicio.obtener_precio_programa(programa_codigo, tipo_ocupacion))
@@ -139,8 +159,15 @@ def calcular_valores_reserva(reserva):
 
 def cancelar_reservas_vencidas():
     """
-    Cancela automaticamente reservas pendientes o confirmadas cuando vence
-    el plazo de pago de 24 horas desde su registro.
+    Cancela automáticamente reservas pendientes cuando vence el plazo de pago (24 horas).
+    
+    ¿Qué hace esta función?
+    1. Busca reservas en estado 'Pendiente' o 'Confirmada' sin comprobante aprobado
+       cuya fecha de creación sea mayor a 24 horas.
+    2. Cambia su estado a 'Cancelada' y anula el pago.
+    3. LLAMA a `actualizar_estados_hospedaje()` para que las habitaciones o cabañas
+       que estaban bloqueadas por estas reservas vencidas queden inmediatamente
+       liberadas y disponibles para otros clientes.
     """
     limite_24h = timezone.now() - timedelta(days=1)
     vencidas = Reservas.objects.filter(
@@ -163,18 +190,27 @@ def cancelar_reservas_vencidas():
             fecha_cancelacion=timezone.now(),
             motivo_cancelacion="Cancelada automaticamente por vencer el plazo de pago de 24 horas.",
         )
+        # Al cancelar reservas vencidas, liberamos automáticamente el estado de las habitaciones
         actualizar_estados_hospedaje()
     return total
 
 
 def actualizar_estados_hospedaje():
     """
-    Sincroniza el estado (Disponible / Reservada) de Habitaciones y Cabanas
-    segun tengan reservas activas (Pendiente o Confirmada).
-    Conserva estados manuales como Mantenimiento o Inactiva.
+    SINCRONIZADOR DE DISPONIBILIDAD (Evita doble reserva en tiempo real).
+    
+    ¿Qué hace esta función?
+    1. Recorre todas las Habitaciones y Cabañas activas.
+    2. Respeta estados de mantenimiento manual ('Mantenimiento' o 'Inactiva') configurados por el administrador.
+    3. Si la unidad tiene al menos una reserva activa ('Pendiente' o 'Confirmada'):
+       -> Su estado pasa a 'Reservada' (insignia roja y botón deshabilitado en el catálogo).
+    4. Si NO tiene reservas activas (o sus reservas ya fueron canceladas o concluyeron):
+       -> Su estado pasa a 'Disponible' (insignia verde y botón de reserva activo).
+    5. Guarda el nuevo estado únicamente si cambió, optimizando las escrituras en la base de datos.
     """
     from gestion_hotel.models import Habitaciones, Cabanas, DetalleHabitaciones, DetalleCabanas
 
+    # 1. Sincronizar Habitaciones
     for hab in Habitaciones.objects.filter(activo=True):
         if hab.estado in ["Mantenimiento", "Inactiva"]:
             continue
@@ -188,6 +224,7 @@ def actualizar_estados_hospedaje():
             hab.estado = nuevo_estado
             hab.save(update_fields=["estado"])
 
+    # 2. Sincronizar Cabañas
     for cab in Cabanas.objects.filter(activo=True):
         if cab.estado in ["Mantenimiento", "Inactiva"]:
             continue

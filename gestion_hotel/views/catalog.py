@@ -7,6 +7,9 @@ from .payments import obtener_metodo_pago_formulario, redirigir_segun_metodo_pag
 def habitaciones_view(request):
     """Muestra habitaciones disponibles y procesa reservas de hospedaje."""
 
+    # PASO 1: Mantenimiento y sincronización de disponibilidad
+    # - Cancela automáticamente reservas que superaron las 24h sin pagarse.
+    # - Sincroniza el estado de las habitaciones (Disponible / Reservada) según reservas activas.
     cancelar_reservas_vencidas()
     actualizar_estados_hospedaje()
 
@@ -15,12 +18,15 @@ def habitaciones_view(request):
     ).order_by("numero_habitacion")
 
     if request.method == "POST":
+        # PASO 2: Validación de sesión del usuario
+        # Solo clientes autenticados con sesión activa pueden reservar.
         cliente_id = request.session.get("cliente_id")
 
         if not cliente_id:
             messages.warning(request, "Debes iniciar sesión para reservar.")
             return redirect("gestion:login")
 
+        # PASO 3: Obtención de parámetros del formulario
         id_habitacion = request.POST.get("id_habitacion")
         programa = request.POST.get("programa")
         tipo_ocupacion = "Total"
@@ -30,10 +36,12 @@ def habitaciones_view(request):
         observaciones = request.POST.get("observaciones", "")
         metodo_pago = obtener_metodo_pago_formulario(request)
 
+        # Validación del programa de hospedaje (escrito manualmente o seleccionado)
         if not (programa or "").strip():
             messages.error(request, "Debes ingresar o seleccionar un programa de hospedaje.")
             return redirect("gestion:habitaciones")
 
+        # Validación y conversión de fechas
         try:
             fecha_ingreso_obj = convertir_fecha_formulario(fecha_ingreso, "fecha de ingreso")
         except ValueError as error:
@@ -57,6 +65,9 @@ def habitaciones_view(request):
             activo=True
         )
 
+        # PASO 4: RESTRICCIÓN DE DOBLE RESERVA (Regla de Negocio)
+        # Si la habitación no tiene estado 'Disponible' (ej. Reservada, Mantenimiento, Ocupada),
+        # se bloquea la solicitud para que otro usuario no pueda reservarla.
         if habitacion.estado != "Disponible":
             messages.error(
                 request,
@@ -70,6 +81,7 @@ def habitaciones_view(request):
             activo=True
         )
 
+        # Validación de capacidad de huéspedes permitidos
         try:
             cantidad_personas_int = obtener_entero_positivo(cantidad_personas, "personas", minimo=1)
         except ValueError as error:
@@ -84,11 +96,15 @@ def habitaciones_view(request):
             return redirect("gestion:habitaciones")
 
         tipo_ocupacion_final = obtener_tipo_ocupacion_final(habitacion, tipo_ocupacion)
+
+        # PASO 5: Resolución de programa y cálculo de fechas/noches
+        # Permite programas estándar (2D1N, 3D2N, 4D3N) o personalizados con cálculo dinámico.
         programa_codigo, programa_guardar, noches, fecha_salida_obj = resolver_programa_y_noches(
             programa, fecha_ingreso_obj, fecha_salida_obj
         )
 
-        # Restricción contra doble reserva: verificar si ya existe reserva activa solapada
+        # PASO 6: RESTRICCIÓN POR SOLAPAMIENTO DE FECHAS
+        # Verifica que ninguna reserva activa ('Pendiente' o 'Confirmada') se cruce con las fechas solicitadas.
         solapamiento = DetalleHabitaciones.objects.filter(
             id_habitacion=habitacion,
             id_reserva__estado_reserva__in=["Pendiente", "Confirmada"],
@@ -103,6 +119,7 @@ def habitaciones_view(request):
             )
             return redirect("gestion:habitaciones")
 
+        # Cálculo del precio total según tarifa del programa o tarifa por noche
         precio_programa = calcular_precio_estadia(
             habitacion, programa_codigo, tipo_ocupacion_final, noches
         )
@@ -114,6 +131,9 @@ def habitaciones_view(request):
             )
             return redirect("gestion:habitaciones")
 
+        # PASO 7: REGISTRO DE LA RESERVA (Transacción Atómica)
+        # Se asegura que la cabecera (Reservas), el detalle (DetalleHabitaciones)
+        # y el cambio de estado a 'Reservada' ocurran de manera indivisible.
         with transaction.atomic():
             reserva = Reservas.objects.create(
                 id_cliente=cliente,
@@ -141,11 +161,13 @@ def habitaciones_view(request):
                 cantidad_personas=cantidad_personas_int,
             )
 
+            # Inmediatamente cambiamos el estado para que nadie más la reserve
             habitacion.estado = "Reservada"
             habitacion.save(update_fields=["estado"])
 
             calcular_valores_reserva(reserva)
 
+        # PASO 8: Notificación y redirección según método de pago
         messages.success(
             request,
             "Reserva de habitación creada correctamente. Ahora puedes completar el pago."
@@ -172,6 +194,9 @@ def habitaciones_view(request):
 def cabanas_view(request):
     """Muestra cabanas disponibles y procesa reservas de hospedaje."""
 
+    # PASO 1: Mantenimiento y sincronización de disponibilidad
+    # - Cancela reservas pendientes vencidas (> 24h).
+    # - Sincroniza el estado de las cabañas según reservas activas.
     cancelar_reservas_vencidas()
     actualizar_estados_hospedaje()
 
@@ -180,12 +205,14 @@ def cabanas_view(request):
     ).order_by("numero_cabana")
 
     if request.method == "POST":
+        # PASO 2: Validación de sesión del usuario
         cliente_id = request.session.get("cliente_id")
 
         if not cliente_id:
             messages.warning(request, "Debes iniciar sesión para reservar.")
             return redirect("gestion:login")
 
+        # PASO 3: Obtención de parámetros del formulario
         id_cabana = request.POST.get("id_cabana")
         programa = request.POST.get("programa")
         tipo_ocupacion = "Total"
@@ -195,10 +222,12 @@ def cabanas_view(request):
         observaciones = request.POST.get("observaciones", "")
         metodo_pago = obtener_metodo_pago_formulario(request)
 
+        # Validación del programa de hospedaje
         if not (programa or "").strip():
             messages.error(request, "Debes ingresar o seleccionar un programa de hospedaje.")
             return redirect("gestion:cabanas")
 
+        # Validación y conversión de fechas
         try:
             fecha_ingreso_obj = convertir_fecha_formulario(fecha_ingreso, "fecha de ingreso")
         except ValueError as error:
@@ -222,6 +251,8 @@ def cabanas_view(request):
             activo=True
         )
 
+        # PASO 4: RESTRICCIÓN DE DOBLE RESERVA (Regla de Negocio)
+        # Si la cabaña no tiene estado 'Disponible', se bloquea para evitar doble reserva.
         if cabana.estado != "Disponible":
             messages.error(
                 request,
@@ -235,6 +266,7 @@ def cabanas_view(request):
             activo=True
         )
 
+        # Validación de capacidad
         try:
             cantidad_personas_int = obtener_entero_positivo(cantidad_personas, "personas", minimo=1)
         except ValueError as error:
@@ -249,11 +281,13 @@ def cabanas_view(request):
             return redirect("gestion:cabanas")
 
         tipo_ocupacion_final = obtener_tipo_ocupacion_final(cabana, tipo_ocupacion)
+
+        # PASO 5: Resolución de programa y cálculo de fechas/noches
         programa_codigo, programa_guardar, noches, fecha_salida_obj = resolver_programa_y_noches(
             programa, fecha_ingreso_obj, fecha_salida_obj
         )
 
-        # Restricción contra doble reserva: verificar si ya existe reserva activa solapada
+        # PASO 6: RESTRICCIÓN POR SOLAPAMIENTO DE FECHAS
         solapamiento = DetalleCabanas.objects.filter(
             id_cabana=cabana,
             id_reserva__estado_reserva__in=["Pendiente", "Confirmada"],
@@ -268,6 +302,7 @@ def cabanas_view(request):
             )
             return redirect("gestion:cabanas")
 
+        # Cálculo de tarifa
         precio_programa = calcular_precio_estadia(
             cabana, programa_codigo, tipo_ocupacion_final, noches
         )
@@ -279,6 +314,7 @@ def cabanas_view(request):
             )
             return redirect("gestion:cabanas")
 
+        # PASO 7: REGISTRO DE LA RESERVA (Transacción Atómica)
         with transaction.atomic():
             reserva = Reservas.objects.create(
                 id_cliente=cliente,
@@ -306,11 +342,13 @@ def cabanas_view(request):
                 cantidad_personas=cantidad_personas_int,
             )
 
+            # Inmediatamente cambiamos el estado para que nadie más la reserve
             cabana.estado = "Reservada"
             cabana.save(update_fields=["estado"])
 
             calcular_valores_reserva(reserva)
 
+        # PASO 8: Notificación y redirección según método de pago
         messages.success(
             request,
             "Reserva de cabaña creada correctamente. Ahora puedes completar el pago."

@@ -120,6 +120,7 @@
                             <img src="{% static 'img/cancha.jpg' %}" alt="Cabaña {{ cabana.numero_cabana }}" onerror="this.onerror=null; this.src='{% static 'img/logo.jpg' %}';">
                         {% endif %}
 
+                        <!-- Insignia de estado: Verde para Disponible, Rojo para Reservada / Ocupada -->
                         <span class="catalog-status status-{{ cabana.estado|lower }}">
                             {{ cabana.estado }}
                         </span>
@@ -154,6 +155,7 @@
                             <small>2D/1N · 3D/2N · 4D/3N</small>
                         </div>
 
+                        <!-- Acciones según disponibilidad: Bloquea reservas concurrentes si ya fue reservada -->
                         <div class="catalog-actions">
                             {% if cabana.estado == "Disponible" %}
                                 {% if usuario %}
@@ -180,6 +182,7 @@
                                     </a>
                                 {% endif %}
                             {% else %}
+                                <!-- Botón desactivado si ya está reservada para impedir que otro usuario la reserve -->
                                 <button type="button" disabled>
                                     <i class="fa-solid fa-circle-xmark"></i>
                                     No disponible
@@ -250,6 +253,7 @@
 
                 <input type="hidden" id="modalCabanaId" name="id_cabana" value="">
 
+                <!-- Campo de programa con lista desplegable y opción de escritura libre (input list="datalist") -->
                 <div class="public-form-group public-form-full">
                     <label for="modalPrograma">Programa de hospedaje</label>
                     <input type="text" id="modalPrograma" name="programa" list="listaProgramasCabana" placeholder="Selecciona o escribe un programa (ej. 2 días / 1 noche)" required autocomplete="off">
