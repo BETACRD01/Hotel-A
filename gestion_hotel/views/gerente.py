@@ -719,6 +719,16 @@ def gerente_sobre_nosotros_view(request):
         "resort_hero_parrafo",
     ]
 
+    campos_diseno = [
+        "color_primario",
+        "color_secundario",
+        "color_dorado",
+        "color_fondo",
+        "color_texto",
+        "fuente_principal",
+        "fuente_titulos",
+    ]
+
     if request.method == "POST":
         seccion = request.POST.get("seccion", "bancarios")
         if seccion == "sobre_nosotros":
@@ -736,6 +746,15 @@ def gerente_sobre_nosotros_view(request):
             if campos_modificados:
                 config.save(update_fields=campos_modificados)
             messages.success(request, "Portada del catálogo actualizada correctamente.")
+        elif seccion == "diseno":
+            campos_modificados = []
+            for campo in campos_diseno:
+                if campo in request.POST:
+                    setattr(config, campo, request.POST.get(campo, "").strip())
+                    campos_modificados.append(campo)
+            if campos_modificados:
+                config.save(update_fields=campos_modificados)
+            messages.success(request, "Colores y tipografía del sitio actualizados correctamente.")
         else:
             for campo in campos_bancarios:
                 if campo in request.POST:
@@ -747,6 +766,8 @@ def gerente_sobre_nosotros_view(request):
     contexto = {
         "usuario": usuario,
         "config": config,
+        "fuentes_texto": ConfiguracionInicio.FUENTES_TEXTO,
+        "fuentes_titulos": ConfiguracionInicio.FUENTES_TITULOS,
     }
     return render(request, "gerente/sobre_nosotros.html", contexto)
 

@@ -13,6 +13,62 @@
     <link rel="stylesheet" href="{% static 'css/resort_premium.css' %}?v=21">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
+    <!-- Fuentes de Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Cormorant+Garamond:wght@400;600;700&family=Inter:wght@400;500;600;700&family=Lato:wght@400;700&family=Merriweather:wght@400;700&family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;600;700&family=Playfair+Display:ital,wght@0,500;0,700;1,400&family=Poppins:wght@300;400;500;600;700&family=Raleway:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Estilos dinámicos de colores y fuentes (configurables desde Admin y Gerente) -->
+    <style>
+        :root {
+            {% if config_sitio.color_primario %}
+                --ar-verde-950: {{ config_sitio.color_primario }};
+                --ar-verde-900: {{ config_sitio.color_primario }};
+                --verde-oscuro: {{ config_sitio.color_primario }};
+                --verde: {{ config_sitio.color_primario }};
+            {% endif %}
+            {% if config_sitio.color_secundario %}
+                --ar-verde-700: {{ config_sitio.color_secundario }};
+                --ar-verde-500: {{ config_sitio.color_secundario }};
+                --verde-bosque: {{ config_sitio.color_secundario }};
+            {% endif %}
+            {% if config_sitio.color_dorado %}
+                --ar-dorado: {{ config_sitio.color_dorado }};
+                --ar-dorado-2: {{ config_sitio.color_dorado }};
+                --dorado-suave: {{ config_sitio.color_dorado }};
+                --dorado-fuerte: {{ config_sitio.color_dorado }};
+            {% endif %}
+            {% if config_sitio.color_fondo %}
+                --ar-crema: {{ config_sitio.color_fondo }};
+                --ar-crema-2: {{ config_sitio.color_fondo }};
+                --crema: {{ config_sitio.color_fondo }};
+                --beige: {{ config_sitio.color_fondo }};
+            {% endif %}
+            {% if config_sitio.color_texto %}
+                --ar-texto: {{ config_sitio.color_texto }};
+                --texto: {{ config_sitio.color_texto }};
+            {% endif %}
+            {% if config_sitio.fuente_principal %}
+                --font-principal: '{{ config_sitio.fuente_principal }}', sans-serif;
+            {% endif %}
+            {% if config_sitio.fuente_titulos %}
+                --font-titulos: '{{ config_sitio.fuente_titulos }}', serif;
+            {% endif %}
+        }
+
+        {% if config_sitio.fuente_principal %}
+        body, p, span, a, input, select, textarea, button, label, td, th {
+            font-family: var(--font-principal) !important;
+        }
+        {% endif %}
+
+        {% if config_sitio.fuente_titulos %}
+        h1, h2, h3, h4, h5, h6, .brand strong, .marca strong, .ar-hero-title, .titulo {
+            font-family: var(--font-titulos) !important;
+        }
+        {% endif %}
+    </style>
+
     {% block extra_css %}{% endblock %}
 </head>
 

@@ -702,10 +702,24 @@ class PagoReservaAdmin(admin.ModelAdmin):
     ver_comprobante.short_description = "Comprobante"
 
 
+class ConfiguracionInicioAdminForm(forms.ModelForm):
+    class Meta:
+        model = ConfiguracionInicio
+        fields = '__all__'
+        widgets = {
+            'color_primario': forms.TextInput(attrs={'type': 'color', 'style': 'height: 40px; width: 90px; padding: 2px; cursor: pointer; border-radius: 6px;'}),
+            'color_secundario': forms.TextInput(attrs={'type': 'color', 'style': 'height: 40px; width: 90px; padding: 2px; cursor: pointer; border-radius: 6px;'}),
+            'color_dorado': forms.TextInput(attrs={'type': 'color', 'style': 'height: 40px; width: 90px; padding: 2px; cursor: pointer; border-radius: 6px;'}),
+            'color_fondo': forms.TextInput(attrs={'type': 'color', 'style': 'height: 40px; width: 90px; padding: 2px; cursor: pointer; border-radius: 6px;'}),
+            'color_texto': forms.TextInput(attrs={'type': 'color', 'style': 'height: 40px; width: 90px; padding: 2px; cursor: pointer; border-radius: 6px;'}),
+        }
+
+
 @admin.register(ConfiguracionInicio)
 class ConfiguracionInicioAdmin(admin.ModelAdmin):
     """Admin del contenido editable usado por las paginas publicas."""
 
+    form = ConfiguracionInicioAdminForm
     list_display = ('id',)
     readonly_fields = (
         'imagen_sobre_nosotros_preview',
@@ -841,6 +855,17 @@ class ConfiguracionInicioAdmin(admin.ModelAdmin):
             "fields": (
                 "imagen_hero",
                 "imagen_hero_preview",
+            ),
+        }),
+        ("Personalización: Colores y Tipografía del Sitio Web", {
+            "fields": (
+                "color_primario",
+                "color_secundario",
+                "color_dorado",
+                "color_fondo",
+                "color_texto",
+                "fuente_principal",
+                "fuente_titulos",
             ),
         }),
         ("Datos bancarios para transferencias", {

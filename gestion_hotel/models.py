@@ -1446,6 +1446,88 @@ class ConfiguracionInicio(models.Model):
         verbose_name='Banco principal: correo',
     )
 
+    # ============================================================
+    # PERSONALIZACIÓN DE COLORES Y TIPOGRAFÍA DEL SITIO
+    # ============================================================
+    color_primario = models.CharField(
+        max_length=20,
+        default='#07351f',
+        blank=True,
+        null=True,
+        verbose_name='Color primario (Verde oscuro)',
+        help_text='Color principal de la marca, fondos oscuros y barras.',
+    )
+    color_secundario = models.CharField(
+        max_length=20,
+        default='#0f6848',
+        blank=True,
+        null=True,
+        verbose_name='Color secundario (Verde medio)',
+        help_text='Color para botones secundarios, acentos de navegación y hover.',
+    )
+    color_dorado = models.CharField(
+        max_length=20,
+        default='#d9aa38',
+        blank=True,
+        null=True,
+        verbose_name='Color dorado / acento',
+        help_text='Color para kickers naranjas/dorados, estrellas y destacados.',
+    )
+    color_fondo = models.CharField(
+        max_length=20,
+        default='#fff6e4',
+        blank=True,
+        null=True,
+        verbose_name='Color de fondo (Crema / Claro)',
+        help_text='Color de fondo principal de las páginas.',
+    )
+    color_texto = models.CharField(
+        max_length=20,
+        default='#163024',
+        blank=True,
+        null=True,
+        verbose_name='Color de texto principal',
+        help_text='Color principal para textos y títulos.',
+    )
+
+    FUENTES_TEXTO = (
+        ('Poppins', 'Poppins (Moderna y limpia)'),
+        ('Montserrat', 'Montserrat (Geométrica contemporánea)'),
+        ('Inter', 'Inter (Minimalista digital)'),
+        ('Roboto', 'Roboto (Neutral y clara)'),
+        ('Open Sans', 'Open Sans (Amigable y legible)'),
+        ('Lato', 'Lato (Cálida y balanceada)'),
+        ('Raleway', 'Raleway (Elegante delgada)'),
+    )
+
+    FUENTES_TITULOS = (
+        ('Playfair Display', 'Playfair Display (Elegante clásico)'),
+        ('Cinzel', 'Cinzel (Lujoso mayúsculas)'),
+        ('Merriweather', 'Merriweather (Serif moderna)'),
+        ('Cormorant Garamond', 'Cormorant Garamond (Resort & Spa)'),
+        ('Poppins', 'Poppins (Moderna sin serifas)'),
+        ('Montserrat', 'Montserrat (Fuerte y visible)'),
+    )
+
+    fuente_principal = models.CharField(
+        max_length=50,
+        default='Poppins',
+        choices=FUENTES_TEXTO,
+        blank=True,
+        null=True,
+        verbose_name='Tipografía de texto (Cuerpo)',
+        help_text='Fuente para párrafos, botones, menús y textos generales.',
+    )
+    fuente_titulos = models.CharField(
+        max_length=50,
+        default='Playfair Display',
+        choices=FUENTES_TITULOS,
+        blank=True,
+        null=True,
+        verbose_name='Tipografía de títulos',
+        help_text='Fuente para títulos (H1, H2, H3), encabezados y banners.',
+    )
+
     class Meta:
         verbose_name = 'Sobre nosotros'
         verbose_name_plural = 'Sobre nosotros'

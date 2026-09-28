@@ -500,4 +500,116 @@
         </form>
     </div>
 </div>
+
+<!-- ========================================== -->
+<!-- 4. PERSONALIZACIÓN DE COLORES Y TIPOGRAFÍA -->
+<!-- ========================================== -->
+<div class="gerente-card" style="margin-top: 24px;">
+    <div class="gerente-card-header">
+        <h3><i class="fa-solid fa-palette" style="margin-right: 8px; color: var(--gerente-primary);"></i> Personalización de Colores y Tipografía</h3>
+        <p style="margin-top: 4px; color: var(--gerente-text-muted); font-size: 13px;">
+            Personaliza la paleta de colores y las fuentes de texto (Google Fonts) que se aplican en todo el sitio web público.
+        </p>
+    </div>
+    <div class="gerente-card-body">
+        <form method="post" class="gerente-form">
+            {% csrf_token %}
+            <input type="hidden" name="seccion" value="diseno">
+
+            <h4 style="margin: 0 0 16px; color: var(--gerente-primary); font-size: 15px;">
+                <i class="fa-solid fa-brush" style="margin-right: 6px;"></i> Paleta de Colores
+            </h4>
+
+            <div class="gerente-form-grid" style="margin-bottom: 24px;">
+                <div class="gerente-form-field">
+                    <label for="color_primario">Color Primario (Marca / Fondo oscuro):</label>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <input type="color" id="color_primario" name="color_primario" class="gerente-input"
+                               style="height: 44px; width: 64px; padding: 2px; cursor: pointer; border-radius: 8px;"
+                               value="{{ config.color_primario|default:'#07351f' }}"
+                               oninput="document.getElementById('hex_primario').textContent = this.value">
+                        <span id="hex_primario" style="font-family: monospace; font-weight: 600; color: var(--gerente-text);">{{ config.color_primario|default:'#07351f' }}</span>
+                    </div>
+                </div>
+
+                <div class="gerente-form-field">
+                    <label for="color_secundario">Color Secundario (Verde medio / Hover):</label>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <input type="color" id="color_secundario" name="color_secundario" class="gerente-input"
+                               style="height: 44px; width: 64px; padding: 2px; cursor: pointer; border-radius: 8px;"
+                               value="{{ config.color_secundario|default:'#0f6848' }}"
+                               oninput="document.getElementById('hex_secundario').textContent = this.value">
+                        <span id="hex_secundario" style="font-family: monospace; font-weight: 600; color: var(--gerente-text);">{{ config.color_secundario|default:'#0f6848' }}</span>
+                    </div>
+                </div>
+
+                <div class="gerente-form-field">
+                    <label for="color_dorado">Color Dorado / Acento:</label>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <input type="color" id="color_dorado" name="color_dorado" class="gerente-input"
+                               style="height: 44px; width: 64px; padding: 2px; cursor: pointer; border-radius: 8px;"
+                               value="{{ config.color_dorado|default:'#d9aa38' }}"
+                               oninput="document.getElementById('hex_dorado').textContent = this.value">
+                        <span id="hex_dorado" style="font-family: monospace; font-weight: 600; color: var(--gerente-text);">{{ config.color_dorado|default:'#d9aa38' }}</span>
+                    </div>
+                </div>
+
+                <div class="gerente-form-field">
+                    <label for="color_fondo">Color de Fondo (Crema / Claro):</label>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <input type="color" id="color_fondo" name="color_fondo" class="gerente-input"
+                               style="height: 44px; width: 64px; padding: 2px; cursor: pointer; border-radius: 8px;"
+                               value="{{ config.color_fondo|default:'#fff6e4' }}"
+                               oninput="document.getElementById('hex_fondo').textContent = this.value">
+                        <span id="hex_fondo" style="font-family: monospace; font-weight: 600; color: var(--gerente-text);">{{ config.color_fondo|default:'#fff6e4' }}</span>
+                    </div>
+                </div>
+
+                <div class="gerente-form-field">
+                    <label for="color_texto">Color de Texto Principal:</label>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <input type="color" id="color_texto" name="color_texto" class="gerente-input"
+                               style="height: 44px; width: 64px; padding: 2px; cursor: pointer; border-radius: 8px;"
+                               value="{{ config.color_texto|default:'#163024' }}"
+                               oninput="document.getElementById('hex_texto').textContent = this.value">
+                        <span id="hex_texto" style="font-family: monospace; font-weight: 600; color: var(--gerente-text);">{{ config.color_texto|default:'#163024' }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <hr style="margin: 24px 0; border-color: var(--gerente-border);">
+
+            <h4 style="margin: 0 0 16px; color: var(--gerente-primary); font-size: 15px;">
+                <i class="fa-solid fa-font" style="margin-right: 6px;"></i> Tipografía (Google Fonts)
+            </h4>
+
+            <div class="gerente-form-grid" style="margin-bottom: 24px;">
+                <div class="gerente-form-field">
+                    <label for="fuente_principal">Fuente Principal (Párrafos, botones y menú):</label>
+                    <select id="fuente_principal" name="fuente_principal" class="gerente-input">
+                        {% for valor, etiqueta in fuentes_texto %}
+                            <option value="{{ valor }}" {% if config.fuente_principal == valor %}selected{% endif %}>{{ etiqueta }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="gerente-form-field">
+                    <label for="fuente_titulos">Fuente de Títulos (Encabezados H1, H2, H3):</label>
+                    <select id="fuente_titulos" name="fuente_titulos" class="gerente-input">
+                        {% for valor, etiqueta in fuentes_titulos %}
+                            <option value="{{ valor }}" {% if config.fuente_titulos == valor %}selected{% endif %}>{{ etiqueta }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="gerente-form-actions">
+                <button type="submit" class="badge badge-success gerente-action-button">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    Guardar colores y tipografía
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
 {% endblock %}

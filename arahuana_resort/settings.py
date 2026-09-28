@@ -96,6 +96,7 @@ TEMPLATES = [
                 'django.template.context_processors.csrf',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'gestion_hotel.context_processors.configuracion_sitio_context',
             ],
         },
     },
