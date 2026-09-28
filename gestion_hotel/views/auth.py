@@ -4,7 +4,8 @@ from .common import *
 
 def login_view(request):
     """
-    Procesa el inicio de sesiÃ³n de clientes.
+    Procesa el inicio de sesión exclusivo de clientes.
+    Los administradores y gerentes deben ingresar desde el Panel de Gestión (/admin/login/).
     """
     next_url = request.POST.get("next") or request.GET.get("next", "")
     usuario_actual = obtener_usuario_sesion(request)
@@ -17,14 +18,50 @@ def login_view(request):
     form = ClienteLoginForm(request.POST or None)
 
     if request.method == "POST":
+        identificador = request.POST.get("correo_electronico", "").strip()
+        password = request.POST.get("password", "")
+
+        # 1. Regla estricta: Los administradores y gerentes no pueden iniciar sesión en el login de clientes
+        User = get_user_model()
+        staff_user = User.objects.filter(
+            Q(username__iexact=identificador) | Q(email__iexact=identificador)
+        ).filter(Q(is_staff=True) | Q(is_superuser=True), is_active=True).first()
+
+        if staff_user and staff_user.check_password(password):
+            messages.error(
+                request,
+                "Este acceso es exclusivo para clientes. Los administradores y gerentes deben ingresar desde el Panel de Gestión (/admin/login/)."
+            )
+            return render(request, "auth/login.html", {"form": form, "next": next_url, "es_staff_error": True})
+
+        # También verificar si en el modelo Cliente existe alguien con rol admin o gerente
+        cliente_staff = Cliente.objects.filter(
+            Q(correo_electronico__iexact=identificador) | Q(numero_documento__iexact=identificador),
+            activo=True,
+            rol__in=['admin', 'gerente']
+        ).first()
+
+        if cliente_staff:
+            pwd_ok = False
+            if cliente_staff.password.startswith(("pbkdf2_", "argon2$", "bcrypt$", "scrypt$")):
+                pwd_ok = check_password(password, cliente_staff.password)
+            else:
+                pwd_ok = (cliente_staff.password == password)
+
+            if pwd_ok:
+                messages.error(
+                    request,
+                    "Este acceso es exclusivo para clientes. Los administradores y gerentes deben ingresar desde el Panel de Gestión (/admin/login/)."
+                )
+                return render(request, "auth/login.html", {"form": form, "next": next_url, "es_staff_error": True})
+
         if not form.is_valid():
             for field, errors in form.errors.items():
                 for error in errors:
                     messages.error(request, error)
             return render(request, "auth/login.html", {"form": form, "next": next_url})
 
-        correo_electronico = form.cleaned_data["correo_electronico"]
-        password = form.cleaned_data["password"]
+        correo_electronico = form.cleaned_data["correo_electronico"].strip()
 
         try:
             usuario = Cliente.objects.get(
@@ -32,11 +69,17 @@ def login_view(request):
                 activo=True,
             )
         except Cliente.DoesNotExist:
-            messages.error(
-                request,
-                "Correo o contraseÃ±a incorrectos o la cuenta estÃ¡ inactiva."
-            )
-            return render(request, "auth/login.html", {"form": form, "next": next_url})
+            if staff_user or cliente_staff:
+                messages.error(
+                    request,
+                    "Este acceso es exclusivo para clientes. Los administradores y gerentes deben ingresar desde el Panel de Gestión (/admin/login/)."
+                )
+            else:
+                messages.error(
+                    request,
+                    "Correo o contraseña incorrectos o la cuenta está inactiva."
+                )
+            return render(request, "auth/login.html", {"form": form, "next": next_url, "es_staff_error": bool(staff_user or cliente_staff)})
 
         password_correcta = False
 
@@ -53,7 +96,7 @@ def login_view(request):
         if not password_correcta:
             messages.error(
                 request,
-                "Correo o contraseÃ±a incorrectos."
+                "Correo o contraseña incorrectos."
             )
             return render(request, "auth/login.html", {"form": form, "next": next_url})
 
@@ -62,9 +105,9 @@ def login_view(request):
         if usuario.rol != 'cliente':
             messages.error(
                 request,
-                "Este acceso es solo para clientes. Ingrese desde el Panel de GestiÃ³n."
+                "Este acceso es exclusivo para clientes. Los administradores y gerentes deben ingresar desde el Panel de Gestión (/admin/login/)."
             )
-            return render(request, "auth/login.html", {"form": form, "next": next_url})
+            return render(request, "auth/login.html", {"form": form, "next": next_url, "es_staff_error": True})
 
         request.session["cliente_id"] = usuario.id_cliente
         request.session["cliente_nombre"] = nombre_formateado
@@ -136,11 +179,11 @@ def registro_view(request):
 
         # Verificar duplicados
         if Cliente.objects.filter(numero_documento=numero_documento).exists():
-            messages.error(request, "Ya existe una cuenta registrada con este nÃºmero de documento.")
+            messages.error(request, "Ya existe una cuenta registrada con este número de documento.")
             return redirect("gestion:registro")
 
         if Cliente.objects.filter(correo_electronico__iexact=correo_electronico).exists():
-            messages.error(request, "Ya existe una cuenta registrada con este correo electrÃ³nico.")
+            messages.error(request, "Ya existe una cuenta registrada con este correo electrónico.")
             return redirect("gestion:registro")
 
         form = ClienteRegistroForm(request.POST)
@@ -148,7 +191,7 @@ def registro_view(request):
             form.save()
             messages.success(
                 request,
-                "Tu cuenta de cliente fue creada correctamente. Ahora inicia sesiÃ³n."
+                "Tu cuenta de cliente fue creada correctamente. Ahora inicia sesión."
             )
             return redirect("gestion:login")
 
@@ -162,7 +205,7 @@ def registro_view(request):
 
 def recuperar_password(request):
     """
-    Recuperar contraseÃ±a por correo electrÃ³nico usando cÃ³digo de verificaciÃ³n.
+    Recuperar contraseña por correo electrónico usando código de verificación.
     """
     if request.method == "POST":
         correo_electronico = request.POST.get("correo_electronico", "").strip().lower()
@@ -174,17 +217,17 @@ def recuperar_password(request):
 
         if cliente:
             codigo = str(random.randint(100000, 999999))
-            asunto = "CÃ³digo de recuperaciÃ³n - Hotel Arahuana"
+            asunto = "Código de recuperación - Hotel Arahuana"
             mensaje = f"""
 Hola {cliente.nombres},
 
-Recibimos una solicitud para restablecer tu contraseÃ±a.
+Recibimos una solicitud para restablecer tu contraseña.
 
-Tu cÃ³digo de recuperaciÃ³n es:
+Tu código de recuperación es:
 
 {codigo}
 
-No compartas este cÃ³digo con nadie.
+No compartas este código con nadie.
 
 Si no solicitaste este cambio, ignora este mensaje.
 
@@ -205,25 +248,25 @@ Hotel Arahuana Eco-Resort & Spa
 
                 messages.success(
                     request,
-                    "Se enviÃ³ un cÃ³digo de recuperaciÃ³n a tu correo electrÃ³nico."
+                    "Se envió un código de recuperación a tu correo electrónico."
                 )
                 return redirect("gestion:verificar_codigo")
             except (TimeoutError, socket.timeout, smtplib.SMTPException):
                 messages.error(
                     request,
-                    "No se pudo enviar el cÃ³digo porque la conexiÃ³n con el servidor de correo fue bloqueada o tardÃ³ demasiado. Intenta desde otra red o verifica tu conexiÃ³n."
+                    "No se pudo enviar el código porque la conexión con el servidor de correo fue bloqueada o tardó demasiado. Intenta desde otra red o verifica tu conexión."
                 )
                 return redirect("gestion:recuperar_password")
             except Exception:
                 messages.error(
                     request,
-                    "No se pudo enviar el cÃ³digo porque la conexiÃ³n con el servidor de correo fue bloqueada o tardÃ³ demasiado. Intenta desde otra red o verifica tu conexiÃ³n."
+                    "No se pudo enviar el código porque la conexión con el servidor de correo fue bloqueada o tardó demasiado. Intenta desde otra red o verifica tu conexión."
                 )
                 return redirect("gestion:recuperar_password")
 
         messages.success(
             request,
-            "Si el correo estÃ¡ registrado, recibirÃ¡s un cÃ³digo de recuperaciÃ³n."
+            "Si el correo está registrado, recibirás un código de recuperación."
         )
         return render(request, "auth/recuperar_password.html")
 
@@ -232,10 +275,10 @@ Hotel Arahuana Eco-Resort & Spa
 
 def verificar_codigo(request):
     """
-    Verifica el cÃ³digo de recuperaciÃ³n guardado en sesiÃ³n.
+    Verifica el código de recuperación guardado en sesión.
     """
     if not request.session.get("reset_cliente_id") or not request.session.get("reset_codigo"):
-        messages.error(request, "Debe iniciar el flujo de recuperaciÃ³n de contraseÃ±a primero.")
+        messages.error(request, "Debe iniciar el flujo de recuperación de contraseña primero.")
         return redirect("gestion:recuperar_password")
 
     if request.method == "POST":
@@ -246,20 +289,20 @@ def verificar_codigo(request):
             request.session["reset_codigo_validado"] = True
             return redirect("gestion:nueva_password")
 
-        messages.error(request, "CÃ³digo incorrecto. IntÃ©ntalo nuevamente.")
+        messages.error(request, "Código incorrecto. Inténtalo nuevamente.")
 
     return render(request, "auth/verificar_codigo.html")
 
 
 def nueva_password(request):
     """
-    Permite al cliente crear una nueva contraseÃ±a luego de verificar el cÃ³digo.
+    Permite al cliente crear una nueva contraseña luego de verificar el código.
     """
     cliente_id = request.session.get("reset_cliente_id")
     codigo_validado = request.session.get("reset_codigo_validado")
 
     if not cliente_id or not codigo_validado:
-        messages.error(request, "El flujo de recuperaciÃ³n no es vÃ¡lido. Intenta nuevamente.")
+        messages.error(request, "El flujo de recuperación no es válido. Intenta nuevamente.")
         return redirect("gestion:recuperar_password")
 
     if request.method == "POST":
@@ -267,11 +310,11 @@ def nueva_password(request):
         confirm_password = request.POST.get("confirm_password", "")
 
         if password != confirm_password:
-            messages.error(request, "Las contraseÃ±as no coinciden.")
+            messages.error(request, "Las contraseñas no coinciden.")
             return render(request, "auth/nueva_password.html")
 
         if len(password) < 8:
-            messages.error(request, "La contraseÃ±a debe tener al menos 8 caracteres.")
+            messages.error(request, "La contraseña debe tener al menos 8 caracteres.")
             return render(request, "auth/nueva_password.html")
 
         usuario = Cliente.objects.filter(
@@ -281,7 +324,7 @@ def nueva_password(request):
         ).first()
 
         if usuario is None:
-            messages.error(request, "No se encontrÃ³ el cliente para actualizar la contraseÃ±a.")
+            messages.error(request, "No se encontró el cliente para actualizar la contraseña.")
             return redirect("gestion:recuperar_password")
 
         usuario.password = make_password(password)
@@ -297,7 +340,7 @@ def nueva_password(request):
 
         messages.success(
             request,
-            "ContraseÃ±a actualizada correctamente. Ya puedes iniciar sesiÃ³n."
+            "Contraseña actualizada correctamente. Ya puedes iniciar sesión."
         )
         return redirect("gestion:login")
 
@@ -305,13 +348,13 @@ def nueva_password(request):
 
 def logout_view(request):
     """
-    Cierra la sesiÃ³n del usuario.
+    Cierra la sesión del usuario.
     """
     request.session.flush()
 
     messages.info(
         request,
-        "La sesiÃ³n se cerrÃ³ correctamente."
+        "La sesión se cerró correctamente."
     )
 
     return redirect("gestion:inicio")

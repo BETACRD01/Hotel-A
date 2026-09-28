@@ -1203,3 +1203,104 @@ class SobreNosotrosYPortadasTests(TestCase):
         self.assertEqual(self.config.sn_compromiso_kicker, "Compromiso Kicker Actualizado")
         self.assertEqual(self.config.sn_cta_kicker, "CTA Kicker Actualizado")
 
+
+class SeparacionLoginRolesTests(TestCase):
+    """Pruebas de la separación estricta entre el login de clientes y el panel de gestión (admin/gerente)."""
+
+    def setUp(self):
+        # Admin superuser
+        self.admin_user = User.objects.create_superuser(
+            username="admin",
+            email="admin@hotel.com",
+            password="HotelAdmin2026!"
+        )
+
+        # Gerente staff
+        self.gerente_user = User.objects.create_user(
+            username="gerente",
+            email="gerente@hotel.com",
+            password="GerenteArahuana2026!",
+            is_staff=True,
+            is_superuser=False
+        )
+
+        # Cliente público
+        self.cliente = Cliente.objects.create(
+            tipo_documento="Cedula",
+            numero_documento="0100000009",
+            nombres="Carlos",
+            apellidos="Pérez",
+            telefono_celular="0991112233",
+            correo_electronico="carlos.cliente@example.com",
+            password=make_password("ClientePass123!"),
+            rol="cliente",
+            activo=True
+        )
+
+    def test_admin_bloqueado_en_login_cliente(self):
+        """Un administrador no puede iniciar sesión en la web de clientes."""
+        resp = self.client.post(reverse("gestion:login"), {
+            "correo_electronico": "admin@hotel.com",
+            "password": "HotelAdmin2026!",
+        })
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, "Este acceso es exclusivo para clientes")
+        self.assertNotIn("cliente_id", self.client.session)
+
+    def test_gerente_bloqueado_en_login_cliente(self):
+        """Un gerente no puede iniciar sesión en la web de clientes."""
+        resp = self.client.post(reverse("gestion:login"), {
+            "correo_electronico": "gerente@hotel.com",
+            "password": "GerenteArahuana2026!",
+        })
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, "Este acceso es exclusivo para clientes")
+        self.assertNotIn("cliente_id", self.client.session)
+
+    def test_cliente_puede_iniciar_sesion_en_login_cliente(self):
+        """Un cliente registrado puede iniciar sesión en la web pública."""
+        resp = self.client.post(reverse("gestion:login"), {
+            "correo_electronico": "carlos.cliente@example.com",
+            "password": "ClientePass123!",
+        })
+        self.assertEqual(resp.status_code, 302)
+        self.assertIn(reverse("gestion:dashboard"), resp.url)
+        self.assertEqual(self.client.session.get("cliente_id"), self.cliente.id_cliente)
+
+    def test_gerente_accediendo_a_admin_es_redirigido_a_gerente(self):
+        """Un gerente autenticado en Django es redirigido a /gerente/ cuando intenta entrar a /admin/."""
+        self.client.force_login(self.gerente_user)
+        resp = self.client.get("/admin/")
+        self.assertRedirects(resp, "/gerente/")
+
+    def test_admin_accediendo_a_admin_se_mantiene_en_admin(self):
+        """Un administrador (superuser) permanece en /admin/ sin ser redirigido a /gerente/."""
+        self.client.force_login(self.admin_user)
+        resp = self.client.get("/admin/")
+        self.assertEqual(resp.status_code, 200)
+
+    def test_admin_y_gerente_pueden_acceder_al_panel_gerente(self):
+        """Tanto el admin como el gerente pueden ingresar a las vistas de /gerente/."""
+        # Gerente
+        self.client.force_login(self.gerente_user)
+        resp_gerente = self.client.get(reverse("gestion:gerente_dashboard"))
+        self.assertEqual(resp_gerente.status_code, 200)
+
+        # Admin
+        self.client.force_login(self.admin_user)
+        resp_admin = self.client.get(reverse("gestion:gerente_dashboard"))
+        self.assertEqual(resp_admin.status_code, 200)
+
+    def test_cliente_no_puede_acceder_al_panel_gerente(self):
+        """Un cliente normal no puede acceder a las vistas del panel gerencial."""
+        session = self.client.session
+        session["cliente_id"] = self.cliente.id_cliente
+        session["usuario_id"] = self.cliente.id_cliente
+        session["usuario_rol"] = "cliente"
+        session.save()
+
+        resp = self.client.get(reverse("gestion:gerente_dashboard"))
+        self.assertEqual(resp.status_code, 302)
+        self.assertIn(reverse("gestion:login"), resp.url)
+
+

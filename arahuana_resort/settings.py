@@ -157,7 +157,7 @@ JAZZMIN_SETTINGS = {
     "site_title": "Panel de Gestión Hotelera",
     "site_header": "Sistema Hotelero Arahuana",
     "site_brand": "Panel de Gestión",
-    "welcome_sign": "Bienvenido al Panel de Gestión Hotelera",
+    "welcome_sign": "Panel de Gestión (Acceso exclusivo Administradores y Gerentes)",
     "copyright": "Sistema Hotelero Arahuana © 2026",
 
     "site_logo": "img/logo.jpg",

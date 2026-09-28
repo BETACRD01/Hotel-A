@@ -26,5 +26,8 @@ class EmailOrUsernameModelBackend(ModelBackend):
         ).first()
 
         if user and user.check_password(password) and self.user_can_authenticate(user):
+            if request and hasattr(request, "path") and request.path.startswith("/admin/"):
+                if not (user.is_staff or user.is_superuser):
+                    return None
             return user
         return None

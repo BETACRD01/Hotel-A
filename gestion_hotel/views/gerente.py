@@ -7,17 +7,22 @@ def requiere_gerente(request):
 
     usuario = obtener_usuario_sesion(request)
     if usuario is not None:
-        if usuario.rol != 'gerente':
+        if usuario.rol not in {'gerente', 'admin'}:
             messages.error(request, "No tienes permisos de gerente para acceder a esta sección.")
             return None
         return usuario
 
     auth_user = getattr(request, "user", None)
-    if auth_user and auth_user.is_authenticated and auth_user.is_active and auth_user.is_staff and not auth_user.is_superuser:
+    if auth_user and auth_user.is_authenticated and auth_user.is_active and (auth_user.is_staff or auth_user.is_superuser):
+        es_admin = (
+            auth_user.is_superuser
+            or auth_user.username.lower() in {"admin", "administrador"}
+            or auth_user.groups.filter(name__icontains="admin").exists()
+        )
         return SimpleNamespace(
-            nombres=(auth_user.first_name or auth_user.username or "Gerente").strip(),
+            nombres=(auth_user.first_name or auth_user.username or ("Administrador" if es_admin else "Gerente")).strip(),
             apellidos=(auth_user.last_name or "").strip(),
-            rol="gerente",
+            rol="admin" if es_admin else "gerente",
             admin_auth=True,
         )
 
