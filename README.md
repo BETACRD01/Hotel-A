@@ -123,30 +123,93 @@ flowchart TD
 
 ---
 
-## 🗺️ 5. El Viaje del Huésped (Customer Journey)
+## 🗺️ 5. El Viaje del Huésped (Customer Journey Emocional)
+
+> *De la curiosidad inicial al descanso absoluto en la selva: así vive la experiencia un huésped en Arahuana.*
+
+```text
+ ┌─────────────────┐       ┌─────────────────┐       ┌─────────────────┐       ┌─────────────────┐       ┌─────────────────┐
+ │  1. EXPLORAR    │  ──►  │  2. PERSONALIZAR│  ──►  │  3. BLINDAR     │  ──►  │  4. PAGAR       │  ──►  │  5. ¡DISFRUTAR! │
+ │  🌿 Catálogo    │       │  ✍️ Plan Libre   │       │  🛡️ Bloqueo BD  │       │  💳 Transfer    │       │  🌴 Selva Viva  │
+ │  🟢 DISPONIBLE  │       │  📅 Fechas/Noches│       │  🔴 RESERVADA   │       │  📸 Comprobante │       │  ✅ CONFIRMADA  │
+ └─────────────────┘       └─────────────────┘       └─────────────────┘       └─────────────────┘       └─────────────────┘
+    🙂 Curiosidad             🤩 Entusiasmo              🔒 Tranquilidad            📱 Comodidad              🎉 Felicidad Total
+```
+
+---
+
+### 🌟 Las 5 Etapas del Huésped Paso a Paso
+
+#### 🌿 Etapa 1: El Descubrimiento (Catálogo Inmersivo)
+- **Acción del Huésped:** Ingresa desde su celular o laptop a la web del hotel, admira fotografías reales en alta resolución de las habitaciones y cabañas, su capacidad y comodidades.
+- **Lo que ve en pantalla:** 
+  - 🟢 **Insignia Verde:** `Disponible` destacada con diseño natural.
+  - 🔘 **Botón Activo:** `Reservar ahora`.
+- **Sensación:** Curiosidad y confianza visual inmediata.
+
+#### ✍️ Etapa 2: La Elección Flexible (Sin Ataduras)
+- **Acción del Huésped:** Abre el modal de reserva. Puede elegir un paquete predefinido (**2 días / 1 noche**, **3D/2N**, **4D/3N**) o **escribir con su teclado** (ej. *"5 noches familiares"* o *"Luna de Miel 4 días"*).
+- **Lo que hace el motor:** Interpreta el texto ingresado, extrae el número de noches y recalcula la cotización justa al instante en pantalla.
+- **Sensación:** Libertad y control total de su presupuesto.
+
+#### 🛡️ Etapa 3: El Blindaje Atómico (Cero Sobreventa)
+- **Acción del Huésped:** Selecciona sus fechas y hace clic en **"Confirmar reserva"**.
+- **Magia Tecnológica:** En menos de 50 milisegundos, Django ejecuta una **transacción atómica** (`transaction.atomic()`):
+  - Verifica que la unidad siga disponible y que no haya cruce de fechas.
+  - Genera el código único de reserva.
+  - **Cambia la unidad inmediatamente a 🔴 `RESERVADA`**.
+  - Si otro usuario en cualquier parte del mundo intenta reservar esa misma habitación, el sistema lo bloquea con el botón desactivado: `No disponible`.
+- **Sensación:** Seguridad absoluta de que nadie le arrebatará su estancia.
+
+#### 💳 Etapa 4: El Pago Cómodo y Transparente
+- **Acción del Huésped:** Es redirigido a la pasarela interna. Copia los datos bancarios del hotel (Banco Pichincha, Guayaquil, etc.), realiza la transferencia desde su banca móvil y **sube una foto o captura del comprobante**.
+- **Lo que hace el sistema:** Guarda la imagen protegida en el servidor, asocia la transferencia a la reserva y marca el estado como `En revision`.
+- **Regla de Oro:** Se activa el temporizador inteligente de **24 horas**. Si el pago no se realiza a tiempo, el sistema libera la habitación automáticamente.
+- **Sensación:** Cero fricción, sin necesidad de ingresar tarjetas de crédito internacionales ni pagar comisiones abusivas.
+
+#### 🌴 Etapa 5: Confirmación Oficial y ¡A Disfrutar!
+- **Acción del Gerente:** El equipo de recepción revisa la imagen del comprobante en su **Panel Gerencial** y con un solo clic presiona **"Aprobar Pago"**.
+- **Resultado:** La reserva pasa a **`CONFIRMADA`**. El huésped puede consultarla en su panel de *"Mis Reservas"*. ¡Maletas listas para vivir la magia de la Amazonía!
+- **Sensación:** Tranquilidad absoluta y emoción por viajar.
+
+---
+
+### 📊 Tabla Resumen: El Viaje del Huésped en Cifras y Pantallas
+
+| Paso | Acción del Huésped | Magia Tecnológica Detrás | Estado Visual en Pantalla | Emoción del Usuario |
+|:---:|---|---|:---:|:---:|
+| **1** | Navega el catálogo de habitaciones/cabañas. | Carga optimizada de imágenes con fallback automático. | <span style="color:green">🟢 **DISPONIBLE**</span> | 🙂 Curiosidad y agrado |
+| **2** | Elige o tipea su programa de hospedaje. | Algoritmo `resolver_programa_y_noches` en Python. | 📝 **Tarifa calculada al vuelo** | 🤩 Control y flexibilidad |
+| **3** | Clic en *"Confirmar reserva"*. | Transacción atómica en PostgreSQL + chequeo de solapamiento. | <span style="color:red">🔴 **RESERVADA**</span> (Botón Bloqueado) | 🔒 Seguridad anti-robo |
+| **4** | Transfiere y sube foto del comprobante. | Validación MIME multipart + reloj de autoliberación 24h. | 🟡 **PAGO EN REVISIÓN** | 📱 Facilidad y transparencia |
+| **5** | Espera aprobación gerencial. | Cambio de estado instantáneo a confirmado en base de datos. | 🟢 **RESERVA CONFIRMADA** | 🎉 Felicidad y alivio |
+
+---
+
+### 🔄 Diagrama de Flujo Técnico (Secuencia)
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor Cliente as 👤 Huésped
-    participant Web as 🌐 Catálogo Arahuana
+    actor Huésped as 👤 Huésped
+    participant Web as 🌐 Interfaz Web
     participant Backend as ⚙️ Motor Django
     participant DB as 🗄️ PostgreSQL
     actor Gerente as 👔 Gerente Hotel
 
-    Cliente->>Web: Explora Habitaciones y Cabañas
-    Web->>Cliente: Muestra unidades disponibles (Verde) y reservadas (Rojo)
-    Cliente->>Web: Elige o escribe Programa de Hospedaje y Fechas
-    Cliente->>Web: Clic en "Confirmar reserva"
-    Web->>Backend: Envía solicitud POST con validaciones
-    Backend->>DB: Verifica disponibilidad y solapamiento de fechas
-    Backend->>DB: Crea Reserva y cambia estado a 'Reservada'
-    Backend->>Web: Redirige a pantalla de Pago por Transferencia
-    Cliente->>Web: Transfiere al banco del hotel y sube foto del comprobante
-    Web->>Backend: Almacena comprobante y marca pago "En revisión"
-    Gerente->>Backend: Revisa el comprobante en su panel y hace clic en "Aprobar"
-    Backend->>DB: Cambia reserva a "Confirmada" y pago a "Pagado"
-    Backend-->>Cliente: Notificación de reserva garantizada. ¡Listo para viajar!
+    Huésped->>Web: 1. Explora catálogo de Habitaciones y Cabañas
+    Web->>Huésped: Muestra unidades disponibles (Verde) y bloqueadas (Rojo)
+    Huésped->>Web: 2. Elige o escribe Programa de Hospedaje y Fechas
+    Huésped->>Web: 3. Clic en "Confirmar reserva"
+    Web->>Backend: Envía POST con datos de estadía
+    Backend->>DB: Valida estado == 'Disponible' y chequea solapamiento
+    Backend->>DB: [Transacción Atómica] Crea Reserva + Pasa unidad a 'Reservada'
+    Backend->>Web: 4. Redirige a pantalla de Pago por Transferencia
+    Huésped->>Web: Sube foto del comprobante bancario
+    Web->>Backend: Guarda comprobante y asigna estado "En revisión"
+    Gerente->>Backend: 5. Valida comprobante en Panel Gerencial y hace clic en "Aprobar"
+    Backend->>DB: Actualiza Reserva a "Confirmada" y Pago a "Pagado"
+    Backend-->>Huésped: Notificación de éxito: ¡Habitación 100% garantizada!
 ```
 
 ---
