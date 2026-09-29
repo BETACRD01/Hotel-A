@@ -1,218 +1,306 @@
-# Sistema Hotelero Arahuana
+# 🌿 Sistema Hotelero Arahuana Eco-Resort & Spa 🌿
 
-Sistema web en Django para gestionar la operacion del hotel Arahuana Eco-Resort & Spa: clientes, habitaciones, cabanas, funciones de cine, resort del dia, reservas, pagos por transferencia y panel gerencial.
+> **Plataforma Integral de Reservas, Experiencia Turística y Gestión Hotelera Inteligente**  
+> *Transformando el descanso en la Amazonía ecuatoriana con tecnología moderna, segura y en tiempo real.*
 
-## Tecnologias
+[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
+[![Django](https://img.shields.io/badge/Django-5.0%2B-092E20.svg?logo=django&logoColor=white)](https://www.djangoproject.com/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-14%2B-316192.svg?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![Google Cloud](https://img.shields.io/badge/Google_Cloud-Compute_Engine-4285F4.svg?logo=google-cloud&logoColor=white)](https://cloud.google.com/)
+[![Nginx](https://img.shields.io/badge/Nginx-Reverse_Proxy-009639.svg?logo=nginx&logoColor=white)](https://nginx.org/)
+[![SSL](https://img.shields.io/badge/SSL-Let's_Encrypt_Active-success.svg?logo=letsencrypt&logoColor=white)](https://letsencrypt.org/)
+[![Estado](https://img.shields.io/badge/Producci%C3%B3n-Activo_100%25-brightgreen.svg)]()
 
-- Python
-- Django
-- PostgreSQL
-- Django Jazzmin
-- Django REST Framework
-- HTML, CSS y JavaScript
+---
 
-## 📖 Manual del Sistema y Documentación
+## 📖 Documentación Rápida
+- 📘 **Manual Técnico Exhaustivo:** Consulta [**MANUAL_DEL_SISTEMA.md**](MANUAL_DEL_SISTEMA.md) para detalles profundos de funciones, base de datos y comandos del servidor.
+- 🌐 **Entorno en Vivo:** [hoteleroarahuana.duckdns.org](https://hoteleroarahuana.duckdns.org/)
 
-Para una explicación exhaustiva paso a paso de cada módulo, flujo de reservas, base de datos y comandos de despliegue, consulta el:
-👉 **[MANUAL_DEL_SISTEMA.md](MANUAL_DEL_SISTEMA.md)**
+---
 
-### ¿Qué hace cada parte del sistema?
+## 🌟 1. El Problema y Nuestra Solución (Para Presentación / Exposición)
 
-- **`arahuana_resort/` (Configuración central):** Controla la configuración global de Django (`settings.py`), conexiones a PostgreSQL, variables de entorno y enrutamiento principal de URLs (`urls.py`).
-- **`gestion_hotel/models.py` (Base de datos):** Define las tablas del sistema:
-  - `Cliente`: Registro de clientes, administradores y validación de Cédula/RUC.
-  - `Habitaciones` y `Cabanas`: Inventario físico con precios por programa (2D1N, 3D2N, 4D3N), precios por noche y estado (`Disponible`, `Reservada`, `Mantenimiento`, `Inactiva`).
-  - `Reservas`: Cabecera de la transacción con fechas, estados (`Pendiente`, `Confirmada`, `Cancelada`) y estados de pago (`Pendiente`, `En revision`, `Pagado`).
-  - `DetalleHabitaciones` / `DetalleCabanas`: Fechas específicas de estancia por unidad, programa contratado y subtotal.
-  - `PagoReserva`: Registro de transferencias bancarias y subida del comprobante.
-- **`gestion_hotel/services/reservations.py` (Lógica de negocio):**
-  - `resolver_programa_y_noches`: Interpreta programas estándar (2D1N, 3D2N, 4D3N) o personalizados escritos libremente por el usuario.
-  - `calcular_precio_estadia`: Calcula la tarifa según el programa o la cantidad de noches.
-  - `actualizar_estados_hospedaje`: **Sincronizador automático** que pasa a `'Reservada'` cualquier habitación o cabaña con reservas activas, y la regresa a `'Disponible'` cuando concluye o se cancela.
-  - `cancelar_reservas_vencidas`: Tarea que cancela automáticamente reservas que superen 24 horas sin pago y libera las unidades.
-- **`gestion_hotel/views/` (Controladores y vistas):**
-  - `catalog.py`: Presenta los catálogos públicos y procesa reservas de habitaciones y cabañas, bloqueando solicitudes duplicadas o solapadas.
-  - `reservations.py`: Panel "Mis Reservas" del cliente y cancelación con liberación inmediata de habitación.
-  - `payments.py`: Formulario para registrar el comprobante de transferencia y enviarlo a revisión.
-  - `gerente.py`: Panel gerencial para validar pagos, ver reportes e inventario.
-  - `auth.py`: Autenticación, registro, login y restablecimiento de contraseña.
-- **`gestion_hotel/templates/` y `static/` (Interfaz visual):**
-  - Catálogo con insignias dinámicas (`status-disponible` en verde, `status-reservada` en rojo).
-  - Bloqueo visual con botón desactivado `"No disponible"` para evitar reservas duplicadas.
-  - Modal con `<input list="datalist">` para elegir o escribir libremente el programa de hospedaje.
+### ¿Cuál era la realidad de los hoteles antes de este sistema?
+Imagina planificar las vacaciones de tus sueños en la selva amazónica, llegar después de 6 horas de viaje con tu familia... y que en recepción te digan:  
+> *"Lo sentimos, esa habitación fue vendida dos veces porque anotamos la reserva por WhatsApp y no se actualizó la libreta."*
 
-## Modulos Funcionales
+Este tipo de incidentes (sobreventa o *overbooking*, transferencias bancarias extraviadas, cotizaciones lentas) le cuestan a los hoteles miles de dólares y la pérdida de confianza de sus huéspedes.
 
-- Inicio publico y pagina Sobre nosotros
-- Registro, login, logout y recuperacion de contrasena por codigo
-- Panel del cliente
-- Habitaciones
-- Cabanas
-- Cine
-- Resort del dia
-- Mis reservas y cancelacion
-- Seleccion de metodo de pago
-- Registro de comprobantes por transferencia
-- Panel gerencial
-- Panel administrativo Django/Jazzmin
+### 💡 La Gran Solución: Ecosistema Arahuana
+Diseñamos una **solución digital completa** que automatiza todo el proceso:
+1. El cliente **explora** fotos reales, comodidades y precios transparentes.
+2. Elige paquetes estándar (**2D1N, 3D2N, 4D3N**) o **escribe libremente su plan personalizado**.
+3. **El sistema bloquea la habitación al instante** con una transacción atómica: ¡nadie más puede pisar su reserva!
+4. Realiza el pago por transferencia bancaria, sube su comprobante y recibe su confirmación oficial.
+5. El equipo del hotel administra todo desde un **Panel Gerencial en vivo**.
 
-## Requisitos
+---
 
-- Python 3.10 o superior
-- PostgreSQL
-- Git
-- PowerShell en Windows
+## 📊 2. Tabla Comparativa: Antes vs. Con el Sistema Arahuana
 
-## Instalacion Local
+| Aspecto | ❌ Antes (Método Tradicional / Caos) | ✅ Con el Sistema Arahuana (Automatizado) |
+|---|---|---|
+| **Disponibilidad** | Llamadas telefónicas y libretas de papel. | **En tiempo real 24/7:** Insignia Verde (Disponible) o Roja (Reservada). |
+| **Doble Reserva** | Alto riesgo de vender la misma habitación dos veces. | **Cero Overbooking:** Bloqueo automático e inmediato en base de datos. |
+| **Programas de Hospedaje** | Tarifas rígidas o cálculos manuales con calculadora. | **Flexibilidad Total:** Menú desplegable + escritura libre de programas. |
+| **Pagos y Cobros** | Comprobantes borrosos perdidos en chats de WhatsApp. | **Módulo de Transferencias:** Carga de foto y validación gerencial. |
+| **Reservas no Pagadas** | Habitaciones congeladas por días que nadie paga. | **Autoliberación a las 24h:** Si no se paga, vuelve a estar disponible sola. |
+| **Control Gerencial** | Cierres de caja en hojas de Excel desactualizadas. | **Dashboard en vivo:** Métricas de ocupación, ingresos y aprobaciones. |
 
-1. Entrar a la carpeta del proyecto:
+---
 
-```powershell
-cd "C:\Users\HP\OneDrive\Desktop\hotel v2 mac y wid\Hotel A"
+## 🚀 3. Las 5 Grandes Joyas Tecnológicas del Proyecto
+
+```text
+ ┌────────────────────────────────────────────────────────────────────────┐
+ │                      PILAR DE SEGURIDAD Y NEGOCIO                      │
+ ├───────────────────┬───────────────────┬────────────────────────────────┤
+ │ 🛡️ Anti-Duplicados│ ✍️ Planes Libres  │ ⏳ Autoliberación 24h          │
+ │ Bloqueo atómico   │ Escribe o escoge  │ Cero habitaciones 'congeladas' │
+ │ en base de datos  │ tu propio paquete │ si el cliente no paga a tiempo │
+ ├───────────────────┴───────────────────┴────────────────────────────────┤
+ │ 💳 Transferencias Auditadas       📊 Panel Gerencial en Tiempo Real    │
+ │ Comprobante visual con revisión   Métricas instantáneas de ocupación   │
+ └────────────────────────────────────────────────────────────────────────┘
 ```
 
-2. Crear y activar entorno virtual:
+### 1. 🛡️ Blindaje Anti-Doble Reserva (Zero Overbooking)
+En cuanto un cliente confirma su solicitud, Django ejecuta una **transacción atómica** (`transaction.atomic()`):
+- Comprueba que la habitación esté en estado `Disponible`.
+- Valida que no exista ningún cruce de fechas en reservas previas.
+- Cambia inmediatamente la habitación a estado **`Reservada`**.
+- La tarjeta en la web muestra la insignia roja y el botón se desactiva:  
+  `<button disabled><i class="fa-solid fa-circle-xmark"></i> No disponible</button>`
 
-```powershell
+### 2. ✍️ Programas Flexibles (Fijos o Personalizados)
+El huésped ya no está atrapado en un menú rígido:
+- Puede hacer clic en las opciones predefinidas: **2 días / 1 noche**, **3 días / 2 noches**, **4 días / 3 noches**.
+- O puede **escribir con su teclado** (ejemplo: *"5 noches familiares"* o *"Luna de miel 4 días"*).
+- El motor del sistema interpreta el texto, calcula las noches exactas y genera la cotización justa al instante.
+
+### 3. ⏳ Autoliberación Inteligente a las 24 Horas
+¿Alguien reservó pero nunca envió el pago?
+- El motor en segundo plano cancela automáticamente las reservas impagas al cumplirse las 24 horas.
+- La habitación o cabaña vuelve a marcarse como **`Disponible` (Verde)** sin intervención humana, permitiendo que un cliente real sí pueda disfrutarla.
+
+### 4. 💳 Pagos Transparentes con Comprobante Digital
+- Evita el cobro de comisiones abusivas de pasarelas internacionales.
+- El cliente transfiere directamente a la cuenta bancaria del hotel (Pichincha, Guayaquil, etc.) y sube una fotografía del comprobante.
+- El estado pasa a `En revision` y queda archivado de forma segura y auditada.
+
+### 5. 👥 Experiencia Multi-Rol
+Diseñado para tres públicos claramente definidos:
+1. **El Huésped:** Interfaz limpia, catálogo fotográfico inmersivo, reserva rápida y panel "Mis Reservas".
+2. **El Gerente:** Pantalla ejecutiva para revisar ingresos, aprobar comprobantes y ver tasa de ocupación.
+3. **El Administrador del Hotel:** Control total del inventario, altas/bajas de habitaciones y personalización de contenidos.
+
+---
+
+## 👥 4. Roles y Ecosistema de Usuarios
+
+```mermaid
+flowchart TD
+    subgraph Usuarios
+        A["👤 Huésped / Turista"]
+        B["👔 Gerente de Operaciones"]
+        C["⚙️ Superadministrador"]
+    end
+
+    subgraph "Funcionalidades Clave"
+        A -->|"Explora y Reserva"| D["Catálogo Público, Paquetes Flexibles y Pago"]
+        A -->|"Gestiona"| E["Panel 'Mis Reservas' y Cancelaciones"]
+        B -->|"Supervisa"| F["Aprobación de Transferencias y Métricas"]
+        C -->|"Configura"| G["Inventario, Precios, Usuarios y Django Jazzmin"]
+    end
+```
+
+| Rol | ¿Qué puede hacer en la plataforma? | Interfaz de Acceso |
+|---|---|---|
+| **Huésped / Cliente** | Explorar catálogo, elegir programas, reservar unidades, subir comprobante bancario, cancelar reservas pendientes. | `/`, `/habitaciones/`, `/mis-reservas/` |
+| **Gerente** | Verificar transferencias bancarias, aprobar o rechazar reservas, monitorear ocupación e ingresos en tiempo real. | `/gerente/` |
+| **Superadministrador** | Gestionar inventario de habitaciones/cabañas, tarifas, usuarios del sistema y configuraciones globales. | `/admin/` (Jazzmin Suite) |
+
+---
+
+## 🗺️ 5. El Viaje del Huésped (Customer Journey)
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Cliente as 👤 Huésped
+    participant Web as 🌐 Catálogo Arahuana
+    participant Backend as ⚙️ Motor Django
+    participant DB as 🗄️ PostgreSQL
+    actor Gerente as 👔 Gerente Hotel
+
+    Cliente->>Web: Explora Habitaciones y Cabañas
+    Web->>Cliente: Muestra unidades disponibles (Verde) y reservadas (Rojo)
+    Cliente->>Web: Elige o escribe Programa de Hospedaje y Fechas
+    Cliente->>Web: Clic en "Confirmar reserva"
+    Web->>Backend: Envía solicitud POST con validaciones
+    Backend->>DB: Verifica disponibilidad y solapamiento de fechas
+    Backend->>DB: Crea Reserva y cambia estado a 'Reservada'
+    Backend->>Web: Redirige a pantalla de Pago por Transferencia
+    Cliente->>Web: Transfiere al banco del hotel y sube foto del comprobante
+    Web->>Backend: Almacena comprobante y marca pago "En revisión"
+    Gerente->>Backend: Revisa el comprobante en su panel y hace clic en "Aprobar"
+    Backend->>DB: Cambia reserva a "Confirmada" y pago a "Pagado"
+    Backend-->>Cliente: Notificación de reserva garantizada. ¡Listo para viajar!
+```
+
+---
+
+## 🛠️ 6. Arquitectura Técnica y Stack Tecnológico
+
+El proyecto sigue una arquitectura **MVT (Model-View-Template) desacoplada** con una capa de **Servicios de Dominio** para garantizar alta escalabilidad, orden y mantenibilidad.
+
+```text
+┌─────────────────────────────────────────────────────────────┐
+│                    CAPA DE PRESENTACIÓN                     │
+│    HTML5 Semántico · CSS3 Modular (Resort Theme) · JS ES6   │
+└──────────────────────────────┬──────────────────────────────┘
+                               │ Peticiones HTTP / Formularios
+┌──────────────────────────────▼──────────────────────────────┐
+│                    CAPA DE CONTROLADORES                    │
+│   gestion_hotel/views/: catalog, reservations, payments,    │
+│                         auth, client, gerente               │
+└──────────────────────────────┬──────────────────────────────┘
+                               │ Reglas de Negocio
+┌──────────────────────────────▼──────────────────────────────┐
+│                  CAPA DE SERVICIOS PURA                     │
+│   gestion_hotel/services/reservations.py                    │
+│   • Resolver programas    • Calcular precios de estadía     │
+│   • Sincronizar estados   • Cancelar reservas vencidas      │
+└──────────────────────────────┬──────────────────────────────┘
+                               │ ORM de Django
+┌──────────────────────────────▼──────────────────────────────┐
+│                  CAPA DE DATOS (PERSISTENCIA)               │
+│   PostgreSQL: Clientes, Habitaciones, Cabañas, Reservas     │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### ¿Por qué elegimos estas tecnologías?
+
+| Tecnología | Rol en el Sistema | ¿Por qué es la mejor elección? |
+|---|---|---|
+| **Python 3.10+** | Lenguaje Principal | Código legible, robusto, seguro y estándar mundial en ingeniería de software. |
+| **Django** | Framework Web | Arquitectura madura con seguridad integrada contra inyecciones SQL, CSRF y XSS. |
+| **PostgreSQL** | Base de Datos Relacional | Garantiza consistencia total (ACID) y transacciones atómicas para reservas hoteleras. |
+| **Django Jazzmin** | Panel de Control | Interfaz administrativa elegante, intuitiva y personalizable para los operadores. |
+| **Nginx** | Reverse Proxy en Producción | Manejo eficiente de conexiones simultáneas, compresión Gzip y terminación SSL. |
+| **Gunicorn** | Servidor WSGI | Puente de alto rendimiento entre el servidor web Nginx y el código Python. |
+| **Google Cloud** | Infraestructura en la Nube | Máxima disponibilidad, escalabilidad y respaldo empresarial 24/7. |
+
+---
+
+## 📂 7. Mapa del Código: ¿Qué hace cada carpeta?
+
+```text
+Hotel-A/
+├── arahuana_resort/           # Ajustes globales de Django (settings, urls, wsgi)
+├── gestion_hotel/             # Aplicación principal del hotel
+│   ├── models.py              # Definición de las tablas maestras y relaciones
+│   ├── forms.py               # Formularios validados (registro, login, perfiles)
+│   ├── validators.py          # Validaciones estrictas de cédula/RUC y contraseñas
+│   ├── middleware.py          # Control de accesos y redirecciones por rol
+│   ├── services/              # LÓGICA DE NEGOCIO (cálculos, fechas, sincronización)
+│   ├── views/                 # CONTROLADORES (catálogo, pagos, reservas, gerente)
+│   ├── templates/             # Plantillas HTML estructuradas por módulos
+│   └── static/                # Hojas de estilo CSS modulares, scripts e imágenes
+├── media/                     # Fotografías reales subidas y comprobantes bancarios
+├── staticfiles/               # Directorio optimizado para distribución web con Nginx
+├── MANUAL_DEL_SISTEMA.md      # Manual técnico exhaustivo para desarrolladores
+└── README.md                  # Este documento de presentación y guía general
+```
+
+---
+
+## 🌐 8. Infraestructura y Despliegue en la Nube
+
+El sistema se encuentra desplegado y funcionando en vivo en **Google Cloud Platform**:
+
+```text
+               INTERNET (Usuarios y Turistas)
+                             │
+                             ▼ [HTTPS / Puerto 443]
+               ┌──────────────────────────────┐
+               │    NGINX (Reverse Proxy)     │
+               │ Let's Encrypt SSL Certificado│
+               └──────────────┬───────────────┘
+                              │ Proxy Pass (127.0.0.1:8001)
+                              ▼
+               ┌──────────────────────────────┐
+               │    GUNICORN (hotel.service)  │
+               │   Servidor de Aplicaciones   │
+               └──────────────┬───────────────┘
+                              │ Django ORM
+                              ▼
+               ┌──────────────────────────────┐
+               │    POSTGRESQL DATABASE       │
+               │   delivery-109f4 (Cloud VM)  │
+               └──────────────────────────────┘
+```
+
+- **Servidor:** Instancia `free-ubuntu-vm` en Google Cloud Compute Engine (Zona `us-central1-a`).
+- **Dominio Público:** [https://hoteleroarahuana.duckdns.org](https://hoteleroarahuana.duckdns.org)
+- **Seguridad:** Tráfico 100% cifrado con HTTPS vía Let's Encrypt con renovación automática.
+
+---
+
+## 💻 9. Instalación y Ejecución Local
+
+Si deseas correr este proyecto en tu propia computadora:
+
+### 1. Clonar el repositorio
+```bash
+git clone https://github.com/BETACRD01/Hotel-A.git
+cd Hotel-A
+```
+
+### 2. Crear y activar entorno virtual
+```bash
+# En macOS / Linux:
+python3 -m venv venv
+source venv/bin/activate
+
+# En Windows (PowerShell):
 python -m venv venv
 .\venv\Scripts\Activate.ps1
 ```
 
-3. Instalar dependencias:
-
-```powershell
+### 3. Instalar dependencias
+```bash
 pip install -r requirements.txt
 ```
 
-4. Crear el archivo `.env` desde `.env.example`:
-
-```powershell
-Copy-Item .env.example .env
+### 4. Configurar variables de entorno
+Crea el archivo `.env` tomando como base `.env.example`:
+```bash
+cp .env.example .env
 ```
+Configura los accesos a tu base de datos PostgreSQL local y claves secretas.
 
-5. Editar `.env` con la configuracion real de base de datos, correo y cuentas bancarias.
-
-6. Aplicar migraciones:
-
-```powershell
+### 5. Aplicar migraciones e iniciar servidor
+```bash
 python manage.py migrate
-```
-
-7. Crear superusuario si se necesita acceso al admin:
-
-```powershell
 python manage.py createsuperuser
-```
-
-8. Ejecutar el servidor:
-
-```powershell
 python manage.py runserver
 ```
 
-9. Abrir:
+Abre tu navegador en: **`http://127.0.0.1:8000/`**
 
-```text
-http://127.0.0.1:8000/
-```
+---
 
-## Variables de Entorno
+## 🎯 10. Conclusión y Valor del Proyecto (Pitch de Cierre)
 
-El proyecto lee configuracion sensible desde `.env`.
+El **Sistema Hotelero Arahuana Eco-Resort & Spa** no es solo un software de reservas: es una herramienta de **transformación digital integral**. 
 
-Variables principales:
+Logra conjugar:
+- **La tranquilidad del huésped:** que reserva sabiendo que su habitación está 100% garantizada y con tarifas transparentes.
+- **La eficiencia del hotel:** que elimina los errores manuales, automatiza cobros por transferencia y administra todo desde un tablero moderno.
+- **La robustez de la ingeniería de software:** con transacciones atómicas, código modular limpio y arquitectura en la nube de alta disponibilidad.
 
-```env
-SECRET_KEY=change-me
-DEBUG=True
-ALLOWED_HOSTS=localhost,127.0.0.1
-CSRF_TRUSTED_ORIGINS=http://localhost:8000,http://127.0.0.1:8000
+---
 
-DB_NAME=hotel_arahuana_db
-DB_USER=postgres
-DB_PASSWORD=
-DB_HOST=localhost
-DB_PORT=5432
-
-EMAIL_HOST=smtp.gmail.com
-EMAIL_PORT=587
-EMAIL_USE_TLS=True
-EMAIL_USE_SSL=False
-EMAIL_HOST_USER=
-EMAIL_HOST_PASSWORD=
-DEFAULT_FROM_EMAIL=
-
-BANCO_1_NOMBRE=
-BANCO_1_TIPO=
-BANCO_1_CUENTA=
-BANCO_1_TITULAR=
-BANCO_1_IDENTIFICACION=
-BANCO_1_CORREO=
-```
-
-No subir `.env` al repositorio. `.env.example` debe contener solo placeholders.
-
-## Rutas Principales
-
-- Inicio: `/`
-- Sobre nosotros: `/sobre-nosotros/`
-- Habitaciones: `/habitaciones/`
-- Cabanas: `/cabanas/`
-- Cine: `/cine/`
-- Resort del dia: `/resort/`
-- Login: `/login/`
-- Registro: `/registro/`
-- Panel cliente: `/panel-cliente/`
-- Mis reservas: `/mis-reservas/`
-- Pago por transferencia: `/reservas/<id>/pago/transferencia/`
-- Panel gerente: `/gerente/`
-- Admin Django: `/admin/`
-
-## Comandos Utiles
-
-Verificar configuracion:
-
-```powershell
-python manage.py check
-```
-
-Ejecutar pruebas:
-
-```powershell
-python manage.py test
-```
-
-Cancelar reservas vencidas:
-
-```powershell
-python manage.py cancelar_reservas_vencidas
-```
-
-Limpiar imagenes inexistentes:
-
-```powershell
-python manage.py limpiar_imagenes_inexistentes
-```
-
-## Estado de Tests
-
-La suite de pruebas existe en `gestion_hotel/tests.py`. En la revision actual `python manage.py check` pasa correctamente.
-
-La suite completa de tests tiene fallos conocidos previos relacionados con textos codificados y expectativas antiguas de redireccion. Conviene corregir esos tests antes de usarlos como garantia de regresion completa.
-
-## Seguridad
-
-- Los secretos se configuran por variables de entorno.
-- `.env` esta ignorado por Git.
-- Los comprobantes de transferencia estan ignorados en `media/comprobantes_transferencia/`.
-- CSRF se mantiene activo mediante middleware Django.
-- Las vistas de cliente validan sesion antes de mostrar reservas o pagos.
-- El panel gerente valida rol antes de permitir acceso.
-
-## Notas de Mantenimiento
-
-- No colocar nuevas funcionalidades grandes directamente en `views/common.py`.
-- Si una vista crece con reglas de negocio, extraer esa logica a `gestion_hotel/services/`.
-- Mantener URLs existentes salvo que exista una migracion clara y compatible.
-- Evitar datos personales, bancarios o credenciales como valores por defecto en codigo.
-- Mantener imagenes de usuario y comprobantes fuera del repositorio cuando sean privados.
+> *Desarrollado con dedicación y excelencia técnica para llevar el turismo ecuatoriano al siguiente nivel digital.* 🌿🇪🇨
